@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -9,7 +10,7 @@ class FavoritesScreen extends StatelessWidget {
 
     return Center(
       child: Text(
-        'Favorite',
+        'favorite'.tr(),
         style: TextStyle(color: cs.primary, fontSize: 18),
       ),
     );

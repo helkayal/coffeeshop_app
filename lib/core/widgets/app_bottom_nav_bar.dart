@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../theme/app_design_constants.dart';
 
@@ -30,11 +31,11 @@ class AppBottomNavBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _NavItem(icon: Icons.home, label: 'Home', isActive: currentIndex == 0, onTap: () => onTap(0)),
-              _NavItem(icon: Icons.coffee, label: 'Menu', isActive: currentIndex == 1, onTap: () => onTap(1)),
-              _NavItem(icon: Icons.receipt_long, label: 'Orders', isActive: currentIndex == 2, onTap: () => onTap(2)),
-              _NavItem(icon: Icons.favorite, label: 'Favorite', isActive: currentIndex == 3, onTap: () => onTap(3)),
-              _NavItem(icon: Icons.person, label: 'Profile', isActive: currentIndex == 4, onTap: () => onTap(4)),
+              _NavItem(icon: Icons.home, label: 'home'.tr(), isActive: currentIndex == 0, onTap: () => onTap(0)),
+              _NavItem(icon: Icons.coffee, label: 'menu'.tr(), isActive: currentIndex == 1, onTap: () => onTap(1)),
+              _NavItem(icon: Icons.receipt_long, label: 'orders'.tr(), isActive: currentIndex == 2, onTap: () => onTap(2)),
+              _NavItem(icon: Icons.favorite, label: 'favorite'.tr(), isActive: currentIndex == 3, onTap: () => onTap(3)),
+              _NavItem(icon: Icons.person, label: 'profile'.tr(), isActive: currentIndex == 4, onTap: () => onTap(4)),
             ],
           ),
         ),

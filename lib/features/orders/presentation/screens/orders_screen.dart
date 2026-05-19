@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -8,7 +9,10 @@ class OrdersScreen extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
 
     return Center(
-      child: Text('Orders', style: TextStyle(color: cs.primary, fontSize: 18)),
+      child: Text(
+        'orders'.tr(),
+        style: TextStyle(color: cs.primary, fontSize: 18),
+      ),
     );
   }
 }

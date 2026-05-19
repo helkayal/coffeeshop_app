@@ -1,6 +1,9 @@
 {
   "app_name": "Coffee Shop",
   "home": "Home",
+  "menu": "Menu",
+  "orders": "Orders",
+  "favorite": "Favorite",
   "cart": "Cart",
   "profile": "Profile",
   "error_route_not_found": "No route defined for {}",
@@ -90,5 +93,15 @@
       "hurghada": "Hurghada",
       "gouna": "El Gouna"
     }
+  },
+  "home_screen": {
+    "welcome": "Welcome,",
+    "points": "Points",
+    "our_pick": "Our Pick",
+    "your_last_order": "Your Last Order",
+    "explore_menu": "Explore Our Menu",
+    "limited_release": "Limited Release",
+    "autumn_blend": "The Autumn Equinox Blend",
+    "promo_badge": "20% OFF"
   }
 }

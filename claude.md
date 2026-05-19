@@ -8,7 +8,7 @@ This file contains project-specific guidelines, conventions, and architectural r
 - **Flutter** (Dart 3.10+)
 - **State Management:** flutter_bloc / Cubit
 - **Local Storage:** Hive (hive_flutter)
-- **Localization:** easy_localization
+- **Localization:** easy_localization — every user-facing string must use `.tr()`, never hardcoded
 
 ## Git workflow
 

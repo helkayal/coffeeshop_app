@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
 import '../cubit/home_cubit.dart';
@@ -28,7 +29,7 @@ class ExploreMenuButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Explore Our Menu',
+              'home_screen.explore_menu'.tr(),
               style: tt.displaySmall?.copyWith(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,

@@ -1,6 +1,9 @@
 {
   "app_name": "مقهى",
   "home": "الرئيسية",
+  "menu": "القائمة",
+  "orders": "الطلبات",
+  "favorite": "المفضلة",
   "cart": "السلة",
   "profile": "الملف الشخصي",
   "error_route_not_found": "لا يوجد مسار محدد لـ {}",
@@ -90,5 +93,15 @@
       "hurghada": "الغردقة",
       "gouna": "الجونة"
     }
+  },
+  "home_screen": {
+    "welcome": "مرحباً،",
+    "points": "نقطة",
+    "our_pick": "اختيارنا",
+    "your_last_order": "آخر طلب لك",
+    "explore_menu": "تصفح القائمة",
+    "limited_release": "إصدار محدود",
+    "autumn_blend": "مزيج الاعتدال الخريفي",
+    "promo_badge": "خصم 20%"
   }
 }

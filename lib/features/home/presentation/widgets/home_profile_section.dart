@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeProfileSection extends StatelessWidget {
   const HomeProfileSection({super.key});
@@ -41,7 +42,7 @@ class HomeProfileSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Welcome,',
+            'home_screen.welcome'.tr(),
             style: tt.bodySmall?.copyWith(fontSize: 12),
           ),
           const SizedBox(height: 2),
@@ -70,7 +71,7 @@ class HomeProfileSection extends StatelessWidget {
           ),
         ),
         Text(
-          'Points',
+          'home_screen.points'.tr(),
           style: tt.labelLarge?.copyWith(letterSpacing: 2),
         ),
       ],
