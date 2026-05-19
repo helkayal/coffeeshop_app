@@ -12,7 +12,11 @@ class AppDesignConstants {
 
   // Border Radius
   static const double borderRadius = 8.0;
+  static const double borderRadiusXl = 12.0;
+  static const double borderRadius2xl = 16.0;
   static final BorderRadius radiusMedium = BorderRadius.circular(borderRadius);
+  static final BorderRadius radiusXl = BorderRadius.circular(borderRadiusXl);
+  static final BorderRadius radius2xl = BorderRadius.circular(borderRadius2xl);
 
   // Elevation / Shadows
   static final List<BoxShadow> softShadow = [

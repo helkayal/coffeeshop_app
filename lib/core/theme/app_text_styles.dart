@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
-  // Headlines - EB Garamond
   static TextStyle h1({Color color = AppColors.lightOnBackground}) =>
       GoogleFonts.ebGaramond(
         fontSize: 32,
@@ -51,7 +50,6 @@ class AppTextStyles {
         color: color,
       );
 
-  // Labels & Buttons - Manrope
   static TextStyle labelLarge({Color color = AppColors.lightOnBackground}) =>
       GoogleFonts.manrope(
         fontSize: 14,
@@ -65,5 +63,30 @@ class AppTextStyles {
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: color,
+      );
+
+  static TextStyle headlineMd({Color color = AppColors.lightOnBackground}) =>
+      GoogleFonts.ebGaramond(
+        fontSize: 28,
+        fontWeight: FontWeight.w400,
+        color: color,
+        height: 1.3,
+      );
+
+  static TextStyle labelCaps({Color color = AppColors.lightOnBackground}) =>
+      GoogleFonts.manrope(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: color,
+        letterSpacing: 1.2,
+        height: 1.0,
+      );
+
+  static TextStyle caption({Color color = AppColors.lightOnBackground}) =>
+      GoogleFonts.manrope(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: color,
+        letterSpacing: 1.5,
       );
 }

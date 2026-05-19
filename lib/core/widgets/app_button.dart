@@ -22,7 +22,6 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
     final isPrimary = style == AppButtonStyle.primary;
 
     return SizedBox(
@@ -32,7 +31,9 @@ class AppButton extends StatelessWidget {
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: isPrimary ? colorScheme.primary : Colors.transparent,
-          foregroundColor: isPrimary ? colorScheme.onPrimary : colorScheme.primary,
+          foregroundColor: isPrimary
+              ? colorScheme.onPrimary
+              : colorScheme.primary,
           elevation: 0,
           side: isPrimary ? null : BorderSide(color: colorScheme.primary),
           shape: RoundedRectangleBorder(
@@ -45,12 +46,7 @@ class AppButton extends StatelessWidget {
                 width: 24,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(
-                text,
-                style: textTheme.labelLarge?.copyWith(
-                  color: isPrimary ? colorScheme.onPrimary : colorScheme.primary,
-                ),
-              ),
+            : Text(text),
       ),
     );
   }

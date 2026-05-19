@@ -233,3 +233,11 @@ Then provide a brief summary of:
 - What was changed
 - Why it was changed
 - Why the solution is safe and correct
+
+## Git output (mandatory after task completion)
+
+After I confirm that the task is complete and approved, you must commit locally with the following commit message rules:
+
+Commit message rules:
+- Clear, concise, professional
+- Follow conventional commit format

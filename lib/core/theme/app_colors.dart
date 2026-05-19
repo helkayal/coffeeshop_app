@@ -24,23 +24,26 @@ class AppColors {
   static const Color lightOutlineVariant = Color(0xFFD8D0C8);
 
   // --- Dark Theme ---
-  static const Color darkPrimaryContainer = Color(0xFF8A4518);
-  static const Color darkOnPrimary = Color(0xFFFFFFFF);
+  static const Color darkPrimaryContainer = Color(0xFFE6A552);
+  static const Color darkOnPrimary = Color(0xFF472A00);
 
-  static const Color darkSecondary = Color(0xFFCEC6BE);
-  static const Color darkSecondaryContainer = Color(0xFF504840);
-  static const Color darkOnSecondary = Color(0xFFFAF5EE);
+  static const Color darkSecondary = Color(0xFFFAB982);
+  static const Color darkSecondaryContainer = Color(0xFF683C10);
+  static const Color darkOnSecondary = Color(0xFF4C2700);
 
-  static const Color darkTertiary = Color(0xFFE8A0A0);
-  static const Color darkTertiaryContainer = Color(0xFF6E3030);
-  static const Color darkOnTertiary = Color(0xFFFAF5EE);
+  static const Color darkTertiary = Color(0xFF9CD4FF);
+  static const Color darkTertiaryContainer = Color(0xFF75B9EA);
+  static const Color darkOnTertiary = Color(0xFF00344E);
 
-  static const Color darkBackground = Color(0xFF211A15); // Deep Espresso
-  static const Color darkOnBackground = Color(0xFFFAF5EE);
-  static const Color darkSurface = Color(0xFF2A231E); // Rich Mocha
-  static const Color darkOnSurface = Color(0xFFFAF5EE);
-  static const Color darkOutline = Color(0xFF78706A);
-  static const Color darkOutlineVariant = Color(0xFF504840);
+  static const Color darkBackground = Color(0xFF18120D);
+  static const Color darkOnBackground = Color(0xFFECE0D6);
+  static const Color darkSurface = Color(0xFF18120D);
+  static const Color darkOnSurface = Color(0xFFECE0D6);
+  static const Color darkSurfaceVariant = Color(0xFF3A342D);
+  static const Color darkOnSurfaceVariant = Color(0xFFD5C3B2);
+  static const Color darkSurfaceContainerLow = Color(0xFF201B15);
+  static const Color darkOutline = Color(0xFF9E8E7E);
+  static const Color darkOutlineVariant = Color(0xFF514537);
 
   // Error colors
   static const Color error = Color(0xFFC0392B);
