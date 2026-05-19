@@ -31,3 +31,4 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - assets/menu_images/

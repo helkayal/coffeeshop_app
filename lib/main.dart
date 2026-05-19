@@ -22,6 +22,7 @@ void main() async {
     EasyLocalization(
       supportedLocales: AppConfig.supportedLocales,
       path: AppConfig.translationsPath,
+      startLocale: AppConfig.defaultLocale,
       fallbackLocale: AppConfig.defaultLocale,
       child: CoffeeShopApp(initialRoute: initialRoute),
     ),

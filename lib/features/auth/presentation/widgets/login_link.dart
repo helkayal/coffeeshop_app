@@ -15,6 +15,8 @@ class LoginLink extends StatelessWidget {
       onPressed: () => Navigator.pushNamedAndRemoveUntil(
         context, AppRoutes.login, (route) => false),
       child: RichText(
+        maxLines: 1,
+        softWrap: false,
         text: TextSpan(
           text: '${'auth.if_you_have_account'.tr()} ',
           style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),

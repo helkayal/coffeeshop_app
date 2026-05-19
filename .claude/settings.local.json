@@ -11,7 +11,9 @@
       "Bash(dart analyze *)",
       "Bash(flutter build *)",
       "Bash(curl -s -L -o /tmp/home_redesigned.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMjkwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
-      "Bash(curl -s -L -o /tmp/home_redesigned.png \"https://lh3.googleusercontent.com/aida/ADBb0uj7CvmTwG48G1V0t6MTqwV5NPNiLZSXmcwsxpcSLWVr7gXDed4no_7G_rjnZ5R5U2fVYQnF50K_ZXANXYD6I3RihDe7yZBBSLAnvDhc5QLkWNl6A4ftVyzF_ln-J1G5f2mXPH_h22xL_EnJRdPjqYG3ZaJ8sLMs3TzrVRwcqWuAe7n2QiVZksW_fs39m3FKURxsufOHSjRwV1ReilDmQ8eBT1baKTtNKTjpqygbWP3VkPvz3DYbDXz7PA4\")"
+      "Bash(curl -s -L -o /tmp/home_redesigned.png \"https://lh3.googleusercontent.com/aida/ADBb0uj7CvmTwG48G1V0t6MTqwV5NPNiLZSXmcwsxpcSLWVr7gXDed4no_7G_rjnZ5R5U2fVYQnF50K_ZXANXYD6I3RihDe7yZBBSLAnvDhc5QLkWNl6A4ftVyzF_ln-J1G5f2mXPH_h22xL_EnJRdPjqYG3ZaJ8sLMs3TzrVRwcqWuAe7n2QiVZksW_fs39m3FKURxsufOHSjRwV1ReilDmQ8eBT1baKTtNKTjpqygbWP3VkPvz3DYbDXz7PA4\")",
+      "Bash(grep -rn \" 'C\\\\| 'H\\\\| 'M\\\\| 'O\\\\| 'F\\\\| 'P\\\\| 'W\\\\| 'L\\\\| 'E\\\\| '\\\\$\\\\| '1\\\\| '2\\\\| 'A\\\\| 'T\\\\| 'R\\\\|cardamom\\\\|ethiopian\\\\|pour\\\\|light\" /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/home/ /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/core/widgets/app_bottom_nav_bar.dart /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/menu/presentation/ /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/orders/ /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/favorites/ /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/)",
+      "Bash(curl -s -L -o /tmp/menu_options_dark.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZjZDUwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")"
     ]
   }
 }

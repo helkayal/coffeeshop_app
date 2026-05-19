@@ -103,5 +103,10 @@
     "limited_release": "Limited Release",
     "autumn_blend": "The Autumn Equinox Blend",
     "promo_badge": "20% OFF"
+  },
+  "menu_screen": {
+    "our_menu": "Our Menu",
+    "view_more": "View More",
+    "all": "All"
   }
 }

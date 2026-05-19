@@ -19,8 +19,6 @@ class HomeBody extends StatelessWidget {
         children: [
           const HomeProfileSection(),
           const SizedBox(height: 15),
-          SectionHeader(title: 'home_screen.our_pick'.tr()),
-          const SizedBox(height: 10),
           const FeaturedItemsView(),
           const SizedBox(height: 20),
           SectionHeader(title: 'home_screen.your_last_order'.tr()),

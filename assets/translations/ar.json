@@ -64,7 +64,7 @@
     "sign_in": "تسجيل الدخول",
     "register_now": "إنشاء حساب",
     "if_you_have_account": "إذا كان لديك حساب",
-    "create_one": "أنشئ واحداً",
+    "create_one": "سجّل الآن",
     "continue_with_social": "أو تابع باستخدام",
     "please_fill_all_fields": "يرجى ملء جميع الحقول"
   },
@@ -103,5 +103,10 @@
     "limited_release": "إصدار محدود",
     "autumn_blend": "مزيج الاعتدال الخريفي",
     "promo_badge": "خصم 20%"
+  },
+  "menu_screen": {
+    "our_menu": "قائمتنا",
+    "view_more": "عرض المزيد",
+    "all": "الكل"
   }
 }

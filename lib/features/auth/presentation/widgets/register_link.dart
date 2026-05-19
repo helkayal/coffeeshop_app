@@ -16,12 +16,14 @@ class RegisterLink extends StatelessWidget {
       children: [
         Text(
           '${'auth.dont_have_account'.tr()} ',
+          softWrap: false,
           style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
         ),
         GestureDetector(
           onTap: () => Navigator.pushNamed(context, AppRoutes.register),
           child: Text(
             'auth.create_one'.tr(),
+            softWrap: false,
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.primary,
               fontWeight: FontWeight.bold,
