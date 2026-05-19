@@ -1,0 +1,61 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/usecases/complete_onboarding.dart';
+import '../../domain/usecases/get_onboarding_questions.dart';
+import 'onboarding_state.dart';
+
+class OnboardingCubit extends Cubit<OnboardingState> {
+  final GetOnboardingQuestionsUseCase _getOnboardingQuestions;
+  final CompleteOnboardingUseCase _completeOnboarding;
+
+  OnboardingCubit(this._getOnboardingQuestions, this._completeOnboarding)
+      : super(OnboardingInitial());
+
+  Future<void> fetchQuestions() async {
+    emit(OnboardingLoading());
+    final result = await _getOnboardingQuestions();
+
+    result.fold(
+      (failure) => emit(OnboardingError(failure.message)),
+      (questions) => emit(OnboardingLoaded(questions: questions)),
+    );
+  }
+
+  void selectAndNavigate(String questionId, String optionId) async {
+    if (state is OnboardingLoaded) {
+      final currentState = state as OnboardingLoaded;
+      final newAnswers = Map<String, String>.from(currentState.answers);
+      newAnswers[questionId] = optionId;
+
+      final isLastStep =
+          currentState.currentStep == currentState.questions.length - 1;
+
+      if (isLastStep) {
+        await _completeOnboarding();
+        emit(currentState.copyWith(answers: newAnswers, isCompleted: true));
+      } else {
+        emit(currentState.copyWith(
+          answers: newAnswers,
+          currentStep: currentState.currentStep + 1,
+        ));
+      }
+    }
+  }
+
+  void goBack() {
+    if (state is OnboardingLoaded) {
+      final currentState = state as OnboardingLoaded;
+      if (currentState.currentStep > 0) {
+        emit(currentState.copyWith(currentStep: currentState.currentStep - 1));
+      }
+    }
+  }
+
+  void skip() async {
+    await _completeOnboarding();
+    if (state is OnboardingLoaded) {
+      final currentState = state as OnboardingLoaded;
+      emit(currentState.copyWith(isCompleted: true));
+    }
+  }
+}

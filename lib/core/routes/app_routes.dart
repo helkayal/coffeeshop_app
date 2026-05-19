@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+
+class AppRoutes {
+  static const String onboarding = '/onboarding';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String home = '/';
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+      case login:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case register:
+        return MaterialPageRoute(builder: (_) => const RegisterScreen());
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text(
+                'error_route_not_found'.tr(args: [settings.name ?? '']),
+              ),
+            ),
+          ),
+        );
+    }
+  }
+}

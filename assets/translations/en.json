@@ -1,0 +1,94 @@
+{
+  "app_name": "Coffee Shop",
+  "home": "Home",
+  "cart": "Cart",
+  "profile": "Profile",
+  "error_route_not_found": "No route defined for {}",
+  "onboarding": {
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "loading": "Preparing your coffee journey...",
+    "error": "Failed to load questions. Please try again.",
+    "skip_text": "Don't want to take the survey.",
+    "skip_action": "skip",
+    "q1": {
+      "text": "How do you like your coffee?",
+      "o1": "Black & Bold",
+      "o2": "Sweet & Creamy",
+      "o3": "Balanced"
+    },
+    "q2": {
+      "text": "Which flavor profile do you prefer?",
+      "o1": "Nutty & Chocolatey",
+      "o2": "Fruity & Bright",
+      "o3": "Spiced & Warm"
+    },
+    "q3": {
+      "text": "What is your preferred milk?",
+      "o1": "Whole Milk",
+      "o2": "Oat Milk",
+      "o3": "Almond Milk",
+      "o4": "No Milk (Vegan)"
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "full_name": "Full Name",
+    "confirm_password": "Confirm Password",
+    "dont_have_account": "Don't have account? ",
+    "already_have_account": "Already have an account? ",
+    "login_to_continue": "Login to your account to continue your coffee journey.",
+    "create_account": "Create Account",
+    "register_subtitle": "Create your account to access your curated experience.",
+    "get_started": "Get Started",
+    "welcome_back": "Welcome Back",
+    "join_the_club": "Join the Club",
+    "login_subtitle": "Enter your details to access your curated experience.",
+    "email_address": "Email Address",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "gender": "GENDER",
+    "male": "Male",
+    "female": "Female",
+    "date_of_birth": "Date of Birth",
+    "state": "State",
+    "city": "City",
+    "forgot_password": "Forgot Password?",
+    "sign_in": "Sign In",
+    "register_now": "Register",
+    "if_you_have_account": "If you have an account ",
+    "create_one": "Create one",
+    "continue_with_social": "CONTINUE WITH SOCIAL",
+    "please_fill_all_fields": "Please fill in all fields"
+  },
+  "locations": {
+    "select_state": "Select State",
+    "select_city": "Select City",
+    "states": {
+      "cairo": "Cairo",
+      "giza": "Giza",
+      "alexandria": "Alexandria",
+      "dakahlia": "Dakahlia",
+      "red_sea": "Red Sea"
+    },
+    "cities": {
+      "cairo": "Cairo City",
+      "new_cairo": "New Cairo",
+      "nasr_city": "Nasr City",
+      "maadi": "Maadi",
+      "giza": "Giza City",
+      "october_6": "6th of October",
+      "zayed": "Sheikh Zayed",
+      "alexandria": "Alexandria City",
+      "burj_al_arab": "Burj Al Arab",
+      "mansoura": "Mansoura",
+      "talkha": "Talkha",
+      "hurghada": "Hurghada",
+      "gouna": "El Gouna"
+    }
+  }
+}
