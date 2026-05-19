@@ -108,5 +108,25 @@
     "our_menu": "Our Menu",
     "view_more": "View More",
     "all": "All"
+  },
+  "orders_screen": {
+    "your_orders": "Your Orders",
+    "receipt": "Receipt",
+    "reorder": "Reorder"
+  },
+  "favorites_screen": {
+    "your_favorites": "Your Favorites"
+  },
+  "profile_screen": {
+    "account": "Account",
+    "shopping": "Shopping",
+    "full_name": "Full Name",
+    "email": "Email",
+    "gender": "Gender",
+    "dob": "Date of Birth",
+    "location": "State - City",
+    "order_history": "Order History",
+    "payment_methods": "Payment Methods",
+    "sign_out": "Sign Out"
   }
 }

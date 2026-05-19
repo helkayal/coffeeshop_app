@@ -108,5 +108,25 @@
     "our_menu": "قائمتنا",
     "view_more": "عرض المزيد",
     "all": "الكل"
+  },
+  "orders_screen": {
+    "your_orders": "طلباتك",
+    "receipt": "الإيصال",
+    "reorder": "إعادة الطلب"
+  },
+  "favorites_screen": {
+    "your_favorites": "مفضلاتك"
+  },
+  "profile_screen": {
+    "account": "الحساب",
+    "shopping": "التسوق",
+    "full_name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "gender": "الجنس",
+    "dob": "تاريخ الميلاد",
+    "location": "المحافظة - المدينة",
+    "order_history": "سجل الطلبات",
+    "payment_methods": "طرق الدفع",
+    "sign_out": "تسجيل الخروج"
   }
 }
