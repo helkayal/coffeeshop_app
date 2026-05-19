@@ -10,6 +10,12 @@ This file contains project-specific guidelines, conventions, and architectural r
 - **Local Storage:** Hive (hive_flutter)
 - **Localization:** easy_localization
 
+## Git workflow
+
+- Commit every change locally with a proper commit message.
+- Write commit messages in imperative mood, short first line, with optional details after a blank line.
+- Commit after each logical change — don't batch unrelated work.
+
 ## Clean code always
 
 - Keep code clean, readable, and maintainable.
