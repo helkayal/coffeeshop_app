@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../cubit/home_cubit.dart';
-import 'favorites_screen.dart';
+import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
+import '../../../../core/services/service_locator.dart';
+import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
+import '../../../../features/menu/presentation/screens/menu_screen.dart';
+import '../../../../features/orders/presentation/screens/orders_screen.dart';
+import '../../../../features/profile/presentation/screens/profile_screen.dart';
 import 'home_screen.dart';
-import 'menu_screen.dart';
-import 'orders_screen.dart';
-import 'profile_screen.dart';
 
 class MainShell extends StatelessWidget {
   const MainShell({super.key});
@@ -24,8 +26,11 @@ class MainShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => HomeCubit()),
+        BlocProvider(create: (_) => sl<MenuCubit>()),
+      ],
       child: BlocBuilder<HomeCubit, int>(
         builder: (context, currentIndex) {
           return Scaffold(

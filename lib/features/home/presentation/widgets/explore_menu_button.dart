@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
+import '../cubit/home_cubit.dart';
 
 class ExploreMenuButton extends StatelessWidget {
   const ExploreMenuButton({super.key});
@@ -13,7 +15,7 @@ class ExploreMenuButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-        onPressed: () {},
+        onPressed: () => context.read<HomeCubit>().selectTab(1),
         style: TextButton.styleFrom(
           backgroundColor: cs.primaryContainer,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
