@@ -26,26 +26,32 @@ class FeaturedItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: AppDesignConstants.radius2xl,
-        border: Border.all(color: cs.outlineVariant.withAlpha(153)),
+        border: Border.all(color: cs.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 3 / 2,
-            child: Container(
-              color: cs.surfaceContainerHighest,
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest),
+          ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppDesignConstants.borderRadius2xl),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Center(
+                child: Image.asset(
+                  imagePath,
+                  height: MediaQuery.of(context).size.height * .25,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) =>
+                      Container(color: cs.surfaceContainerHighest),
+                ),
               ),
             ),
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -57,10 +63,10 @@ class FeaturedItemCard extends StatelessWidget {
                       color: cs.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
                     description,
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: tt.bodySmall?.copyWith(height: 1.625),
                   ),
@@ -82,6 +88,7 @@ class FeaturedItemCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 5),
                 ],
               ),
             ),

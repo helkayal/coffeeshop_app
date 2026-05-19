@@ -30,10 +30,10 @@ class ExploreMenuButton extends StatelessWidget {
               style: tt.displaySmall?.copyWith(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: cs.onSurface,
+                color: cs.onPrimary,
               ),
             ),
-            Icon(Icons.arrow_forward, color: cs.onSurface),
+            Icon(Icons.arrow_forward, color: cs.onPrimary),
           ],
         ),
       ),

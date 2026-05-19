@@ -11,16 +11,13 @@ class PromoBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return SizedBox(
-      height: 240,
-      child: Stack(
-        children: [
-          _buildImage(cs),
-          _buildBadge(cs, tt),
-          _buildGradient(),
-          _buildTextContent(),
-        ],
-      ),
+    return Stack(
+      children: [
+        _buildImage(cs),
+        _buildBadge(cs, tt),
+        _buildGradient(),
+        _buildTextContent(),
+      ],
     );
   }
 
