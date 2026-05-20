@@ -25,7 +25,8 @@
       "Bash(curl -s -L -o /tmp/payment1.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZjZDEwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
       "Bash(curl -s -L -o /tmp/payment2.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMzgwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
       "Bash(grep -v \"assets/\\\\|\\\\.png\\\\|fontFamily\\\\|Icons\\\\.\\\\|MaterialIcons\\\\|\\\\.tr\\(\\)\\\\|'[0-9]\\\\|'\\\\$\")",
-      "Bash(curl -s -L -o /tmp/settings_dark.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMmIwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")"
+      "Bash(curl -s -L -o /tmp/settings_dark.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMmIwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
+      "Bash(grep -v '^.*/[0-9]*:.*//.*$')"
     ]
   }
 }

@@ -49,6 +49,7 @@ class QuestionPage extends StatelessWidget {
                   child: Image.asset(
                     question.imageUrl!,
                     width: MediaQuery.of(context).size.width * 0.6,
+                    errorBuilder: (_, _, _) => const Icon(Icons.image, size: 48),
                     height: MediaQuery.of(context).size.width * 0.5,
                     fit: BoxFit.fill,
                   ),

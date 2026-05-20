@@ -70,7 +70,7 @@ class QuickAddOverlay extends StatelessWidget {
               const SizedBox(height: 32),
               Text('quick_add.quick_add'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
               const SizedBox(height: 16),
-              const QuickAddOptions(options: ['Default', 'Double Shot', 'Oat Milk', 'Honey']),
+              QuickAddOptions(options: List.generate(4, (i) => 'quick_add.options.$i'.tr())),
               const SizedBox(height: 40),
               SizedBox(
                 width: double.infinity,

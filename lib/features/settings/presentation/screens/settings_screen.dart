@@ -37,7 +37,7 @@ class SettingsScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: cs.outlineVariant.withAlpha(51)),
           ),
-          child: SettingsRow(icon: Icons.info, title: 'settings.about'.tr(), subtitle: 'Coffee Shop v1.0.0'),
+          child: SettingsRow(icon: Icons.info, title: 'settings.about'.tr(), subtitle: 'settings.version'.tr()),
         ),
       ]),
     );

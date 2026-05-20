@@ -40,6 +40,7 @@ class MainShell extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<MenuCubit>(),
       child: BlocBuilder<HomeCubit, HomeState>(
+        buildWhen: (prev, curr) => prev.tabIndex != curr.tabIndex || prev.hasSecondary != curr.hasSecondary,
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(

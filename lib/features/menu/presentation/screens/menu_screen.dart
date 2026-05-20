@@ -61,14 +61,11 @@ class _MenuScreenState extends State<MenuScreen> {
             onSelected: (id) => context.read<MenuCubit>().selectCategory(id),
           ),
           const SizedBox(height: 24),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: products.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 16),
-            itemBuilder: (_, index) =>
-                ProductListItem(product: products[index]),
-          ),
+          for (final p in products)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: ProductListItem(product: p),
+            ),
           const SizedBox(height: 96),
         ],
       ),

@@ -106,7 +106,8 @@
   "menu_screen": {
     "our_menu": "قائمتنا",
     "view_more": "تخصيص",
-    "all": "الكل"
+    "all": "الكل",
+    "error_load": "فشل تحميل القائمة"
   },
   "orders_screen": {
     "your_orders": "طلباتك",
@@ -141,7 +142,9 @@
     "honey_drizzle": "رذاذ العسل",
     "cinnamon_dust": "غبار القرفة",
     "total_estimate": "الإجمالي التقديري",
-    "complete_order": "إتمام الطلب"
+    "complete_order": "إتمام الطلب",
+    "sweetness_labels": ["بدون", "خفيف", "قياسي", "إضافي", "ثقيل"],
+    "intensity_labels": ["مفرد", "مزدوج", "ثلاثي", "رباعي"]
   },
   "checkout": {
     "your_bag": "حقيبتك",
@@ -181,7 +184,8 @@
   "quick_add": {
     "saved_orders": "الطلبات المحفوظة",
     "quick_add": "إضافة سريعة",
-    "customize": "تخصيص"
+    "customize": "تخصيص",
+    "options": ["افتراضي", "جرعة مزدوجة", "حليب شوفان", "عسل"]
   },
   "settings": {
     "preferences": "التفضيلات",
@@ -192,6 +196,7 @@
     "english": "English (US)",
     "notifications": "الإشعارات",
     "push_email": "Push, Email",
-    "about": "حول المقهى"
+    "about": "حول المقهى",
+    "version": "مقهى v1.0.0"
   }
 }

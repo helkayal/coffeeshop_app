@@ -106,7 +106,8 @@
   "menu_screen": {
     "our_menu": "Our Menu",
     "view_more": "Customize",
-    "all": "All"
+    "all": "All",
+    "error_load": "Failed to load menu"
   },
   "orders_screen": {
     "your_orders": "Your Orders",
@@ -141,7 +142,9 @@
     "honey_drizzle": "Honey Drizzle",
     "cinnamon_dust": "Cinnamon Dust",
     "total_estimate": "Total Estimate",
-    "complete_order": "Complete Order"
+    "complete_order": "Complete Order",
+    "sweetness_labels": ["None", "Light", "Standard", "Extra", "Heavy"],
+    "intensity_labels": ["Single", "Double", "Triple", "Quad"]
   },
   "checkout": {
     "your_bag": "Your Bag",
@@ -181,7 +184,8 @@
   "quick_add": {
     "saved_orders": "Saved Orders",
     "quick_add": "Quick Add",
-    "customize": "Customize"
+    "customize": "Customize",
+    "options": ["Default", "Double Shot", "Oat Milk", "Honey"]
   },
   "settings": {
     "preferences": "Preferences",
@@ -192,6 +196,7 @@
     "english": "English (US)",
     "notifications": "Notifications",
     "push_email": "Push, Email",
-    "about": "About Coffee Shop"
+    "about": "About Coffee Shop",
+    "version": "Coffee Shop v1.0.0"
   }
 }

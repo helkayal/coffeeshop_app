@@ -8,9 +8,9 @@ sealed class OnboardingState extends Equatable {
   List<Object?> get props => [];
 }
 
-class OnboardingInitial extends OnboardingState {}
+class OnboardingInitial extends OnboardingState { const OnboardingInitial(); }
 
-class OnboardingLoading extends OnboardingState {}
+class OnboardingLoading extends OnboardingState { const OnboardingLoading(); }
 
 class OnboardingLoaded extends OnboardingState {
   final List<OnboardingQuestion> questions;

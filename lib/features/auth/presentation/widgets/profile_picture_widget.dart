@@ -16,6 +16,7 @@ class ProfilePictureWidget extends StatelessWidget {
               ? 'assets/images/female_placeholder.png'
               : 'assets/images/male_placeholder.png',
           width: 120,
+          errorBuilder: (_, _, _) => const Icon(Icons.person, size: 60),
         ),
         Positioned(
           bottom: 0,

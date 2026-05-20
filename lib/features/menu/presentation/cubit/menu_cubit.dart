@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../domain/usecases/get_categories.dart';
 import '../../domain/usecases/get_products.dart';
@@ -30,7 +31,7 @@ class MenuCubit extends Cubit<MenuState> {
         (f) => f.message,
         (_) => '',
       );
-      emit(MenuError(message.isNotEmpty ? message : 'Failed to load menu'));
+      emit(MenuError(message.isNotEmpty ? message : tr('menu_screen.error_load')));
       return;
     }
 

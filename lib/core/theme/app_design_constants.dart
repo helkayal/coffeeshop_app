@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
-
 class AppDesignConstants {
   // Spacing
   static const double spacingUnit = 8.0;
@@ -18,10 +16,10 @@ class AppDesignConstants {
   static final BorderRadius radiusXl = BorderRadius.circular(borderRadiusXl);
   static final BorderRadius radius2xl = BorderRadius.circular(borderRadius2xl);
 
-  // Elevation / Shadows
+  // Elevation / Shadows — use 10% black, theme-neutral
   static final List<BoxShadow> softShadow = [
     BoxShadow(
-      color: AppColors.lightShadow,
+      color: const Color(0x1A000000),
       offset: const Offset(0, 2),
       blurRadius: 16,
     ),
