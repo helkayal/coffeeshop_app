@@ -6,6 +6,8 @@ import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../features/checkout/presentation/screens/cart_screen.dart';
+import '../../../../features/checkout/presentation/screens/payment_screen.dart';
+import '../../../../features/customization/presentation/screens/customization_screen.dart';
 import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/menu/presentation/screens/menu_screen.dart';
@@ -18,13 +20,19 @@ import 'home_screen.dart';
 class MainShell extends StatelessWidget {
   const MainShell({super.key});
 
-  static Widget _bodyFor(int index) => switch (index) {
-    0 => const HomeScreen(),
-    1 => const MenuScreen(),
-    2 => const OrdersScreen(),
-    3 => const FavoritesScreen(),
-    4 => const ProfileScreen(),
-    _ => const HomeScreen(),
+  static const _tabScreens = [
+    HomeScreen(),
+    MenuScreen(),
+    OrdersScreen(),
+    FavoritesScreen(),
+    ProfileScreen(),
+  ];
+
+  static Widget _buildSecondary(SecondaryRoute route) => switch (route) {
+    CartRoute() => const CartScreen(),
+    PaymentRoute() => const PaymentScreen(),
+    CustomizationRoute() => const CustomizationScreen(),
+    SettingsRoute() => const SettingsScreen(),
   };
 
   @override
@@ -47,20 +55,23 @@ class MainShell extends StatelessWidget {
                   actions: [
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () => context.read<HomeCubit>().pushSecondary(const SettingsScreen()),
+                      onPressed: () => context.read<HomeCubit>().pushSecondary(const SettingsRoute()),
                       icon: const Icon(Icons.settings_outlined),
                     ),
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () => context.read<HomeCubit>().pushSecondary(const CartScreen()),
+                      onPressed: () => context.read<HomeCubit>().pushSecondary(const CartRoute()),
                       icon: const Icon(Icons.shopping_cart_outlined),
                     ),
                   ],
                 ),
                 Expanded(
                   child: state.hasSecondary
-                      ? state.currentSecondary!
-                      : _bodyFor(state.tabIndex),
+                      ? _buildSecondary(state.currentSecondary!)
+                      : IndexedStack(
+                          index: state.tabIndex,
+                          children: _tabScreens,
+                        ),
                 ),
               ]),
             ),
