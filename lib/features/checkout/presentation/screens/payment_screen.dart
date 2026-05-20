@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/app_app_bar.dart';
 import '../widgets/payment_option.dart';
 import '../widgets/payment_order_summary.dart';
 
@@ -19,8 +20,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Stack(children: [
-      SingleChildScrollView(
+    return Scaffold(
+      appBar: const AppAppBar(title: 'Coffee Shop', leading: BackButton()),
+      body: Stack(children: [
+        SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 140),
         child: Column(children: [
           const SizedBox(height: 16),
@@ -76,6 +79,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ),
       ),
-    ]);
+    ]),
+    );
   }
 }
