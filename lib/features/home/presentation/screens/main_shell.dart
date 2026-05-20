@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../config/app_config.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
+import '../../../../features/checkout/presentation/screens/cart_screen.dart';
 import '../cubit/home_cubit.dart';
 import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
@@ -39,11 +40,11 @@ class MainShell extends StatelessWidget {
               child: Column(
                 children: [
                   AppAppBar(
-                    title: 'app_name'.tr(),
+                    title: AppConfig.appName,
                     actions: [
                       IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {},
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
                         icon: const Icon(Icons.shopping_cart_outlined),
                       ),
                     ],

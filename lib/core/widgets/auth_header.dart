@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:easy_localization/easy_localization.dart';
+import '../../config/app_config.dart';
 
 class AuthHeader extends StatelessWidget {
   final String title;
@@ -19,7 +19,7 @@ class AuthHeader extends StatelessWidget {
         const SizedBox(height: 20),
         // Brand Logo/Title
         Text(
-          'app_name'.tr(),
+          AppConfig.appName,
           style: textTheme.displayLarge?.copyWith(color: colorScheme.primary),
         ),
         const SizedBox(height: 40),

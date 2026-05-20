@@ -18,7 +18,7 @@ class CoffeeShopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'app_name'.tr(),
+      title: AppConfig.appName,
 
       // Localization setup
       localizationsDelegates: context.localizationDelegates,
