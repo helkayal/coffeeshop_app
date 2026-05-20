@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../screens/payment_screen.dart';
+
 class OrderSummaryCard extends StatelessWidget {
   final String subtotal;
   final String shipping;
@@ -73,7 +75,8 @@ class OrderSummaryCard extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const PaymentScreen())),
             icon: const Icon(Icons.arrow_forward, size: 20),
             label: const Text('Proceed to Checkout'),
           ),

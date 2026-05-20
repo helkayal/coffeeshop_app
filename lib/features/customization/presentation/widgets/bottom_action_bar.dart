@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../features/checkout/presentation/screens/cart_screen.dart';
+
 class BottomActionBar extends StatelessWidget {
   final String total;
 
@@ -32,9 +34,10 @@ class BottomActionBar extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         FilledButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.add_shopping_cart, size: 18),
-          label: Text('Add to Order'.toUpperCase(),
+          onPressed: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const CartScreen())),
+          icon: const Icon(Icons.check_circle, size: 18),
+          label: Text('Complete Order',
               style: tt.labelLarge?.copyWith(color: cs.onPrimary)),
         ),
       ]),
