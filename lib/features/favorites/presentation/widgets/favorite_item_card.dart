@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/quick_add_overlay.dart';
+
 class FavoriteItemCard extends StatelessWidget {
   final String imagePath;
   final String name;
@@ -81,7 +83,13 @@ class FavoriteItemCard extends StatelessWidget {
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         iconSize: 16,
-                        onPressed: () {},
+                        onPressed: () => QuickAddOverlay.show(
+                          context,
+                          productName: name,
+                          productDescription: description,
+                          productImage: imagePath,
+                          price: price,
+                        ),
                         icon: Icon(Icons.shopping_cart, color: cs.onSurfaceVariant),
                       ),
                     ),
