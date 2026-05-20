@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/widgets/quick_add_overlay.dart';
+import '../../../../features/customization/presentation/screens/customization_screen.dart';
 import '../../domain/entities/product.dart';
 
 class ProductListItem extends StatelessWidget {
@@ -68,9 +70,12 @@ class ProductListItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'menu_screen.view_more'.tr(),
-                          style: tt.labelLarge?.copyWith(color: cs.primary),
+                        GestureDetector(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomizationScreen())),
+                          child: Text(
+                            'menu_screen.view_more'.tr(),
+                            style: tt.labelLarge?.copyWith(color: cs.primary),
+                          ),
                         ),
                         Container(
                           width: 32,
@@ -82,7 +87,13 @@ class ProductListItem extends StatelessWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             iconSize: 16,
-                            onPressed: () {},
+                            onPressed: () => QuickAddOverlay.show(
+                              context,
+                              productName: product.name,
+                              productDescription: product.description,
+                              productImage: product.imagePath,
+                              price: '\$${product.basePrice.toStringAsFixed(2)}',
+                            ),
                             icon: Icon(Icons.add_shopping_cart, color: cs.primary),
                           ),
                         ),

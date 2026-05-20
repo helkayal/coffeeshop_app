@@ -20,7 +20,8 @@
       "Bash(flutter pub *)",
       "Bash(curl -s -L -o /tmp/customization_dark.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZjZmEwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
       "Bash(curl -s -L -o /tmp/checkout_summary.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZjYzcwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
-      "Bash(curl -s -L -o /tmp/checkout_payment.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMTUwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")"
+      "Bash(curl -s -L -o /tmp/checkout_payment.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMTUwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
+      "Bash(curl -s -L -o /tmp/quick_add_overlay.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMGMwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")"
     ]
   }
 }

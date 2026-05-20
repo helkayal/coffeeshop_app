@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/widgets/quick_add_overlay.dart';
 import 'action_button.dart';
 
 class FeaturedItemCard extends StatelessWidget {
@@ -82,9 +83,16 @@ class FeaturedItemCard extends StatelessWidget {
                           color: cs.primary,
                         ),
                       ),
-                      const ActionButton(
+                      ActionButton(
                         icon: Icons.add_shopping_cart,
                         isPrimary: true,
+                        onPressed: () => QuickAddOverlay.show(
+                          context,
+                          productName: name,
+                          productDescription: description,
+                          productImage: imagePath,
+                          price: price,
+                        ),
                       ),
                     ],
                   ),
