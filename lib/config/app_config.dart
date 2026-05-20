@@ -10,5 +10,5 @@ class AppConfig {
   static const String translationsPath = 'assets/translations';
 
   // Theme
-  static const ThemeMode defaultThemeMode = ThemeMode.light;
+  static const ThemeMode defaultThemeMode = ThemeMode.dark;
 }
