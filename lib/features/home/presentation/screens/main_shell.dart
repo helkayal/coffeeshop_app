@@ -40,7 +40,10 @@ class MainShell extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<MenuCubit>(),
       child: BlocBuilder<HomeCubit, HomeState>(
-        buildWhen: (prev, curr) => prev.tabIndex != curr.tabIndex || prev.hasSecondary != curr.hasSecondary,
+        buildWhen: (prev, curr) =>
+            prev.tabIndex != curr.tabIndex ||
+            prev.hasSecondary != curr.hasSecondary ||
+            prev.secondaryStack.length != curr.secondaryStack.length,
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
@@ -54,16 +57,18 @@ class MainShell extends StatelessWidget {
                         )
                       : null,
                   actions: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () => context.read<HomeCubit>().pushSecondary(const SettingsRoute()),
-                      icon: const Icon(Icons.settings_outlined),
-                    ),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () => context.read<HomeCubit>().pushSecondary(const CartRoute()),
-                      icon: const Icon(Icons.shopping_cart_outlined),
-                    ),
+                    if (!state.hasSecondary && state.tabIndex == 4)
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => context.read<HomeCubit>().pushSecondary(const SettingsRoute()),
+                        icon: const Icon(Icons.settings_outlined),
+                      ),
+                    if (state.currentSecondary is! CartRoute)
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => context.read<HomeCubit>().pushSecondary(const CartRoute()),
+                        icon: const Icon(Icons.shopping_cart_outlined),
+                      ),
                   ],
                 ),
                 Expanded(
