@@ -51,10 +51,15 @@ class _SliderSectionState extends State<SliderSection> {
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(widget.steps, (i) {
             final isSelected = i == _value.round();
-            return Text(widget.labels[i],
-                style: tt.bodySmall?.copyWith(
-                    color: isSelected ? cs.primary : cs.onSurfaceVariant,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400));
+            return Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(widget.labels[i],
+                    style: tt.bodySmall?.copyWith(
+                        color: isSelected ? cs.primary : cs.onSurfaceVariant,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
+              ),
+            );
           })),
     ]);
   }

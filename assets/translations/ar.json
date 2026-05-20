@@ -143,8 +143,15 @@
     "cinnamon_dust": "غبار القرفة",
     "total_estimate": "الإجمالي التقديري",
     "complete_order": "إتمام الطلب",
-    "sweetness_labels": ["بدون", "خفيف", "قياسي", "إضافي", "ثقيل"],
-    "intensity_labels": ["مفرد", "مزدوج", "ثلاثي", "رباعي"]
+    "sweetness_none": "بدون",
+    "sweetness_light": "خفيف",
+    "sweetness_standard": "قياسي",
+    "sweetness_extra": "إضافي",
+    "sweetness_heavy": "ثقيل",
+    "intensity_single": "مفرد",
+    "intensity_double": "مزدوج",
+    "intensity_triple": "ثلاثي",
+    "intensity_quad": "رباعي"
   },
   "checkout": {
     "your_bag": "حقيبتك",
@@ -185,7 +192,10 @@
     "saved_orders": "الطلبات المحفوظة",
     "quick_add": "إضافة سريعة",
     "customize": "تخصيص",
-    "options": ["افتراضي", "جرعة مزدوجة", "حليب شوفان", "عسل"]
+    "option_default": "افتراضي",
+    "option_double_shot": "جرعة مزدوجة",
+    "option_oat_milk": "حليب شوفان",
+    "option_honey": "عسل"
   },
   "settings": {
     "preferences": "التفضيلات",

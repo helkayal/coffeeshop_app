@@ -143,8 +143,15 @@
     "cinnamon_dust": "Cinnamon Dust",
     "total_estimate": "Total Estimate",
     "complete_order": "Complete Order",
-    "sweetness_labels": ["None", "Light", "Standard", "Extra", "Heavy"],
-    "intensity_labels": ["Single", "Double", "Triple", "Quad"]
+    "sweetness_none": "None",
+    "sweetness_light": "Light",
+    "sweetness_standard": "Standard",
+    "sweetness_extra": "Extra",
+    "sweetness_heavy": "Heavy",
+    "intensity_single": "Single",
+    "intensity_double": "Double",
+    "intensity_triple": "Triple",
+    "intensity_quad": "Quad"
   },
   "checkout": {
     "your_bag": "Your Bag",
@@ -185,7 +192,10 @@
     "saved_orders": "Saved Orders",
     "quick_add": "Quick Add",
     "customize": "Customize",
-    "options": ["Default", "Double Shot", "Oat Milk", "Honey"]
+    "option_default": "Default",
+    "option_double_shot": "Double Shot",
+    "option_oat_milk": "Oat Milk",
+    "option_honey": "Honey"
   },
   "settings": {
     "preferences": "Preferences",
