@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/app_app_bar.dart';
+import '../widgets/credit_card_sheet.dart';
 import '../widgets/payment_option.dart';
 import '../widgets/payment_order_summary.dart';
+import '../widgets/wallet_sheet.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -12,8 +14,8 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  bool _usePoints = true;
-  String _paymentMethod = 'card';
+  bool _usePoints = false;
+  String _paymentMethod = '';
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +51,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 onTap: () => setState(() => _usePoints = !_usePoints),
               ),
               const SizedBox(height: 12),
-              PaymentOption(icon: Icons.payments, label: 'Credit Card', isSelected: _paymentMethod == 'card', onTap: () => setState(() => _paymentMethod = 'card')),
+              PaymentOption(icon: Icons.payments, label: 'Credit Card', isSelected: _paymentMethod == 'card', onTap: () {
+                setState(() => _paymentMethod = 'card');
+                CreditCardSheet.show(context);
+              }),
               const SizedBox(height: 12),
-              PaymentOption(icon: Icons.account_balance_wallet, label: 'Wallets', isSelected: _paymentMethod == 'wallet', onTap: () => setState(() => _paymentMethod = 'wallet')),
+              PaymentOption(icon: Icons.account_balance_wallet, label: 'Wallets', isSelected: _paymentMethod == 'wallet', onTap: () {
+                setState(() => _paymentMethod = 'wallet');
+                WalletSheet.show(context);
+              }),
               const SizedBox(height: 12),
               PaymentOption(icon: Icons.contactless, label: 'Apple Pay', isSelected: _paymentMethod == 'applepay', onTap: () => setState(() => _paymentMethod = 'applepay')),
             ]),
