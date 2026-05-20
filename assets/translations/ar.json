@@ -156,6 +156,10 @@
     "complete_order": "إتمام الطلب",
     "secure_checkout": "دفع آمن",
     "payment_method": "طريقة الدفع",
+    "use_points": "استخدام النقاط أولاً",
+    "credit_card": "بطاقة ائتمان",
+    "wallets": "محافظ",
+    "apple_pay": "Apple Pay",
     "confirm_order": "تأكيد الطلب",
     "order_summary": "ملخص الطلب",
     "calculated_next": "تحسب في الخطوة التالية"

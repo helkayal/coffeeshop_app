@@ -48,22 +48,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Text('checkout.payment_method'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
               const SizedBox(height: 16),
               PaymentOption(
-                icon: Icons.star, label: 'Use Points First',
+                icon: Icons.star, label: 'checkout.use_points'.tr(),
                 isSelected: _usePoints, isCheckbox: true,
                 onTap: () => setState(() => _usePoints = !_usePoints),
               ),
               const SizedBox(height: 12),
-              PaymentOption(icon: Icons.payments, label: 'Credit Card', isSelected: _paymentMethod == 'card', onTap: () {
+              PaymentOption(icon: Icons.payments, label: 'checkout.credit_card'.tr(), isSelected: _paymentMethod == 'card', onTap: () {
                 setState(() => _paymentMethod = 'card');
                 CreditCardSheet.show(context);
               }),
               const SizedBox(height: 12),
-              PaymentOption(icon: Icons.account_balance_wallet, label: 'Wallets', isSelected: _paymentMethod == 'wallet', onTap: () {
+              PaymentOption(icon: Icons.account_balance_wallet, label: 'checkout.wallets'.tr(), isSelected: _paymentMethod == 'wallet', onTap: () {
                 setState(() => _paymentMethod = 'wallet');
                 WalletSheet.show(context);
               }),
               const SizedBox(height: 12),
-              PaymentOption(icon: Icons.contactless, label: 'Apple Pay', isSelected: _paymentMethod == 'applepay', onTap: () => setState(() => _paymentMethod = 'applepay')),
+              PaymentOption(icon: Icons.contactless, label: 'checkout.apple_pay'.tr(), isSelected: _paymentMethod == 'applepay', onTap: () => setState(() => _paymentMethod = 'applepay')),
             ]),
           ),
         ]),

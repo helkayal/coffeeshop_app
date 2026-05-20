@@ -156,6 +156,10 @@
     "complete_order": "Complete Order",
     "secure_checkout": "Secure checkout",
     "payment_method": "Payment Method",
+    "use_points": "Use Points First",
+    "credit_card": "Credit Card",
+    "wallets": "Wallets",
+    "apple_pay": "Apple Pay",
     "confirm_order": "CONFIRM ORDER",
     "order_summary": "Order Summary",
     "calculated_next": "Calculated next step"
