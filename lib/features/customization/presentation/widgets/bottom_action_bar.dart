@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../features/checkout/presentation/screens/cart_screen.dart';
 
@@ -20,7 +21,7 @@ class BottomActionBar extends StatelessWidget {
       ),
       child: Row(children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Total Estimate',
+          Text('customization.total_estimate'.tr(),
               style: tt.labelLarge?.copyWith(fontSize: 10, color: cs.onSurfaceVariant, letterSpacing: 2)),
           Text(total,
               style: tt.headlineMedium?.copyWith(fontSize: 30, color: cs.onSurface)),
@@ -37,7 +38,7 @@ class BottomActionBar extends StatelessWidget {
           onPressed: () => Navigator.push(
               context, MaterialPageRoute(builder: (_) => const CartScreen())),
           icon: const Icon(Icons.check_circle, size: 18),
-          label: Text('Complete Order',
+          label: Text('customization.complete_order'.tr(),
               style: tt.labelLarge?.copyWith(color: cs.onPrimary)),
         ),
       ]),

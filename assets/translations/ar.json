@@ -127,5 +127,56 @@
     "order_history": "سجل الطلبات",
     "payment_methods": "طرق الدفع",
     "sign_out": "تسجيل الخروج"
+  },
+  "customization": {
+    "the_base": "القاعدة",
+    "required": "مطلوب",
+    "sweetness": "الحلاوة",
+    "espresso_intensity": "كثافة الإسبريسو",
+    "iced_oat_cortado": "كورتادو الشوفان المثلج",
+    "iced_oat_desc": "مزيج دقيق من إسبريسو البيت، مقطوع بحليب الشوفان المثلج.",
+    "curated_additions": "إضافات مختارة",
+    "vanilla_bean_dust": "غبار الفانيليا",
+    "lavender_syrup": "شراب اللافندر",
+    "honey_drizzle": "رذاذ العسل",
+    "cinnamon_dust": "غبار القرفة",
+    "total_estimate": "الإجمالي التقديري",
+    "complete_order": "إتمام الطلب"
+  },
+  "checkout": {
+    "your_bag": "حقيبتك",
+    "review_selection": "راجع اختياراتك المنسقة.",
+    "special_instructions": "تعليمات خاصة",
+    "add_note": "أضف ملاحظة لطلبك...",
+    "summary": "الملخص",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "total": "الإجمالي",
+    "proceed_to_checkout": "المتابعة للدفع",
+    "complete_order": "إتمام الطلب",
+    "secure_checkout": "دفع آمن",
+    "payment_method": "طريقة الدفع",
+    "confirm_order": "تأكيد الطلب",
+    "order_summary": "ملخص الطلب",
+    "calculated_next": "تحسب في الخطوة التالية"
+  },
+  "credit_card": {
+    "saved_cards": "البطاقات المحفوظة",
+    "add_new_card": "إضافة بطاقة جديدة",
+    "card_number": "رقم البطاقة",
+    "expiry": "تاريخ الانتهاء",
+    "cvv": "CVV",
+    "name_on_card": "الاسم على البطاقة",
+    "save_card": "حفظ البطاقة"
+  },
+  "wallet": {
+    "phone_for_wallet": "الهاتف للمحفظة",
+    "phone_number": "رقم الهاتف",
+    "continue": "متابعة"
+  },
+  "quick_add": {
+    "saved_orders": "الطلبات المحفوظة",
+    "quick_add": "إضافة سريعة",
+    "customize": "تخصيص"
   }
 }

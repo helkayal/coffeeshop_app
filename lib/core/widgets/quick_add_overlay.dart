@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../features/customization/presentation/screens/customization_screen.dart';
 import 'quick_add_options.dart';
@@ -55,21 +56,18 @@ class QuickAddOverlay extends StatelessWidget {
         Center(
           child: Container(
             margin: const EdgeInsets.all(16), width: 48, height: 4,
-            decoration: BoxDecoration(
-              color: cs.outlineVariant.withAlpha(128),
-              borderRadius: BorderRadius.circular(2),
-            ),
+            decoration: BoxDecoration(color: cs.outlineVariant.withAlpha(128), borderRadius: BorderRadius.circular(2)),
           ),
         ),
         Flexible(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Saved Orders', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+              Text('quick_add.saved_orders'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
               const SizedBox(height: 16),
               QuickAddSavedOrder(name: productName, description: productDescription, imagePath: productImage),
               const SizedBox(height: 32),
-              Text('Quick Add', style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
+              Text('quick_add.quick_add'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
               const SizedBox(height: 16),
               const QuickAddOptions(options: ['Default', 'Double Shot', 'Oat Milk', 'Honey']),
               const SizedBox(height: 40),
@@ -85,7 +83,7 @@ class QuickAddOverlay extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   ),
-                  child: Text('Customize',
+                  child: Text('quick_add.customize'.tr(),
                       style: tt.labelLarge?.copyWith(color: cs.onPrimary, letterSpacing: 2)),
                 ),
               ),

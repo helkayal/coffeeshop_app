@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PaymentOrderSummary extends StatelessWidget {
   const PaymentOrderSummary({super.key});
@@ -16,7 +17,7 @@ class PaymentOrderSummary extends StatelessWidget {
         border: Border.all(color: cs.outlineVariant.withAlpha(128)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Order Summary', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+        Text('checkout.order_summary'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
         const SizedBox(height: 16),
         _OrderLine(icon: Icons.coffee, name: 'Ethiopian Yirgacheffe', desc: 'Pour over, Light roast', price: r'$8.00'),
         const SizedBox(height: 16),
@@ -25,7 +26,7 @@ class PaymentOrderSummary extends StatelessWidget {
         Divider(color: cs.outlineVariant.withAlpha(128)),
         const SizedBox(height: 16),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Total', style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+          Text('checkout.total'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
           Text(r'$14.50', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.primary)),
         ]),
       ]),

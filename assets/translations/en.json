@@ -127,5 +127,56 @@
     "order_history": "Order History",
     "payment_methods": "Payment Methods",
     "sign_out": "Sign Out"
+  },
+  "customization": {
+    "the_base": "The Base",
+    "required": "Required",
+    "sweetness": "Sweetness",
+    "espresso_intensity": "Espresso Intensity",
+    "iced_oat_cortado": "Iced Oat Cortado",
+    "iced_oat_desc": "A meticulous blend of our house espresso, cut with chilled oat milk.",
+    "curated_additions": "Curated Additions",
+    "vanilla_bean_dust": "Vanilla Bean Dust",
+    "lavender_syrup": "Lavender Syrup",
+    "honey_drizzle": "Honey Drizzle",
+    "cinnamon_dust": "Cinnamon Dust",
+    "total_estimate": "Total Estimate",
+    "complete_order": "Complete Order"
+  },
+  "checkout": {
+    "your_bag": "Your Bag",
+    "review_selection": "Review your curated selection.",
+    "special_instructions": "Special Instructions",
+    "add_note": "Add a note to your order...",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "proceed_to_checkout": "Proceed to Checkout",
+    "complete_order": "Complete Order",
+    "secure_checkout": "Secure checkout",
+    "payment_method": "Payment Method",
+    "confirm_order": "CONFIRM ORDER",
+    "order_summary": "Order Summary",
+    "calculated_next": "Calculated next step"
+  },
+  "credit_card": {
+    "saved_cards": "Saved Cards",
+    "add_new_card": "Add New Card",
+    "card_number": "Card Number",
+    "expiry": "Expiry",
+    "cvv": "CVV",
+    "name_on_card": "Name on Card",
+    "save_card": "Save Card"
+  },
+  "wallet": {
+    "phone_for_wallet": "Phone for Wallet",
+    "phone_number": "Phone Number",
+    "continue": "Continue"
+  },
+  "quick_add": {
+    "saved_orders": "Saved Orders",
+    "quick_add": "Quick Add",
+    "customize": "Customize"
   }
 }

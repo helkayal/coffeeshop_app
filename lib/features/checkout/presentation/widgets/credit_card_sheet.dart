@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/app_text_field.dart';
 
@@ -37,27 +38,27 @@ class CreditCardSheet extends StatelessWidget {
         Flexible(
           child: SingleChildScrollView(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Saved Cards', style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
+              Text('credit_card.saved_cards'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
               const SizedBox(height: 16),
               _savedCard(cs, tt, '•••• 4242', 'Expires 12/28'),
               const SizedBox(height: 8),
               _savedCard(cs, tt, '•••• 8371', 'Expires 06/27'),
               const SizedBox(height: 32),
-              Text('Add New Card', style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
+              Text('credit_card.add_new_card'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
               const SizedBox(height: 16),
-              const AppTextField(label: 'Card Number', keyboardType: TextInputType.number, prefixIcon: Icon(Icons.credit_card)),
+              AppTextField(label: 'credit_card.card_number'.tr(), keyboardType: TextInputType.number, prefixIcon: const Icon(Icons.credit_card)),
               const SizedBox(height: 16),
               Row(children: [
-                const Expanded(child: AppTextField(label: 'Expiry', keyboardType: TextInputType.datetime)),
+                Expanded(child: AppTextField(label: 'credit_card.expiry'.tr(), keyboardType: TextInputType.datetime)),
                 const SizedBox(width: 16),
-                const Expanded(child: AppTextField(label: 'CVV', keyboardType: TextInputType.number, isPassword: true)),
+                Expanded(child: AppTextField(label: 'credit_card.cvv'.tr(), keyboardType: TextInputType.number, isPassword: true)),
               ]),
               const SizedBox(height: 16),
-              const AppTextField(label: 'Name on Card', prefixIcon: Icon(Icons.person_outline)),
+              AppTextField(label: 'credit_card.name_on_card'.tr(), prefixIcon: const Icon(Icons.person_outline)),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Save Card')),
+                child: FilledButton(onPressed: () => Navigator.pop(context), child: Text('credit_card.save_card'.tr())),
               ),
               const SizedBox(height: 16),
             ]),

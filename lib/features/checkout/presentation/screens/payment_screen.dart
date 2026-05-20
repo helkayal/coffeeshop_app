@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../config/app_config.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../widgets/credit_card_sheet.dart';
 import '../widgets/payment_option.dart';
@@ -23,15 +25,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final tt = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: const AppAppBar(title: 'Coffee Shop', leading: BackButton()),
+      appBar: const AppAppBar(title: AppConfig.appName, leading: BackButton()),
       body: Stack(children: [
         SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 140),
         child: Column(children: [
           const SizedBox(height: 16),
-          Text('Complete Order', style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
+          Text('checkout.complete_order'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
           const SizedBox(height: 8),
-          Text('Secure checkout', style: tt.bodySmall),
+          Text('checkout.secure_checkout'.tr(), style: tt.bodySmall),
           const SizedBox(height: 40),
           const PaymentOrderSummary(),
           const SizedBox(height: 24),
@@ -43,7 +45,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               border: Border.all(color: cs.outlineVariant.withAlpha(128)),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Payment Method', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+              Text('checkout.payment_method'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
               const SizedBox(height: 16),
               PaymentOption(
                 icon: Icons.star, label: 'Use Points First',
@@ -81,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: FilledButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.check_circle, size: 20),
-              label: const Text('CONFIRM ORDER'),
+              label: Text('checkout.confirm_order'.tr()),
               style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../screens/payment_screen.dart';
 
@@ -38,13 +39,13 @@ class OrderSummaryCard extends StatelessWidget {
             Row(children: [
               Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
               const SizedBox(width: 8),
-              Text('Special Instructions', style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
+              Text('checkout.special_instructions'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
             ]),
             const SizedBox(height: 12),
             TextField(
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: 'Add a note to your order...',
+                hintText: 'checkout.add_note'.tr(),
                 hintStyle: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
@@ -53,22 +54,22 @@ class OrderSummaryCard extends StatelessWidget {
           ]),
         ),
         const SizedBox(height: 24),
-        Text('Summary', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+        Text('checkout.summary'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
         const SizedBox(height: 24),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Subtotal', style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+          Text('checkout.subtotal'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
           Text(subtotal, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
         ]),
         const SizedBox(height: 12),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Shipping', style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+          Text('checkout.shipping'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
           Text(shipping, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
         ]),
         const SizedBox(height: 24),
         Divider(color: cs.outlineVariant.withAlpha(128)),
         const SizedBox(height: 24),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Total', style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
+          Text('checkout.total'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
           Text(total, style: tt.headlineMedium?.copyWith(fontSize: 30, color: cs.primary)),
         ]),
         const SizedBox(height: 24),
@@ -78,7 +79,7 @@ class OrderSummaryCard extends StatelessWidget {
             onPressed: () => Navigator.push(
                 context, MaterialPageRoute(builder: (_) => const PaymentScreen())),
             icon: const Icon(Icons.arrow_forward, size: 20),
-            label: const Text('Proceed to Checkout'),
+            label: Text('checkout.proceed_to_checkout'.tr()),
           ),
         ),
       ]),

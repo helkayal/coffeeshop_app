@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/app_text_field.dart';
 
@@ -34,17 +35,17 @@ class WalletSheet extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        Text('Phone for Wallet', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+        Text('wallet.phone_for_wallet'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
         const SizedBox(height: 24),
-        const AppTextField(
-          label: 'Phone Number',
+        AppTextField(
+          label: 'wallet.phone_number'.tr(),
           keyboardType: TextInputType.phone,
-          prefixIcon: Icon(Icons.phone_android),
+          prefixIcon: const Icon(Icons.phone_android),
         ),
         const SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
-          child: FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Continue')),
+          child: FilledButton(onPressed: () => Navigator.pop(context), child: Text('wallet.continue'.tr())),
         ),
         const SizedBox(height: 16),
       ]),
