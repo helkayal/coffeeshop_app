@@ -182,5 +182,16 @@
     "saved_orders": "الطلبات المحفوظة",
     "quick_add": "إضافة سريعة",
     "customize": "تخصيص"
+  },
+  "settings": {
+    "preferences": "التفضيلات",
+    "support": "الدعم",
+    "appearance": "المظهر",
+    "dark_mode": "الوضع الداكن",
+    "language": "اللغة",
+    "english": "English (US)",
+    "notifications": "الإشعارات",
+    "push_email": "Push, Email",
+    "about": "حول المقهى"
   }
 }

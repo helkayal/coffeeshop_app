@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../config/app_config.dart';
-import '../../../../core/widgets/app_app_bar.dart';
 import '../widgets/addition_card.dart';
 import '../widgets/bottom_action_bar.dart';
 import '../widgets/option_group.dart';
@@ -16,52 +14,35 @@ class CustomizationScreen extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      appBar: const AppAppBar(title: AppConfig.appName, leading: BackButton()),
-      body: Stack(children: [
-        SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 120),
-          child: Column(children: [
-            _buildHero(context, cs, tt),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 96),
-              child: Column(children: [
-                OptionGroup(
-                  title: 'customization.the_base'.tr(),
-                  requiredLabel: 'customization.required'.tr(),
-                  options: const [
-                    OptionData('Oat', '+ \$1.00', Icons.eco, true),
-                    OptionData('Almond', '+ \$1.00', Icons.spa),
-                    OptionData('Whole', 'Included', Icons.water_drop),
-                  ],
-                ),
-                const SizedBox(height: 48),
-                SliderSection(
-                  title: 'customization.sweetness'.tr(),
-                  steps: 5,
-                  labels: const ['None', 'Light', 'Standard', 'Extra', 'Heavy'],
-                  initial: 2,
-                ),
-                const SizedBox(height: 48),
-                SliderSection(
-                  title: 'customization.espresso_intensity'.tr(),
-                  steps: 4,
-                  labels: const ['Single', 'Double', 'Triple', 'Quad'],
-                  initial: 1,
-                ),
-                const SizedBox(height: 48),
-                _buildAdditions(tt),
-              ]),
-            ),
-          ]),
-        ),
-        const Positioned(
-          left: 0, right: 0, bottom: 0,
-          child: BottomActionBar(total: r'$6.50'),
-        ),
-      ]),
-    );
+    return Stack(children: [
+      SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 120),
+        child: Column(children: [
+          _buildHero(context, cs, tt),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 32, 24, 96),
+            child: Column(children: [
+              OptionGroup(
+                title: 'customization.the_base'.tr(),
+                requiredLabel: 'customization.required'.tr(),
+                options: const [
+                  OptionData('Oat', '+ \$1.00', Icons.eco, true),
+                  OptionData('Almond', '+ \$1.00', Icons.spa),
+                  OptionData('Whole', 'Included', Icons.water_drop),
+                ],
+              ),
+              const SizedBox(height: 48),
+              SliderSection(title: 'customization.sweetness'.tr(), steps: 5, labels: const ['None', 'Light', 'Standard', 'Extra', 'Heavy'], initial: 2),
+              const SizedBox(height: 48),
+              SliderSection(title: 'customization.espresso_intensity'.tr(), steps: 4, labels: const ['Single', 'Double', 'Triple', 'Quad'], initial: 1),
+              const SizedBox(height: 48),
+              _buildAdditions(tt),
+            ]),
+          ),
+        ]),
+      ),
+      const Positioned(left: 0, right: 0, bottom: 0, child: BottomActionBar(total: r'$6.50')),
+    ]);
   }
 
   Widget _buildHero(BuildContext context, ColorScheme cs, TextTheme tt) {
@@ -69,27 +50,20 @@ class CustomizationScreen extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.3,
       child: Stack(children: [
         Positioned.fill(
-          child: Image.asset(
-            'assets/menu_images/customization_hero_image.png',
-            fit: BoxFit.fill,
-            errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest),
-          ),
+          child: Image.asset('assets/menu_images/customization_hero_image.png', fit: BoxFit.fill,
+              errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest)),
         ),
         Positioned.fill(
           child: Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Color(0xFF18120D)],
-              ),
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Color(0xFF18120D)]),
             ),
           ),
         ),
         Positioned(
           left: 24, right: 24, bottom: 24,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-            Text('customization.iced_oat_cortado'.tr(),
-                style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
+            Text('customization.iced_oat_cortado'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
             const SizedBox(height: 8),
             Text('customization.iced_oat_desc'.tr(), style: tt.bodySmall),
           ]),
@@ -102,8 +76,7 @@ class CustomizationScreen extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(bottom: 16),
-        child: Text('customization.curated_additions'.tr(),
-            style: tt.headlineMedium?.copyWith(fontSize: 24)),
+        child: Text('customization.curated_additions'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24)),
       ),
       AdditionCard(name: 'customization.vanilla_bean_dust'.tr(), price: '+ \$0.50', icon: Icons.grain),
       const SizedBox(height: 16),

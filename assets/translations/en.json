@@ -182,5 +182,16 @@
     "saved_orders": "Saved Orders",
     "quick_add": "Quick Add",
     "customize": "Customize"
+  },
+  "settings": {
+    "preferences": "Preferences",
+    "support": "Support",
+    "appearance": "Appearance",
+    "dark_mode": "Dark mode",
+    "language": "Language",
+    "english": "English (US)",
+    "notifications": "Notifications",
+    "push_email": "Push, Email",
+    "about": "About Coffee Shop"
   }
 }

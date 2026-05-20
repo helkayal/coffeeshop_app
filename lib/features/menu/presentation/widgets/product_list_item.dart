@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/quick_add_overlay.dart';
 import '../../../../features/customization/presentation/screens/customization_screen.dart';
+import '../../../../features/home/presentation/cubit/home_cubit.dart';
 import '../../domain/entities/product.dart';
 
 class ProductListItem extends StatelessWidget {
@@ -71,7 +73,7 @@ class ProductListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomizationScreen())),
+                          onTap: () => context.read<HomeCubit>().pushSecondary(const CustomizationScreen()),
                           child: Text(
                             'menu_screen.view_more'.tr(),
                             style: tt.labelLarge?.copyWith(color: cs.primary),

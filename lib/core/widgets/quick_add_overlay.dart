@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../features/customization/presentation/screens/customization_screen.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
 import 'quick_add_options.dart';
 import 'quick_add_saved_order.dart';
 
@@ -76,7 +78,7 @@ class QuickAddOverlay extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomizationScreen()));
+                    context.read<HomeCubit>().pushSecondary(const CustomizationScreen());
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: cs.primary, foregroundColor: cs.onPrimary,
