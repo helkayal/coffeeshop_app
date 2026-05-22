@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../features/home/presentation/cubit/home_cubit.dart';
+import '../../../../core/cubit/shell_cubit.dart';
 import '../widgets/credit_card_sheet.dart';
 import '../widgets/payment_option.dart';
 import '../widgets/payment_order_summary.dart';
@@ -79,7 +79,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () => context.read<HomeCubit>().selectTab(0),
+            onPressed: () => context.read<ShellCubit>().selectTab(0),
             icon: const Icon(Icons.check_circle, size: 20),
             label: Text('checkout.confirm_order'.tr()),
             style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),

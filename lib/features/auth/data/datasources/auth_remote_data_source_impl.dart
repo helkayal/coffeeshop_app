@@ -1,3 +1,4 @@
+import '../../../../config/app_config.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/api_service.dart';
@@ -5,15 +6,13 @@ import '../models/user_model.dart';
 import 'auth_remote_data_source.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  static const _useMockData = true;
-
   final ApiService _apiService;
 
   AuthRemoteDataSourceImpl(this._apiService);
 
   @override
   Future<UserModel> login(String email, String password) async {
-    if (_useMockData) return _mockLogin(email, password);
+    if (AppConfig.useMockData) return _mockLogin(email, password);
     return _loginViaApi(email, password);
   }
 
@@ -48,7 +47,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? state,
     String? city,
   }) async {
-    if (_useMockData) return _mockRegister(firstName, lastName, email);
+    if (AppConfig.useMockData) return _mockRegister(firstName, lastName, email);
     return _registerViaApi(
       firstName: firstName,
       lastName: lastName,

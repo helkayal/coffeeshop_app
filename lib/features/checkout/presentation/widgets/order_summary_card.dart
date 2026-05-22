@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../features/home/presentation/cubit/home_cubit.dart';
+import '../../../../core/cubit/shell_cubit.dart';
 
 class OrderSummaryCard extends StatelessWidget {
   final String subtotal;
@@ -77,7 +77,7 @@ class OrderSummaryCard extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () => context.read<HomeCubit>().pushSecondary(const PaymentRoute()),
+            onPressed: () => context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
             icon: const Icon(Icons.arrow_forward, size: 20),
             label: Text('checkout.proceed_to_checkout'.tr()),
           ),

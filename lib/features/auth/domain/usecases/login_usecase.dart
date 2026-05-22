@@ -1,4 +1,3 @@
-import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
@@ -8,10 +7,9 @@ class LoginUseCase {
 
   const LoginUseCase(this.repository);
 
-  Future<Result<User>> call(String email, String password) async {
-    if (email.isEmpty || password.isEmpty) {
-      return const Error(ValidationFailure('Email and password cannot be empty.'));
-    }
-    return await repository.login(email, password);
-  }
+  // Presence validation is handled by the UI. The use case delegates directly
+  // to the repository. Business-rule validation (email format, etc.)
+  // should be added here when needed.
+  Future<Result<User>> call(String email, String password) =>
+      repository.login(email, password);
 }

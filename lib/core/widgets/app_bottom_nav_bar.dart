@@ -17,14 +17,16 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xF218120D),
+          decoration: BoxDecoration(
+            color: cs.surface.withAlpha(242),
             border: Border(
-              top: BorderSide(color: Color(0x99514537), width: 1),
+              top: BorderSide(color: cs.outlineVariant.withAlpha(153), width: 1),
             ),
           ),
           padding: const EdgeInsets.fromLTRB(8, 12, 8, 24),

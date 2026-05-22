@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/quick_add_overlay.dart';
-import '../../../../features/home/presentation/cubit/home_cubit.dart';
+import '../../../../core/cubit/shell_cubit.dart';
 import '../../domain/entities/product.dart';
 
 class ProductListItem extends StatelessWidget {
@@ -65,7 +65,7 @@ class _ProductActions extends StatelessWidget {
 
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       GestureDetector(
-        onTap: () => context.read<HomeCubit>().pushSecondary(const CustomizationRoute()),
+        onTap: () => context.read<ShellCubit>().pushSecondary(const CustomizationRoute()),
         child: Text('menu_screen.view_more'.tr(), style: tt.labelLarge?.copyWith(color: cs.primary)),
       ),
       Container(

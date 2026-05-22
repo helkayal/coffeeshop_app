@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants/api_constants.dart';
 
@@ -18,11 +19,27 @@ class ApiService {
       ),
     );
 
-    // Add interceptors for logging, auth, etc.
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-    ));
+    // Auth interceptor — inject token from secure storage when backend is ready.
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // final token = sl<LocalStorageService>().getAuthToken();
+          // if (token != null) options.headers['Authorization'] = 'Bearer $token';
+          handler.next(options);
+        },
+        onError: (error, handler) {
+          handler.next(error);
+        },
+      ),
+    );
+
+    // Full request/response logging — debug builds only to avoid leaking
+    // sensitive data (passwords, tokens) in production logs.
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: true),
+      );
+    }
   }
 
   Future<Response> get(
@@ -30,11 +47,7 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
-    return _dio.get(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-    );
+    return _dio.get(path, queryParameters: queryParameters, options: options);
   }
 
   Future<Response> post(

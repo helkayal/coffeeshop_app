@@ -1,4 +1,3 @@
-import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
@@ -16,19 +15,14 @@ class RegisterUseCase {
     required String gender,
     String? state,
     String? city,
-  }) async {
-    if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty) {
-      return const Error(ValidationFailure('Required fields cannot be empty.'));
-    }
-    
-    return await repository.register(
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      gender: gender,
-      state: state,
-      city: city,
-    );
-  }
+  }) =>
+      repository.register(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        gender: gender,
+        state: state,
+        city: city,
+      );
 }

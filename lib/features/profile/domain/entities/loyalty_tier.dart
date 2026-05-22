@@ -2,33 +2,37 @@ import 'package:flutter/material.dart';
 
 import '../../../../config/app_config.dart';
 
+/// Domain entity representing a loyalty tier derived from a points balance.
+/// Holds only raw data — all display formatting belongs in the presentation layer.
 class LoyaltyTier {
-  final String name;
+  final String name;         // lowercase key: 'blue' | 'silver' | 'gold' | 'platinum'
   final Color color;
-  final double progress;
-  final String targetText;
-  final String expiryText;
-  final int index;
+  final double progress;     // 0.0–1.0 across the full progress bar
+  final int? pointsToNext;   // null when at max tier (Platinum)
+  final String? nextTier;    // lowercase key of the next tier, null at max
+  final String expiryDate;   // raw date string, formatted by the UI
+  final int index;           // 0=Blue, 1=Silver, 2=Gold, 3=Platinum
 
   const LoyaltyTier({
     required this.name,
     required this.color,
     required this.progress,
-    required this.targetText,
-    required this.expiryText,
+    required this.pointsToNext,
+    required this.nextTier,
+    required this.expiryDate,
     required this.index,
   });
 
   factory LoyaltyTier.fromPoints(double points) {
     if (points < AppConfig.tier1Boundary) {
       final progress = (points / AppConfig.tier1Boundary) * 0.333;
-      final remaining = (AppConfig.tier1Boundary - points).ceil();
       return LoyaltyTier(
-        name: 'Blue',
+        name: 'blue',
         color: AppConfig.tier1Color,
         progress: progress.clamp(0.0, 0.333),
-        targetText: '$remaining points to Silver',
-        expiryText: 'Expires on 22/12/2022',
+        pointsToNext: (AppConfig.tier1Boundary - points).ceil(),
+        nextTier: 'silver',
+        expiryDate: '22/12/2022',
         index: 0,
       );
     } else if (points < AppConfig.tier2Boundary) {
@@ -36,13 +40,13 @@ class LoyaltyTier {
           ((points - AppConfig.tier1Boundary) /
                   (AppConfig.tier2Boundary - AppConfig.tier1Boundary)) *
               0.333;
-      final remaining = (AppConfig.tier2Boundary - points).ceil();
       return LoyaltyTier(
-        name: 'Silver',
+        name: 'silver',
         color: AppConfig.tier2Color,
         progress: progress.clamp(0.333, 0.667),
-        targetText: '$remaining points to Gold',
-        expiryText: 'Expires on 22/12/2023',
+        pointsToNext: (AppConfig.tier2Boundary - points).ceil(),
+        nextTier: 'gold',
+        expiryDate: '22/12/2023',
         index: 1,
       );
     } else if (points < AppConfig.tier3Boundary) {
@@ -50,22 +54,23 @@ class LoyaltyTier {
           ((points - AppConfig.tier2Boundary) /
                   (AppConfig.tier3Boundary - AppConfig.tier2Boundary)) *
               0.333;
-      final remaining = (AppConfig.tier3Boundary - points).ceil();
       return LoyaltyTier(
-        name: 'Gold',
+        name: 'gold',
         color: AppConfig.tier3Color,
         progress: progress.clamp(0.667, 1.0),
-        targetText: '$remaining points to Platinum',
-        expiryText: 'Expires on 22/12/2024',
+        pointsToNext: (AppConfig.tier3Boundary - points).ceil(),
+        nextTier: 'platinum',
+        expiryDate: '22/12/2024',
         index: 2,
       );
     } else {
       return LoyaltyTier(
-        name: 'Platinum',
+        name: 'platinum',
         color: AppConfig.tier4Color,
         progress: 1.0,
-        targetText: 'Maximum Tier Reached',
-        expiryText: 'Expires on 22/12/2025',
+        pointsToNext: null,
+        nextTier: null,
+        expiryDate: '22/12/2025',
         index: 3,
       );
     }

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../domain/entities/loyalty_tier.dart';
 import 'coffee_bean_icon.dart';
 import 'loyalty_progress_bar.dart';
-import 'loyalty_tier.dart';
 
 class LoyaltyCard extends StatelessWidget {
   final double points;
 
-  const LoyaltyCard({super.key, this.points = 360});
+  const LoyaltyCard({super.key, this.points = 580});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +16,21 @@ class LoyaltyCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final tier = LoyaltyTier.fromPoints(points);
 
+    // Build localized strings here in build() where context is available.
+    final tierName = 'loyalty.${tier.name}'.tr();
+    final expiryText = 'loyalty.expires_on'.tr(args: [tier.expiryDate]);
+    final targetText = tier.pointsToNext != null
+        ? 'loyalty.points_to'.tr(
+            args: ['${tier.pointsToNext}', 'loyalty.${tier.nextTier}'.tr()],
+          )
+        : 'loyalty.max_tier'.tr();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCardImage(cs, tt, tier),
+        _buildCardImage(tt, tier, tierName, expiryText),
         const SizedBox(height: 24),
-        _buildPointsRow(cs, tt, tier),
+        _buildPointsRow(cs, tt, targetText),
         const SizedBox(height: 14),
         LoyaltyProgressBar(
           progress: tier.progress,
@@ -31,7 +40,12 @@ class LoyaltyCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCardImage(ColorScheme cs, TextTheme tt, LoyaltyTier tier) {
+  Widget _buildCardImage(
+    TextTheme tt,
+    LoyaltyTier tier,
+    String tierName,
+    String expiryText,
+  ) {
     return AspectRatio(
       aspectRatio: 1.62,
       child: Container(
@@ -45,11 +59,11 @@ class LoyaltyCard extends StatelessWidget {
               BlendMode.srcATop,
             ),
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: cs.shadow,
+              color: Color(0x1A000000),
               blurRadius: 16,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -59,7 +73,7 @@ class LoyaltyCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _tierName(tier.index),
+                tierName,
                 style: tt.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -88,7 +102,7 @@ class LoyaltyCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                tier.expiryText,
+                expiryText,
                 style: tt.bodySmall?.copyWith(
                   color: Colors.white.withAlpha(153),
                   fontWeight: FontWeight.w500,
@@ -102,7 +116,7 @@ class LoyaltyCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPointsRow(ColorScheme cs, TextTheme tt, LoyaltyTier tier) {
+  Widget _buildPointsRow(ColorScheme cs, TextTheme tt, String targetText) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -123,7 +137,7 @@ class LoyaltyCard extends StatelessWidget {
         Row(
           children: [
             Text(
-              tier.targetText,
+              targetText,
               style: tt.bodyMedium?.copyWith(
                 color: cs.primary,
                 fontWeight: FontWeight.w600,
@@ -137,12 +151,4 @@ class LoyaltyCard extends StatelessWidget {
       ],
     );
   }
-
-  static String _tierName(int index) => switch (index) {
-    0 => 'loyalty.blue'.tr(),
-    1 => 'loyalty.silver'.tr(),
-    2 => 'loyalty.gold'.tr(),
-    3 => 'loyalty.platinum'.tr(),
-    _ => '',
-  };
 }

@@ -1,16 +1,15 @@
+import '../../../../config/app_config.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../models/onboarding_question_model.dart';
 
 class OnboardingRemoteDataSource {
-  static const _useMockData = true;
-
   final ApiService _apiService;
 
   OnboardingRemoteDataSource(this._apiService);
 
   Future<List<OnboardingQuestionModel>> getQuestions() async {
-    if (_useMockData) return _getMockQuestions();
+    if (AppConfig.useMockData) return _getMockQuestions();
     return _getQuestionsFromApi();
   }
 

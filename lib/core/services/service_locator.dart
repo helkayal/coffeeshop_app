@@ -35,9 +35,9 @@ Future<void> setupServiceLocator() async {
   // --- Core Services ---
   sl.registerLazySingleton<ApiService>(() => ApiService());
 
-  final localDataSource = AppLocalDataSource();
+  final localDataSource = LocalStorageService();
   await localDataSource.init();
-  sl.registerSingleton<AppLocalDataSource>(localDataSource);
+  sl.registerSingleton<LocalStorageService>(localDataSource);
 
   // --- Features ---
 

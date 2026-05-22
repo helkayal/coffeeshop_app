@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/app_config.dart';
+import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
@@ -15,7 +16,6 @@ import '../../../../features/orders/presentation/screens/orders_screen.dart';
 import '../../../../features/profile/presentation/screens/account_screen.dart';
 import '../../../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../../../features/settings/presentation/screens/settings_screen.dart';
-import '../cubit/home_cubit.dart';
 import 'home_screen.dart';
 
 class MainShell extends StatelessWidget {
@@ -41,7 +41,7 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<MenuCubit>(),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      child: BlocBuilder<ShellCubit, ShellState>(
         buildWhen: (prev, curr) =>
             prev.tabIndex != curr.tabIndex ||
             prev.hasSecondary != curr.hasSecondary ||
@@ -55,20 +55,29 @@ class MainShell extends StatelessWidget {
                   leading: state.hasSecondary
                       ? IconButton(
                           icon: const Icon(Icons.arrow_back),
-                          onPressed: () => context.read<HomeCubit>().popSecondary(),
+                          onPressed: () =>
+                              context.read<ShellCubit>().popSecondary(),
                         )
                       : null,
                   actions: [
+                    // Settings icon: only when on account tab with no secondary open
                     if (!state.hasSecondary && state.tabIndex == 4)
                       IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () => context.read<HomeCubit>().pushSecondary(const SettingsRoute()),
+                        onPressed: () => context
+                            .read<ShellCubit>()
+                            .pushSecondary(const SettingsRoute()),
                         icon: const Icon(Icons.settings_outlined),
                       ),
-                    if (state.currentSecondary is! CartRoute)
+                    // Cart icon: hidden once Cart is anywhere in the secondary stack
+                    // (R-2 fix: previously only checked the top of the stack, so
+                    // the icon reappeared when Payment was pushed on top of Cart)
+                    if (!state.isInCartFlow)
                       IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () => context.read<HomeCubit>().pushSecondary(const CartRoute()),
+                        onPressed: () => context
+                            .read<ShellCubit>()
+                            .pushSecondary(const CartRoute()),
                         icon: const Icon(Icons.shopping_cart_outlined),
                       ),
                   ],
@@ -85,7 +94,7 @@ class MainShell extends StatelessWidget {
             ),
             bottomNavigationBar: AppBottomNavBar(
               currentIndex: state.hasSecondary ? -1 : state.tabIndex,
-              onTap: (index) => context.read<HomeCubit>().selectTab(index),
+              onTap: (index) => context.read<ShellCubit>().selectTab(index),
             ),
           );
         },

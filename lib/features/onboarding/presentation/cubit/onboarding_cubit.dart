@@ -21,41 +21,50 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     );
   }
 
-  void selectAndNavigate(String questionId, String optionId) async {
-    if (state is OnboardingLoaded) {
-      final currentState = state as OnboardingLoaded;
-      final newAnswers = Map<String, String>.from(currentState.answers);
-      newAnswers[questionId] = optionId;
+  // O-2: Future<void> instead of void async — makes the async contract explicit.
+  Future<void> selectAndNavigate(String questionId, String optionId) async {
+    if (state is! OnboardingLoaded) return;
 
-      final isLastStep =
-          currentState.currentStep == currentState.questions.length - 1;
+    final currentState = state as OnboardingLoaded;
+    final newAnswers = Map<String, String>.from(currentState.answers)
+      ..[questionId] = optionId;
 
-      if (isLastStep) {
-        await _completeOnboarding();
-        emit(currentState.copyWith(answers: newAnswers, isCompleted: true));
-      } else {
-        emit(currentState.copyWith(
-          answers: newAnswers,
-          currentStep: currentState.currentStep + 1,
-        ));
-      }
+    final isLastStep =
+        currentState.currentStep == currentState.questions.length - 1;
+
+    if (isLastStep) {
+      // O-1: propagate failure instead of silently marking isCompleted = true.
+      final result = await _completeOnboarding();
+      result.fold(
+        (failure) => emit(OnboardingError(failure.message)),
+        (_) => emit(currentState.copyWith(answers: newAnswers, isCompleted: true)),
+      );
+    } else {
+      emit(currentState.copyWith(
+        answers: newAnswers,
+        currentStep: currentState.currentStep + 1,
+      ));
     }
   }
 
   void goBack() {
-    if (state is OnboardingLoaded) {
-      final currentState = state as OnboardingLoaded;
-      if (currentState.currentStep > 0) {
-        emit(currentState.copyWith(currentStep: currentState.currentStep - 1));
-      }
+    if (state is! OnboardingLoaded) return;
+    final currentState = state as OnboardingLoaded;
+    if (currentState.currentStep > 0) {
+      emit(currentState.copyWith(currentStep: currentState.currentStep - 1));
     }
   }
 
-  void skip() async {
-    await _completeOnboarding();
-    if (state is OnboardingLoaded) {
-      final currentState = state as OnboardingLoaded;
-      emit(currentState.copyWith(isCompleted: true));
-    }
+  // O-2: Future<void> — compatible with VoidCallback in Dart (void accepts any value).
+  Future<void> skip() async {
+    if (state is! OnboardingLoaded) return;
+    final currentState = state as OnboardingLoaded;
+
+    // O-1: propagate failure instead of silently completing.
+    final result = await _completeOnboarding();
+    result.fold(
+      (failure) => emit(OnboardingError(failure.message)),
+      (_) => emit(currentState.copyWith(isCompleted: true)),
+    );
   }
 }

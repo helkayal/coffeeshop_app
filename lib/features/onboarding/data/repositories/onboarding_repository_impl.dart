@@ -8,7 +8,7 @@ import '../datasources/onboarding_remote_data_source.dart';
 
 class OnboardingRepositoryImpl implements OnboardingRepository {
   final OnboardingRemoteDataSource remoteDataSource;
-  final AppLocalDataSource localDataSource;
+  final LocalStorageService localDataSource;
 
   OnboardingRepositoryImpl(this.remoteDataSource, this.localDataSource);
 

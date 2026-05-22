@@ -13,7 +13,7 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   await setupServiceLocator();
 
-  final localDataSource = sl<AppLocalDataSource>();
+  final localDataSource = sl<LocalStorageService>();
   final initialRoute = localDataSource.isFirstRun()
       ? AppRoutes.onboarding
       : AppRoutes.login;

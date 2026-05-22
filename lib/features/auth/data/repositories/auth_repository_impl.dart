@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
@@ -52,6 +54,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<void>> logout() async {
+    if (kDebugMode) {
+      debugPrint('[Auth] logout() stub — session token not cleared');
+    }
     return const Success(null);
   }
 

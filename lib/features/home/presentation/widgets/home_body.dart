@@ -23,6 +23,7 @@ class HomeBody extends StatelessWidget {
           const SizedBox(height: 20),
           SectionHeader(title: 'home_screen.your_last_order'.tr()),
           const SizedBox(height: 5),
+          // when the orders feature is implemented. Data must come from state.
           const OrderItemCard(
             imagePath: 'assets/images/coffee_preparation.png',
             name: 'Ethiopian Yirgacheffe',

@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-class AppLocalDataSource {
+class LocalStorageService {
   static const String _boxName = 'app_preferences';
   static const String _isFirstRunKey = 'is_first_run';
 

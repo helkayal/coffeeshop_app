@@ -27,9 +27,10 @@ class MenuCubit extends Cubit<MenuState> {
         categoriesResult.fold((_) => true, (_) => false);
 
     if (hasError) {
+      // Products failure takes priority; fall through to category failure when products succeeded.
       final message = productsResult.fold(
         (f) => f.message,
-        (_) => '',
+        (_) => categoriesResult.fold((f) => f.message, (_) => ''),
       );
       emit(MenuError(message.isNotEmpty ? message : tr('menu_screen.error_load')));
       return;

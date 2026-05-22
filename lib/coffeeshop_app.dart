@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'config/app_config.dart';
+import 'core/cubit/shell_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/presentation/cubit/home_cubit.dart';
 
 class CoffeeShopApp extends StatelessWidget {
   final String initialRoute;
@@ -18,7 +18,7 @@ class CoffeeShopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HomeCubit(),
+      create: (_) => ShellCubit(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: AppConfig.appName,
