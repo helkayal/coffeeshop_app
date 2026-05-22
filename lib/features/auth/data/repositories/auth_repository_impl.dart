@@ -3,20 +3,29 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
+import '../../../../core/services/local_storage_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
+import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
+  final AuthRemoteDataSource _remoteDataSource;
+  final LocalStorageService _localStorage;
 
-  AuthRepositoryImpl({required this.remoteDataSource});
+  AuthRepositoryImpl({
+    required AuthRemoteDataSource remoteDataSource,
+    required LocalStorageService localStorage,
+  })  : _remoteDataSource = remoteDataSource,
+        _localStorage = localStorage;
 
   @override
   Future<Result<User>> login(String email, String password) async {
     try {
-      final userModel = await remoteDataSource.login(email, password);
-      return Success(userModel);
+      final response = await _remoteDataSource.login(email, password);
+      await _localStorage.setAuthToken(response.token);
+      await _localStorage.setCurrentUser(response.user.toJson());
+      return Success(response.user);
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Server Error'));
     } catch (e) {
@@ -35,7 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String? city,
   }) async {
     try {
-      final userModel = await remoteDataSource.register(
+      final response = await _remoteDataSource.register(
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -44,7 +53,9 @@ class AuthRepositoryImpl implements AuthRepository {
         state: state,
         city: city,
       );
-      return Success(userModel);
+      await _localStorage.setAuthToken(response.token);
+      await _localStorage.setCurrentUser(response.user.toJson());
+      return Success(response.user);
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Server Error'));
     } catch (e) {
@@ -54,14 +65,24 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<void>> logout() async {
-    if (kDebugMode) {
-      debugPrint('[Auth] logout() stub — session token not cleared');
+    try {
+      await _localStorage.clearAuthToken();
+      await _localStorage.clearCurrentUser();
+      if (kDebugMode) debugPrint('[Auth] Session cleared');
+      return const Success(null);
+    } catch (e) {
+      return const Error(CacheFailure('Failed to clear session'));
     }
-    return const Success(null);
   }
 
   @override
   Future<Result<User?>> getCachedUser() async {
-    return const Success(null);
+    try {
+      final userJson = _localStorage.getCurrentUser();
+      if (userJson == null) return const Success(null);
+      return Success(UserModel.fromJson(userJson));
+    } catch (e) {
+      return const Success(null);
+    }
   }
 }

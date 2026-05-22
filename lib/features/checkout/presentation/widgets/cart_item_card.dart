@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+
+import '../../domain/entities/cart_item.dart';
+
+class CartItemCard extends StatelessWidget {
+  final CartItem item;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+  final VoidCallback onRemove;
+
+  const CartItemCard({
+    super.key,
+    required this.item,
+    required this.onIncrement,
+    required this.onDecrement,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+        width: 96, height: 120,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: cs.surfaceContainerHighest,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Image.asset(item.imagePath, fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest)),
+      ),
+      const SizedBox(width: 16),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(
+              child: Text(item.name,
+                  style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: onRemove,
+              icon: Icon(Icons.close, size: 18, color: cs.onSurfaceVariant),
+            ),
+          ]),
+          const SizedBox(height: 4),
+          Text(item.variant, style: tt.bodySmall),
+          const SizedBox(height: 4),
+          Text('\$${item.unitPrice.toStringAsFixed(2)}',
+              style: tt.bodyLarge?.copyWith(fontSize: 18, color: cs.primary, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: cs.surfaceContainerLowest,
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              GestureDetector(
+                onTap: onDecrement,
+                child: Icon(Icons.remove, size: 18, color: cs.onSurfaceVariant),
+              ),
+              const SizedBox(width: 16),
+              Text('${item.quantity}',
+                  style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+              const SizedBox(width: 16),
+              GestureDetector(
+                onTap: onIncrement,
+                child: Icon(Icons.add, size: 18, color: cs.onSurfaceVariant),
+              ),
+            ]),
+          ),
+        ]),
+      ),
+    ]);
+  }
+}

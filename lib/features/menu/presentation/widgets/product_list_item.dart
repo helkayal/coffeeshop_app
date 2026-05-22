@@ -4,6 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/quick_add_overlay.dart';
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../favorites/presentation/cubit/favorites_cubit.dart';
+import '../../../favorites/presentation/cubit/favorites_state.dart';
 import '../../domain/entities/product.dart';
 
 class ProductListItem extends StatelessWidget {
@@ -39,7 +41,21 @@ class ProductListItem extends StatelessWidget {
                     child: Text(product.name,
                         style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
                   ),
-                  Icon(Icons.favorite_border, color: cs.onSurfaceVariant, size: 20),
+                  BlocBuilder<FavoritesCubit, FavoritesState>(
+                    builder: (context, favState) {
+                      final isFav = favState is FavoritesLoaded &&
+                          favState.isFavorite(product.id);
+                      return GestureDetector(
+                        onTap: () =>
+                            context.read<FavoritesCubit>().toggle(product.id),
+                        child: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color: isFav ? cs.primary : cs.onSurfaceVariant,
+                          size: 20,
+                        ),
+                      );
+                    },
+                  ),
                 ]),
                 const SizedBox(height: 4),
                 Text(product.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: tt.bodySmall),

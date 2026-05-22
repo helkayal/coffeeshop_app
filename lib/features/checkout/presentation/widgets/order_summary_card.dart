@@ -8,12 +8,14 @@ class OrderSummaryCard extends StatelessWidget {
   final String subtotal;
   final String shipping;
   final String total;
+  final VoidCallback? onCheckout;
 
   const OrderSummaryCard({
     super.key,
     required this.subtotal,
     required this.shipping,
     required this.total,
+    this.onCheckout,
   });
 
   @override
@@ -77,7 +79,8 @@ class OrderSummaryCard extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () => context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
+          onPressed: onCheckout ??  
+              () => context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
             icon: const Icon(Icons.arrow_forward, size: 20),
             label: Text('checkout.proceed_to_checkout'.tr()),
           ),

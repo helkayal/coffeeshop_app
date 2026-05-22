@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../domain/entities/order.dart';
 import 'order_item_row.dart';
-import 'order_line_item.dart';
 
 class OrderCard extends StatelessWidget {
-  final String orderNumber;
-  final String date;
-  final String total;
-  final String status;
-  final List<OrderLineItem> items;
+  final Order order;
 
-  const OrderCard({
-    super.key,
-    required this.orderNumber,
-    required this.date,
-    required this.total,
-    required this.status,
-    required this.items,
-  });
+  const OrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final dateStr = '${order.createdAt.day} ${_month(order.createdAt.month)} ${order.createdAt.year}';
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -35,29 +25,27 @@ class OrderCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(date, style: tt.labelLarge?.copyWith(color: cs.secondary)),
+            Text(dateStr, style: tt.labelLarge?.copyWith(color: cs.secondary)),
             const SizedBox(height: 4),
-            Text(orderNumber,
-                style: tt.headlineMedium
-                    ?.copyWith(fontSize: 20, color: cs.onSurface)),
+            Text('Order #${order.id}',
+                style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
           ]),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text(total,
-                style: tt.bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.w600, color: cs.primary)),
+            Text('\$${order.total.toStringAsFixed(2)}',
+                style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.w600, color: cs.primary)),
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                   color: cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(4)),
-              child: Text(status,
+              child: Text(order.status,
                   style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
             ),
           ]),
         ]),
         const SizedBox(height: 16),
-        ...items.map((item) => OrderItemRow(item: item)),
+        ...order.items.map((item) => OrderItemRow(item: item)),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           TextButton.icon(
             onPressed: () {},
@@ -76,5 +64,9 @@ class OrderCard extends StatelessWidget {
       ]),
     );
   }
-}
 
+  String _month(int m) => const [
+        '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ][m];
+}

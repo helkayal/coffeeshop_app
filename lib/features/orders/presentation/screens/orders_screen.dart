@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../cubit/orders_cubit.dart';
+import '../cubit/orders_state.dart';
 import '../widgets/order_card.dart';
-import '../widgets/order_line_item.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -10,40 +12,49 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 24, top: 8),
-            child: Text('orders_screen.your_orders'.tr(),
-                style: tt.headlineMedium?.copyWith(fontSize: 24)),
-          ),
-          const OrderCard(
-            orderNumber: 'Order #SB-8921',
-            date: 'Oct 24, 2023',
-            total: r'$24.50',
-            status: 'Delivered',
-            items: [
-              OrderLineItem(imagePath: 'assets/images/coffee_preparation.png', name: 'Artisan Vanilla Latte', modifiers: 'Oat Milk, Extra Hot', quantity: 'x1'),
-              OrderLineItem(imagePath: 'assets/images/coffee_preparation.png', name: 'Butter Croissant', modifiers: 'Warmed', quantity: 'x2'),
+    return BlocBuilder<OrdersCubit, OrdersState>(
+      builder: (context, state) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24, top: 8),
+                child: Text('orders_screen.your_orders'.tr(),
+                    style: tt.headlineMedium?.copyWith(fontSize: 24)),
+              ),
+              switch (state) {
+                OrdersLoading() => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 48),
+                      child: CircularProgressIndicator(),
+                    )),
+                OrdersError(:final message) => Center(
+                    child: Text(message,
+                        style: tt.bodyMedium?.copyWith(color: cs.error))),
+                OrdersLoaded(:final orders) when orders.isEmpty => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 48),
+                      child: Text('orders_screen.no_orders'.tr(),
+                          style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                    )),
+                OrdersLoaded(:final orders) => Column(
+                    children: [
+                      for (final order in orders) ...[
+                        OrderCard(order: order),
+                        const SizedBox(height: 16),
+                      ],
+                    ],
+                  ),
+                _ => const SizedBox.shrink(),
+              },
             ],
           ),
-          const SizedBox(height: 16),
-          const OrderCard(
-            orderNumber: 'Order #SB-8845',
-            date: 'Oct 18, 2023',
-            total: r'$18.00',
-            status: 'Picked Up',
-            items: [
-              OrderLineItem(imagePath: 'assets/images/coffee_preparation.png', name: 'Ethiopia Yirgacheffe Pour Over', modifiers: 'Light Roast', quantity: 'x1'),
-              OrderLineItem(imagePath: 'assets/images/coffee_preparation.png', name: 'Blueberry Scone', modifiers: '', quantity: 'x1'),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

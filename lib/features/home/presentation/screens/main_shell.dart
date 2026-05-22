@@ -6,13 +6,17 @@ import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
+import '../../../../features/checkout/presentation/cubit/cart_cubit.dart';
 import '../../../../features/checkout/presentation/screens/cart_screen.dart';
 import '../../../../features/checkout/presentation/screens/payment_screen.dart';
 import '../../../../features/customization/presentation/screens/customization_screen.dart';
+import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
 import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/menu/presentation/screens/menu_screen.dart';
+import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../../../features/orders/presentation/screens/orders_screen.dart';
+import '../../../../features/profile/presentation/cubit/profile_cubit.dart';
 import '../../../../features/profile/presentation/screens/account_screen.dart';
 import '../../../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../../../features/settings/presentation/screens/settings_screen.dart';
@@ -30,17 +34,23 @@ class MainShell extends StatelessWidget {
   ];
 
   static Widget _buildSecondary(SecondaryRoute route) => switch (route) {
-    CartRoute() => const CartScreen(),
-    PaymentRoute() => const PaymentScreen(),
-    CustomizationRoute() => const CustomizationScreen(),
-    SettingsRoute() => const SettingsScreen(),
-    EditProfileRoute() => const EditProfileScreen(),
-  };
+        CartRoute() => const CartScreen(),
+        PaymentRoute() => const PaymentScreen(),
+        CustomizationRoute() => const CustomizationScreen(),
+        SettingsRoute() => const SettingsScreen(),
+        EditProfileRoute() => const EditProfileScreen(),
+      };
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<MenuCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<MenuCubit>()),
+        BlocProvider(create: (_) => sl<CartCubit>()..loadCart()),
+        BlocProvider(create: (_) => sl<OrdersCubit>()..loadOrders()),
+        BlocProvider(create: (_) => sl<FavoritesCubit>()..loadFavorites()),
+        BlocProvider(create: (_) => sl<ProfileCubit>()..loadProfile()),
+      ],
       child: BlocBuilder<ShellCubit, ShellState>(
         buildWhen: (prev, curr) =>
             prev.tabIndex != curr.tabIndex ||
@@ -60,7 +70,6 @@ class MainShell extends StatelessWidget {
                         )
                       : null,
                   actions: [
-                    // Settings icon: only when on account tab with no secondary open
                     if (!state.hasSecondary && state.tabIndex == 4)
                       IconButton(
                         padding: EdgeInsets.zero,
@@ -69,9 +78,6 @@ class MainShell extends StatelessWidget {
                             .pushSecondary(const SettingsRoute()),
                         icon: const Icon(Icons.settings_outlined),
                       ),
-                    // Cart icon: hidden once Cart is anywhere in the secondary stack
-                    // (R-2 fix: previously only checked the top of the stack, so
-                    // the icon reappeared when Payment was pushed on top of Cart)
                     if (!state.isInCartFlow)
                       IconButton(
                         padding: EdgeInsets.zero,

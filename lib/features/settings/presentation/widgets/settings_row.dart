@@ -5,6 +5,7 @@ class SettingsRow extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onTap;
+  final Widget? trailing;
 
   const SettingsRow({
     super.key,
@@ -12,6 +13,7 @@ class SettingsRow extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.onTap,
+    this.trailing,
   });
 
   @override
@@ -36,7 +38,7 @@ class SettingsRow extends StatelessWidget {
               Text(subtitle, style: tt.bodySmall),
             ]),
           ),
-          Icon(Icons.chevron_right, color: cs.outlineVariant, size: 20),
+          trailing ?? Icon(Icons.chevron_right, color: cs.outlineVariant, size: 20),
         ]),
       ),
     );

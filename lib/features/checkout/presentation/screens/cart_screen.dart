@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../widgets/cart_item.dart';
+import '../cubit/cart_cubit.dart';
+import '../cubit/cart_state.dart';
+import '../widgets/cart_item_card.dart';
 import '../widgets/order_summary_card.dart';
 
 class CartScreen extends StatelessWidget {
@@ -12,18 +15,84 @@ class CartScreen extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final cs = Theme.of(context).colorScheme;
 
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, state) {
+        final cubit = context.read<CartCubit>();
+
+        return switch (state) {
+          CartLoading() => const Center(child: CircularProgressIndicator()),
+          CartError(:final message) => Center(
+              child: Text(message, style: tt.bodyMedium?.copyWith(color: cs.error))),
+          CartLoaded() ||
+          CartActionInProgress() ||
+          OrderPlaced() =>
+              _buildContent(context, tt, cs, cubit, state),
+          _ => const SizedBox.shrink(),
+        };
+      },
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    TextTheme tt,
+    ColorScheme cs,
+    CartCubit cubit,
+    CartState state,
+  ) {
+    final cart = switch (state) {
+      CartLoaded(:final cart) => cart,
+      CartActionInProgress(:final cart) => cart,
+      _ => null,
+    };
+
+    if (state is OrderPlaced) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.check_circle_outline, size: 72, color: cs.primary),
+          const SizedBox(height: 16),
+          Text('Order placed!', style: tt.headlineMedium),
+          const SizedBox(height: 8),
+          Text('Order #${state.orderId}', style: tt.bodyLarge?.copyWith(color: cs.secondary)),
+        ]),
+      );
+    }
+
+    if (cart == null || cart.isEmpty) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.shopping_cart_outlined, size: 64, color: cs.onSurfaceVariant),
+          const SizedBox(height: 16),
+          Text('checkout.empty_bag'.tr(),
+              style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant)),
+        ]),
+      );
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 96),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('checkout.your_bag'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
+        Text('checkout.your_bag'.tr(),
+            style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
         const SizedBox(height: 8),
         Text('checkout.review_selection'.tr(), style: tt.bodySmall),
         const SizedBox(height: 40),
-        const CartItem(imagePath: 'assets/images/coffee_preparation.png', name: 'Artisan Pour Over Set', variant: 'Matte White • Ceramic', price: r'$85', quantity: 1),
-        const SizedBox(height: 32),
-        const CartItem(imagePath: 'assets/images/latte_art_being_poured.png', name: 'Ethiopia Yirgacheffe', variant: 'Whole Bean • 12oz', price: r'$24', quantity: 2),
-        const SizedBox(height: 40),
-        OrderSummaryCard(subtotal: r'$133.00', shipping: 'checkout.calculated_next'.tr(), total: r'$133.00'),
+        ...cart.items.map((item) => Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: CartItemCard(
+                item: item,
+                onIncrement: () => cubit.increment(item.id),
+                onDecrement: () => cubit.decrement(item.id),
+                onRemove: () => cubit.remove(item.id),
+              ),
+            )),
+        const SizedBox(height: 8),
+        OrderSummaryCard(
+          subtotal: '\$${cart.subtotal.toStringAsFixed(2)}',
+          shipping: 'checkout.calculated_next'.tr(),
+          total: '\$${cart.subtotal.toStringAsFixed(2)}',
+          onCheckout: cubit.placeOrder,
+        ),
       ]),
     );
   }
