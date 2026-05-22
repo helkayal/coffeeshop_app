@@ -29,7 +29,8 @@
       "Bash(grep -v '^.*/[0-9]*:.*//.*$')",
       "Bash(python3 *)",
       "Bash(sed -i '' 's|import '\\\\''package:flutter/material.dart'\\\\'';|import '\\\\''package:flutter/material.dart'\\\\'';\\\\nimport '\\\\''package:flutter_bloc/flutter_bloc.dart'\\\\'';|' /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/presentation/screens/account_screen.dart)",
-      "Bash(sed -i '' \"/import 'edit_profile_screen.dart';/d\" /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/presentation/screens/account_screen.dart)"
+      "Bash(sed -i '' \"/import 'edit_profile_screen.dart';/d\" /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/presentation/screens/account_screen.dart)",
+      "Bash(grep -v '\\\\.tr\\(\\)\\\\|\\\\.png\\\\|Icons\\\\.\\\\|// \\\\|/\\\\*\\\\|$remaining\\\\|AppConfig\\\\.\\\\|assets/')"
     ]
   }
 }

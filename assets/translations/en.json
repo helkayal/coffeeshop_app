@@ -129,7 +129,8 @@
     "sign_out": "Sign Out",
     "view_profile": "View Profile",
     "wallet": "Wallet",
-    "loyalty_points": "Loyalty Points"
+    "loyalty_points": "Loyalty Points",
+    "referral": "My Referral"
   },
   "customization": {
     "the_base": "The Base",
@@ -209,7 +210,10 @@
     "notifications": "Notifications",
     "push_email": "Push, Email",
     "about": "About Coffee Shop",
-    "version": "Coffee Shop v1.0.0"
+    "version": "Coffee Shop v1.0.0",
+    "notif_on": "On",
+    "notif_off": "Off",
+    "light_mode": "Light mode"
   },
   "account": "Account",
   "loyalty": {

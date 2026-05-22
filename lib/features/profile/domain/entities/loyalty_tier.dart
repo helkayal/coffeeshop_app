@@ -32,7 +32,7 @@ class LoyaltyTier {
         progress: progress.clamp(0.0, 0.333),
         pointsToNext: (AppConfig.tier1Boundary - points).ceil(),
         nextTier: 'silver',
-        expiryDate: '22/12/2022',
+        expiryDate: '—',
         index: 0,
       );
     } else if (points < AppConfig.tier2Boundary) {
@@ -46,7 +46,7 @@ class LoyaltyTier {
         progress: progress.clamp(0.333, 0.667),
         pointsToNext: (AppConfig.tier2Boundary - points).ceil(),
         nextTier: 'gold',
-        expiryDate: '22/12/2023',
+        expiryDate: '—',
         index: 1,
       );
     } else if (points < AppConfig.tier3Boundary) {
@@ -60,7 +60,7 @@ class LoyaltyTier {
         progress: progress.clamp(0.667, 1.0),
         pointsToNext: (AppConfig.tier3Boundary - points).ceil(),
         nextTier: 'platinum',
-        expiryDate: '22/12/2024',
+        expiryDate: '—',
         index: 2,
       );
     } else {
@@ -70,7 +70,7 @@ class LoyaltyTier {
         progress: 1.0,
         pointsToNext: null,
         nextTier: null,
-        expiryDate: '22/12/2025',
+        expiryDate: '—',
         index: 3,
       );
     }

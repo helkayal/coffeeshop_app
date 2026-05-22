@@ -20,7 +20,7 @@ class CustomizationScreen extends StatelessWidget {
         child: Column(children: [
           _buildHero(context, cs, tt),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 32, 24, 96),
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
             child: Column(children: [
               OptionGroup(
                 title: 'customization.the_base'.tr(),
@@ -41,7 +41,7 @@ class CustomizationScreen extends StatelessWidget {
           ),
         ]),
       ),
-      const Positioned(left: 0, right: 0, bottom: 0, child: BottomActionBar(total: r'$6.50')),
+      const PositionedDirectional(start: 0, end: 0, bottom: 0, child: BottomActionBar(total: r'$6.50')),
     ]);
   }
 

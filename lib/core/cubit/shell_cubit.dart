@@ -28,6 +28,10 @@ class EditProfileRoute extends SecondaryRoute {
   const EditProfileRoute();
 }
 
+class OrdersHistoryRoute extends SecondaryRoute {
+  const OrdersHistoryRoute();
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------

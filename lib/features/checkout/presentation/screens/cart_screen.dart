@@ -70,7 +70,7 @@ class CartScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 96),
+      padding: const EdgeInsetsDirectional.fromSTEB(24, 8, 24, 96),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('checkout.your_bag'.tr(),
             style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),

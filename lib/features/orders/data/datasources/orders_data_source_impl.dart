@@ -60,6 +60,17 @@ class OrdersDataSourceImpl implements OrdersDataSource {
           OrderItemModel(name: 'Honey Lavender Latte', quantity: 2, price: 6.50),
         ],
       ),
+      OrderModel(
+        id: 'ORD-003',
+        status: 'Picked Up',
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+        total: 24.50,
+        items: const [
+          OrderItemModel(name: 'Artisan Vanilla Latte', quantity: 1, price: 7.25),
+          OrderItemModel(name: 'Butter Croissant', quantity: 2, price: 4.50),
+          OrderItemModel(name: 'Desert Midnight', quantity: 1, price: 5.75),
+        ],
+      ),
     ];
   }
 }

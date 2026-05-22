@@ -16,7 +16,7 @@ class HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 5, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

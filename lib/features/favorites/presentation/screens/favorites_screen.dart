@@ -18,7 +18,7 @@ class FavoritesScreen extends StatelessWidget {
     return BlocBuilder<FavoritesCubit, FavoritesState>(
       builder: (context, state) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 96),
+          padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

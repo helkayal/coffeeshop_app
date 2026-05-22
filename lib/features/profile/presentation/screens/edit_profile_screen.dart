@@ -13,7 +13,7 @@ class EditProfileScreen extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 40, 24, 96),
+      padding: const EdgeInsetsDirectional.fromSTEB(24, 40, 24, 96),
       child: Column(
         children: [
           const ProfileAvatar(),
@@ -62,7 +62,7 @@ class EditProfileScreen extends StatelessWidget {
 
   Widget _sectionHeader(ColorScheme cs, TextTheme tt, String text) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: Text(
         text,
         style: tt.labelLarge?.copyWith(

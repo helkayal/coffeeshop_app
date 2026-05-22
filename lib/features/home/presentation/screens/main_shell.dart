@@ -28,7 +28,6 @@ class MainShell extends StatelessWidget {
   static const _tabScreens = [
     HomeScreen(),
     MenuScreen(),
-    OrdersScreen(),
     FavoritesScreen(),
     AccountScreen(),
   ];
@@ -39,6 +38,7 @@ class MainShell extends StatelessWidget {
         CustomizationRoute() => const CustomizationScreen(),
         SettingsRoute() => const SettingsScreen(),
         EditProfileRoute() => const EditProfileScreen(),
+        OrdersHistoryRoute() => const OrdersScreen(),
       };
 
   @override
@@ -70,7 +70,7 @@ class MainShell extends StatelessWidget {
                         )
                       : null,
                   actions: [
-                    if (!state.hasSecondary && state.tabIndex == 4)
+                    if (!state.hasSecondary && state.tabIndex == 3)
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () => context

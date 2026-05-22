@@ -17,7 +17,7 @@ class FavoritesDataSourceImpl implements FavoritesDataSource {
   final ApiService _api;
 
   // In-memory set for mock mode — resets on app restart.
-  final Set<String> _mockFavoriteIds = {};
+  final Set<String> _mockFavoriteIds = {'1', '2', '3', '4'};
 
   FavoritesDataSourceImpl(this._api);
 

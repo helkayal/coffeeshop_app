@@ -62,7 +62,7 @@ class QuickAddOverlay extends StatelessWidget {
         ),
         Flexible(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 24),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('quick_add.saved_orders'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
               const SizedBox(height: 16),

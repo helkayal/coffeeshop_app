@@ -50,7 +50,7 @@ class _MenuScreenState extends State<MenuScreen> {
     String? selectedId,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
       child: Column(
         children: [
           const MenuHeader(),

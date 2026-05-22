@@ -35,8 +35,8 @@ class PromoBanner extends StatelessWidget {
           errorBuilder: (_, _, _) => Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: AlignmentDirectional.topStart,
+                end: AlignmentDirectional.bottomEnd,
                 colors: [Color(0xFF8B4513), Color(0xFFD4A574)],
               ),
             ),

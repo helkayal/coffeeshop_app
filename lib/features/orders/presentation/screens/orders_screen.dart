@@ -17,7 +17,7 @@ class OrdersScreen extends StatelessWidget {
     return BlocBuilder<OrdersCubit, OrdersState>(
       builder: (context, state) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 96),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

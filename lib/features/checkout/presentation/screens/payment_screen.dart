@@ -26,7 +26,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     return Stack(children: [
       SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 140),
       child: Column(children: [
         const SizedBox(height: 16),
         Text('checkout.complete_order'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),

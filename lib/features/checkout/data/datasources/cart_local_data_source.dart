@@ -18,7 +18,23 @@ class CartLocalDataSource {
     final items = box.values
         .map((raw) => CartItemModel.fromMap(Map<String, dynamic>.from(raw as Map)))
         .toList();
+    if (items.isEmpty) return _mockCart();
     return Cart(items: items);
+  }
+
+  Cart _mockCart() {
+    return Cart(items: [
+      const CartItemModel(
+        id: 'cart-1', productId: '1', name: 'Artisan Pour Over Set',
+        imagePath: 'assets/images/coffee_preparation.png',
+        variant: 'Matte White • Ceramic', unitPrice: 85.0, quantity: 1,
+      ),
+      const CartItemModel(
+        id: 'cart-2', productId: '3', name: 'Ethiopia Yirgacheffe',
+        imagePath: 'assets/images/latte_art_being_poured.png',
+        variant: 'Whole Bean • 12oz', unitPrice: 24.0, quantity: 2,
+      ),
+    ]);
   }
 
   Future<void> saveItem(CartItem item) async {

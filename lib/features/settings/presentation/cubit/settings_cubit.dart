@@ -39,4 +39,14 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(SettingsLoaded(updated)); // optimistic update
     await _updateSettings(updated);
   }
+
+
+  Future<void> toggleNotifications() async {
+    final current = state;
+    if (current is! SettingsLoaded) return;
+    final updated = current.settings.copyWith(notificationsOn: !current.notificationsOn);
+    emit(SettingsLoaded(updated));
+    await _updateSettings(updated);
+  }
+
 }

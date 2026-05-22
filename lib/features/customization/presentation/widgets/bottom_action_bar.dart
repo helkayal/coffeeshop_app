@@ -36,7 +36,7 @@ class BottomActionBar extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         FilledButton.icon(
-          onPressed: () => context.read<ShellCubit>().pushSecondary(const CartRoute()),
+          onPressed: () => context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
           icon: const Icon(Icons.check_circle, size: 18),
           label: Text('customization.complete_order'.tr(),
               style: tt.labelLarge?.copyWith(color: cs.onPrimary)),

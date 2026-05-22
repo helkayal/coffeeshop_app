@@ -43,7 +43,7 @@ class LoginBody extends StatelessWidget {
             passwordController: passwordController,
           ),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: TextButton(
               onPressed: () {},
               child: Text(

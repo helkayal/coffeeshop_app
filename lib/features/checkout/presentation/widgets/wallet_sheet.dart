@@ -25,7 +25,7 @@ class WalletSheet extends StatelessWidget {
         color: cs.surfaceContainerLow,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
           width: 48, height: 4,

@@ -15,6 +15,7 @@ class SettingsLoaded extends SettingsState {
   const SettingsLoaded(this.settings);
 
   bool get isDarkMode => settings.isDarkMode;
+  bool get notificationsOn => settings.notificationsOn;
   String get locale => settings.locale;
   ThemeMode get themeMode =>
       settings.isDarkMode ? ThemeMode.dark : ThemeMode.light;
