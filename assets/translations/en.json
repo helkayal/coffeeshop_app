@@ -4,7 +4,6 @@
   "orders": "Orders",
   "favorite": "Favorite",
   "cart": "Cart",
-  "profile": "Profile",
   "error_route_not_found": "No route defined for {}",
   "onboarding": {
     "back": "Back",
@@ -126,8 +125,11 @@
     "dob": "Date of Birth",
     "location": "State - City",
     "order_history": "Order History",
-    "payment_methods": "Payment Methods",
-    "sign_out": "Sign Out"
+    "payment_methods": "Payment",
+    "sign_out": "Sign Out",
+    "view_profile": "View Profile",
+    "wallet": "Wallet",
+    "loyalty_points": "Loyalty Points"
   },
   "customization": {
     "the_base": "The Base",
@@ -208,5 +210,16 @@
     "push_email": "Push, Email",
     "about": "About Coffee Shop",
     "version": "Coffee Shop v1.0.0"
+  },
+  "account": "Account",
+  "loyalty": {
+    "blue": "Blue",
+    "silver": "Silver",
+    "gold": "Gold",
+    "platinum": "Platinum",
+    "view_benefits": "View My Benefits",
+    "max_tier": "Maximum Tier Reached",
+    "points_to": "{} points to {}",
+    "expires_on": "Expires on {}"
   }
 }

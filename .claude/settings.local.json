@@ -26,7 +26,10 @@
       "Bash(curl -s -L -o /tmp/payment2.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMzgwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
       "Bash(grep -v \"assets/\\\\|\\\\.png\\\\|fontFamily\\\\|Icons\\\\.\\\\|MaterialIcons\\\\|\\\\.tr\\(\\)\\\\|'[0-9]\\\\|'\\\\$\")",
       "Bash(curl -s -L -o /tmp/settings_dark.html \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MTNlYTQ2N2ZkMmIwMjNiZWYxZGFlMWUyZTIwEgsSBxDUjeDq6xUYAZIBIwoKcHJvamVjdF9pZBIVQhM2MDk3ODUxOTUyNjA1OTk3NjYx&filename=&opi=89354086\")",
-      "Bash(grep -v '^.*/[0-9]*:.*//.*$')"
+      "Bash(grep -v '^.*/[0-9]*:.*//.*$')",
+      "Bash(python3 *)",
+      "Bash(sed -i '' 's|import '\\\\''package:flutter/material.dart'\\\\'';|import '\\\\''package:flutter/material.dart'\\\\'';\\\\nimport '\\\\''package:flutter_bloc/flutter_bloc.dart'\\\\'';|' /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/presentation/screens/account_screen.dart)",
+      "Bash(sed -i '' \"/import 'edit_profile_screen.dart';/d\" /Users/helkayal/Documents/coffeeshop/coffeeshop_app/lib/features/profile/presentation/screens/account_screen.dart)"
     ]
   }
 }

@@ -35,7 +35,7 @@ class AppBottomNavBar extends StatelessWidget {
               _NavItem(icon: Icons.coffee, label: 'menu'.tr(), isActive: currentIndex == 1, onTap: () => onTap(1)),
               _NavItem(icon: Icons.receipt_long, label: 'orders'.tr(), isActive: currentIndex == 2, onTap: () => onTap(2)),
               _NavItem(icon: Icons.favorite, label: 'favorite'.tr(), isActive: currentIndex == 3, onTap: () => onTap(3)),
-              _NavItem(icon: Icons.person, label: 'profile'.tr(), isActive: currentIndex == 4, onTap: () => onTap(4)),
+              _NavItem(icon: Icons.person, label: 'account'.tr(), isActive: currentIndex == 4, onTap: () => onTap(4)),
             ],
           ),
         ),

@@ -12,7 +12,8 @@ import '../../../../features/favorites/presentation/screens/favorites_screen.dar
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/menu/presentation/screens/menu_screen.dart';
 import '../../../../features/orders/presentation/screens/orders_screen.dart';
-import '../../../../features/profile/presentation/screens/profile_screen.dart';
+import '../../../../features/profile/presentation/screens/account_screen.dart';
+import '../../../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../../../features/settings/presentation/screens/settings_screen.dart';
 import '../cubit/home_cubit.dart';
 import 'home_screen.dart';
@@ -25,7 +26,7 @@ class MainShell extends StatelessWidget {
     MenuScreen(),
     OrdersScreen(),
     FavoritesScreen(),
-    ProfileScreen(),
+    AccountScreen(),
   ];
 
   static Widget _buildSecondary(SecondaryRoute route) => switch (route) {
@@ -33,6 +34,7 @@ class MainShell extends StatelessWidget {
     PaymentRoute() => const PaymentScreen(),
     CustomizationRoute() => const CustomizationScreen(),
     SettingsRoute() => const SettingsScreen(),
+    EditProfileRoute() => const EditProfileScreen(),
   };
 
   @override

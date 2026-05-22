@@ -20,6 +20,10 @@ class SettingsRoute extends SecondaryRoute {
   const SettingsRoute();
 }
 
+class EditProfileRoute extends SecondaryRoute {
+  const EditProfileRoute();
+}
+
 class HomeState {
   final int tabIndex;
   final List<SecondaryRoute> secondaryStack;
