@@ -193,9 +193,13 @@
     "save_card": "Save Card"
   },
   "wallet": {
-    "phone_for_wallet": "Phone for Wallet",
-    "phone_number": "Phone Number",
-    "continue": "Continue"
+    "current_balance": "Current Balance",
+    "top_up": "Top Up Balance",
+    "topup": "Wallet Top Up",
+    "purchase": "Coffee Purchase",
+    "transactions": "Recent Transactions",
+    "payment_method": "Payment Method",
+    "add": "Add Balance"
   },
   "quick_add": {
     "saved_orders": "Saved Orders",

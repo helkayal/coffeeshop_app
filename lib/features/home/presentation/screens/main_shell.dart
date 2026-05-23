@@ -21,6 +21,7 @@ import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/screens/account_screen.dart';
 import '../../../account/presentation/screens/edit_profile_screen.dart';
 import '../../../account/presentation/screens/view_benefits_screen.dart';
+import '../../../account/presentation/screens/wallet_screen.dart';
 import '../../../../features/settings/presentation/screens/settings_screen.dart';
 import 'home_screen.dart';
 
@@ -43,6 +44,7 @@ class MainShell extends StatelessWidget {
     OrdersHistoryRoute() => const OrdersScreen(),
     OrderConfirmationRoute() => const OrderConfirmationScreen(),
     ViewBenefitsRoute() => const ViewBenefitsScreen(),
+    WalletRoute() => const WalletScreen(),
   };
 
   @override

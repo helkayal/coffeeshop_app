@@ -40,6 +40,10 @@ class ViewBenefitsRoute extends SecondaryRoute {
   const ViewBenefitsRoute();
 }
 
+class WalletRoute extends SecondaryRoute {
+  const WalletRoute();
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------

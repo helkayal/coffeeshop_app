@@ -78,7 +78,7 @@ class AccountScreen extends StatelessWidget {
           const LoyaltyCard(),
           const SizedBox(height: 40),
           AccountCard(
-            icon: Icons.account_balance_wallet,
+            icon: Icons.account_balance_wallet, onTap: () => context.read<ShellCubit>().pushSecondary(const WalletRoute()),
             label: 'profile_screen.wallet'.tr(),
           ),
           const SizedBox(height: 12),
