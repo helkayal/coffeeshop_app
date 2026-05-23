@@ -17,13 +17,12 @@ class LoyaltyCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final tier = LoyaltyTier.fromPoints(points);
     final tierName = 'loyalty.${tier.name}'.tr();
-    final expiryText = 'loyalty.expires_on'.tr(args: [tier.expiryDate]);
     final targetText = tier.pointsToNext != null
         ? 'loyalty.points_to'.tr(args: ['${tier.pointsToNext}', 'loyalty.${tier.nextTier}'.tr()])
         : 'loyalty.max_tier'.tr();
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      LoyaltyCardImage(tier: tier, tierName: tierName, expiryText: expiryText),
+      LoyaltyCardImage(tier: tier, tierName: tierName),
       const SizedBox(height: 24),
       _buildPointsRow(cs, tt, targetText),
       const SizedBox(height: 14),

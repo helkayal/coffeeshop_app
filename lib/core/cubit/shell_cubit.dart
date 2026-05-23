@@ -36,6 +36,10 @@ class OrderConfirmationRoute extends SecondaryRoute {
   const OrderConfirmationRoute();
 }
 
+class ViewBenefitsRoute extends SecondaryRoute {
+  const ViewBenefitsRoute();
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------

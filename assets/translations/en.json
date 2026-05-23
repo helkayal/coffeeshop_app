@@ -231,5 +231,22 @@
     "max_tier": "Maximum Tier Reached",
     "points_to": "{} points to {}",
     "expires_on": "Expires on {}"
+  },
+  "benefits": {
+    "your_level": "Your Level",
+    "all_levels": "All Levels",
+    "how_to_earn": "How to Earn Points",
+    "points": "pts",
+    "current": "Current",
+    "discount": "10% Discount",
+    "birthday": "Birthday Reward",
+    "priority": "Priority Support",
+    "free_drink": "Free Drink Monthly",
+    "exclusive": "Exclusive Events",
+    "earn_purchase": "Earn 1 point for every E\u00a31 spent",
+    "earn_review": "Earn 10 points for writing a review",
+    "earn_referral": "Earn 50 points for each referral",
+    "earn_birthday": "Earn 100 bonus points on your birthday",
+    "rewards": "Rewards"
   }
 }
