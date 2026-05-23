@@ -32,6 +32,10 @@ class OrdersHistoryRoute extends SecondaryRoute {
   const OrdersHistoryRoute();
 }
 
+class OrderConfirmationRoute extends SecondaryRoute {
+  const OrderConfirmationRoute();
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
@@ -75,5 +79,9 @@ class ShellCubit extends Cubit<ShellState> {
     if (state.secondaryStack.isEmpty) return;
     final stack = [...state.secondaryStack]..removeLast();
     emit(ShellState(tabIndex: state.tabIndex, secondaryStack: stack));
+  }
+
+  void clearAndPush(SecondaryRoute route) {
+    emit(ShellState(tabIndex: state.tabIndex, secondaryStack: [route]));
   }
 }

@@ -2,13 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/cubit/shell_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/order_summary_card.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CartCubit>().loadCart();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +34,14 @@ class CartScreen extends StatelessWidget {
         return switch (state) {
           CartLoading() => const Center(child: CircularProgressIndicator()),
           CartError(:final message) => Center(
-              child: Text(message, style: tt.bodyMedium?.copyWith(color: cs.error))),
+            child: Text(
+              message,
+              style: tt.bodyMedium?.copyWith(color: cs.error),
+            ),
+          ),
           CartLoaded() ||
           CartActionInProgress() ||
-          OrderPlaced() =>
-              _buildContent(context, tt, cs, cubit, state),
+          OrderPlaced() => _buildContent(context, tt, cs, cubit, state),
           _ => const SizedBox.shrink(),
         };
       },
@@ -46,38 +61,43 @@ class CartScreen extends StatelessWidget {
       _ => null,
     };
 
-    if (state is OrderPlaced) {
-      return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(Icons.check_circle_outline, size: 72, color: cs.primary),
-          const SizedBox(height: 16),
-          Text('Order placed!', style: tt.headlineMedium),
-          const SizedBox(height: 8),
-          Text('Order #${state.orderId}', style: tt.bodyLarge?.copyWith(color: cs.secondary)),
-        ]),
-      );
-    }
-
     if (cart == null || cart.isEmpty) {
       return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(Icons.shopping_cart_outlined, size: 64, color: cs.onSurfaceVariant),
-          const SizedBox(height: 16),
-          Text('checkout.empty_bag'.tr(),
-              style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant)),
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shopping_cart_outlined,
+              size: 64,
+              color: cs.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'checkout.empty_bag'.tr(),
+              style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+            ),
+          ],
+        ),
       );
     }
 
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.fromSTEB(24, 8, 24, 96),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('checkout.your_bag'.tr(),
-            style: tt.headlineMedium?.copyWith(fontSize: 36, color: cs.onSurface)),
-        const SizedBox(height: 8),
-        Text('checkout.review_selection'.tr(), style: tt.bodySmall),
-        const SizedBox(height: 40),
-        ...cart.items.map((item) => Padding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'checkout.your_bag'.tr(),
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 36,
+              color: cs.onSurface,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text('checkout.review_selection'.tr(), style: tt.bodySmall),
+          const SizedBox(height: 40),
+          ...cart.items.map(
+            (item) => Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: CartItemCard(
                 item: item,
@@ -85,15 +105,18 @@ class CartScreen extends StatelessWidget {
                 onDecrement: () => cubit.decrement(item.id),
                 onRemove: () => cubit.remove(item.id),
               ),
-            )),
-        const SizedBox(height: 8),
-        OrderSummaryCard(
-          subtotal: '\$${cart.subtotal.toStringAsFixed(2)}',
-          shipping: 'checkout.calculated_next'.tr(),
-          total: '\$${cart.subtotal.toStringAsFixed(2)}',
-          onCheckout: cubit.placeOrder,
-        ),
-      ]),
+            ),
+          ),
+          const SizedBox(height: 8),
+          OrderSummaryCard(
+            subtotal: '\$${cart.subtotal.toStringAsFixed(2)}',
+            shipping: 'checkout.calculated_next'.tr(),
+            total: '\$${cart.subtotal.toStringAsFixed(2)}',
+            onCheckout: () =>
+                context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
+          ),
+        ],
+      ),
     );
   }
 }

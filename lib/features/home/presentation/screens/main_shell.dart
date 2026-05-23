@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../features/checkout/presentation/cubit/cart_cubit.dart';
 import '../../../../features/checkout/presentation/screens/cart_screen.dart';
+import '../../../../features/checkout/presentation/screens/order_confirmation_screen.dart';
 import '../../../../features/checkout/presentation/screens/payment_screen.dart';
 import '../../../../features/customization/presentation/screens/customization_screen.dart';
 import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
@@ -39,6 +40,7 @@ class MainShell extends StatelessWidget {
         SettingsRoute() => const SettingsScreen(),
         EditProfileRoute() => const EditProfileScreen(),
         OrdersHistoryRoute() => const OrdersScreen(),
+        OrderConfirmationRoute() => const OrderConfirmationScreen(),
       };
 
   @override
@@ -62,7 +64,10 @@ class MainShell extends StatelessWidget {
               child: Column(children: [
                 AppAppBar(
                   title: AppConfig.appName,
-                  leading: state.hasSecondary
+                  // Show back on every secondary screen EXCEPT OrderConfirmation
+                  // (the user must not return to the Payment screen after placing an order).
+                  leading: state.hasSecondary &&
+                          state.currentSecondary is! OrderConfirmationRoute
                       ? IconButton(
                           icon: const Icon(Icons.arrow_back),
                           onPressed: () =>
@@ -70,6 +75,7 @@ class MainShell extends StatelessWidget {
                         )
                       : null,
                   actions: [
+                    // Settings gear: only on the Account tab with nothing open on top.
                     if (!state.hasSecondary && state.tabIndex == 3)
                       IconButton(
                         padding: EdgeInsets.zero,
@@ -78,7 +84,9 @@ class MainShell extends StatelessWidget {
                             .pushSecondary(const SettingsRoute()),
                         icon: const Icon(Icons.settings_outlined),
                       ),
-                    if (!state.isInCartFlow)
+                    // Cart icon: hide whenever ANY secondary screen is open.
+                    // (Settings, EditProfile, Customisation etc. don't need it.)
+                    if (!state.hasSecondary)
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () => context

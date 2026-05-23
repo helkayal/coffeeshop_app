@@ -79,7 +79,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () => context.read<ShellCubit>().selectTab(0),
+            onPressed: () => context.read<ShellCubit>().clearAndPush(const OrderConfirmationRoute()),
             icon: const Icon(Icons.check_circle, size: 20),
             label: Text('checkout.confirm_order'.tr()),
             style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),

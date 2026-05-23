@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Brand Color
+  // Brand Color (dark mode primary)
   static const Color primary = Color(0xFFE6A552);
 
-  // --- Light Theme ---
-  static const Color lightPrimaryContainer = Color(0xFFE08850);
+  // --- Light Theme (matches Stitch Coffee Shop light mode) ---
+  static const Color lightPrimary = Color(0xFF865300);
   static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFFFDDB8);
 
-  static const Color lightSecondary = Color(0xFF78706A);
-  static const Color lightSecondaryContainer = Color(0xFFEAE2DA);
+  static const Color lightSecondary = Color(0xFF705C4E);
+  static const Color lightSecondaryContainer = Color(0xFFF1E6DC);
   static const Color lightOnSecondary = Color(0xFFFFFFFF);
 
   static const Color lightTertiary = Color(0xFF8C3C3C);
   static const Color lightTertiaryContainer = Color(0xFFD47070);
   static const Color lightOnTertiary = Color(0xFFFFFFFF);
 
-  static const Color lightBackground = Color(0xFFFAF5EE);
-  static const Color lightOnBackground = Color(0xFF3A302A);
-  static const Color lightSurface = Color(0xFFFAF5EE);
-  static const Color lightOnSurface = Color(0xFF3A302A);
-  static const Color lightOutline = Color(0xFF9A9088);
-  static const Color lightOutlineVariant = Color(0xFFD8D0C8);
+  static const Color lightBackground = Color(0xFFFDF8F4);
+  static const Color lightOnBackground = Color(0xFF201B15);
+  static const Color lightSurface = Color(0xFFFDF8F4);
+  static const Color lightOnSurface = Color(0xFF201B15);
+  static const Color lightOnSurfaceVariant = Color(0xFF514537);
+  static const Color lightOutline = Color(0xFF837566);
+  static const Color lightOutlineVariant = Color(0xFFD5C3B2);
+  static const Color lightSurfaceContainerLow = Color(0xFFF8EDE3);
+  static const Color lightSurfaceContainerHighest = Color(0xFFF1E6DC);
 
   // --- Dark Theme ---
   static const Color darkPrimaryContainer = Color(0xFFE6A552);

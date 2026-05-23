@@ -175,7 +175,13 @@
     "apple_pay": "Apple Pay",
     "confirm_order": "CONFIRM ORDER",
     "order_summary": "Order Summary",
-    "calculated_next": "Calculated next step"
+    "calculated_next": "Calculated next step",
+    "order_complete": "Order Complete!",
+    "order_complete_sub": "Your order has been placed successfully.",
+    "receipt": "Receipt",
+    "order_number": "Order Number",
+    "date": "Date",
+    "back_home": "Back to Home"
   },
   "credit_card": {
     "saved_cards": "Saved Cards",
