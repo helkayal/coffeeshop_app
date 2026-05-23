@@ -40,6 +40,10 @@ class ViewBenefitsRoute extends SecondaryRoute {
   const ViewBenefitsRoute();
 }
 
+class ReferralRoute extends SecondaryRoute {
+  const ReferralRoute();
+}
+
 class WalletRoute extends SecondaryRoute {
   const WalletRoute();
 }

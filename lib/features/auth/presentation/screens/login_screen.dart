@@ -49,7 +49,12 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
       return;
     }
 
-    context.read<AuthCubit>().login(email, password);
+    // context.read<AuthCubit>().login(email, password);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.home,
+      (route) => false,
+    );
   }
 
   @override

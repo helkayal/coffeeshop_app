@@ -88,7 +88,7 @@ class AccountScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           AccountCard(
-            icon: Icons.card_giftcard,
+            icon: Icons.card_giftcard, onTap: () => context.read<ShellCubit>().pushSecondary(const ReferralRoute()),
             label: 'profile_screen.referral'.tr(),
           ),
           const SizedBox(height: 12),

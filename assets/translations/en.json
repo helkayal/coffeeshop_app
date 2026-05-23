@@ -252,5 +252,11 @@
     "earn_referral": "Earn 50 points for each referral",
     "earn_birthday": "Earn 100 bonus points on your birthday",
     "rewards": "Rewards"
+  },
+  "referral": {
+    "your_code": "Your Referral Code",
+    "share_earn": "Share this code with friends and earn",
+    "reward": "50 Points per referral!",
+    "history": "Referral History"
   }
 }
