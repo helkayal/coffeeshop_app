@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ShoppingCard extends StatelessWidget {
+class AccountCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
 
-  const ShoppingCard({
+  const AccountCard({
     super.key,
     required this.icon,
     required this.label,
@@ -29,7 +29,8 @@ class ShoppingCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: cs.primary.withAlpha(26),
@@ -37,8 +38,7 @@ class ShoppingCard extends StatelessWidget {
               child: Icon(icon, color: cs.primary, size: 20),
             ),
             const SizedBox(width: 16),
-            Text(label,
-                style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+            Text(label, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
             const Spacer(),
             Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
           ],

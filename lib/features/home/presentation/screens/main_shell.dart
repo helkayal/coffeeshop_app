@@ -17,9 +17,9 @@ import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/menu/presentation/screens/menu_screen.dart';
 import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../../../features/orders/presentation/screens/orders_screen.dart';
-import '../../../../features/profile/presentation/cubit/profile_cubit.dart';
-import '../../../../features/profile/presentation/screens/account_screen.dart';
-import '../../../../features/profile/presentation/screens/edit_profile_screen.dart';
+import '../../../account/presentation/cubit/profile_cubit.dart';
+import '../../../account/presentation/screens/account_screen.dart';
+import '../../../account/presentation/screens/edit_profile_screen.dart';
 import '../../../../features/settings/presentation/screens/settings_screen.dart';
 import 'home_screen.dart';
 
@@ -34,14 +34,14 @@ class MainShell extends StatelessWidget {
   ];
 
   static Widget _buildSecondary(SecondaryRoute route) => switch (route) {
-        CartRoute() => const CartScreen(),
-        PaymentRoute() => const PaymentScreen(),
-        CustomizationRoute() => const CustomizationScreen(),
-        SettingsRoute() => const SettingsScreen(),
-        EditProfileRoute() => const EditProfileScreen(),
-        OrdersHistoryRoute() => const OrdersScreen(),
-        OrderConfirmationRoute() => const OrderConfirmationScreen(),
-      };
+    CartRoute() => const CartScreen(),
+    PaymentRoute() => const PaymentScreen(),
+    CustomizationRoute() => const CustomizationScreen(),
+    SettingsRoute() => const SettingsScreen(),
+    EditProfileRoute() => const EditProfileScreen(),
+    OrdersHistoryRoute() => const OrdersScreen(),
+    OrderConfirmationRoute() => const OrderConfirmationScreen(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -61,50 +61,53 @@ class MainShell extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
-              child: Column(children: [
-                AppAppBar(
-                  title: AppConfig.appName,
-                  // Show back on every secondary screen EXCEPT OrderConfirmation
-                  // (the user must not return to the Payment screen after placing an order).
-                  leading: state.hasSecondary &&
-                          state.currentSecondary is! OrderConfirmationRoute
-                      ? IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () =>
-                              context.read<ShellCubit>().popSecondary(),
-                        )
-                      : null,
-                  actions: [
-                    // Settings gear: only on the Account tab with nothing open on top.
-                    if (!state.hasSecondary && state.tabIndex == 3)
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => context
-                            .read<ShellCubit>()
-                            .pushSecondary(const SettingsRoute()),
-                        icon: const Icon(Icons.settings_outlined),
-                      ),
-                    // Cart icon: hide whenever ANY secondary screen is open.
-                    // (Settings, EditProfile, Customisation etc. don't need it.)
-                    if (!state.hasSecondary)
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => context
-                            .read<ShellCubit>()
-                            .pushSecondary(const CartRoute()),
-                        icon: const Icon(Icons.shopping_cart_outlined),
-                      ),
-                  ],
-                ),
-                Expanded(
-                  child: state.hasSecondary
-                      ? _buildSecondary(state.currentSecondary!)
-                      : IndexedStack(
-                          index: state.tabIndex,
-                          children: _tabScreens,
+              child: Column(
+                children: [
+                  AppAppBar(
+                    title: AppConfig.appName,
+                    // Show back on every secondary screen EXCEPT OrderConfirmation
+                    // (the user must not return to the Payment screen after placing an order).
+                    leading:
+                        state.hasSecondary &&
+                            state.currentSecondary is! OrderConfirmationRoute
+                        ? IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () =>
+                                context.read<ShellCubit>().popSecondary(),
+                          )
+                        : null,
+                    actions: [
+                      // Settings gear: only on the Account tab with nothing open on top.
+                      if (!state.hasSecondary && state.tabIndex == 3)
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () => context
+                              .read<ShellCubit>()
+                              .pushSecondary(const SettingsRoute()),
+                          icon: const Icon(Icons.settings_outlined),
                         ),
-                ),
-              ]),
+                      // Cart icon: hide whenever ANY secondary screen is open.
+                      // (Settings, EditProfile, Customisation etc. don't need it.)
+                      if (!state.hasSecondary)
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () => context
+                              .read<ShellCubit>()
+                              .pushSecondary(const CartRoute()),
+                          icon: const Icon(Icons.shopping_cart_outlined),
+                        ),
+                    ],
+                  ),
+                  Expanded(
+                    child: state.hasSecondary
+                        ? _buildSecondary(state.currentSecondary!)
+                        : IndexedStack(
+                            index: state.tabIndex,
+                            children: _tabScreens,
+                          ),
+                  ),
+                ],
+              ),
             ),
             bottomNavigationBar: AppBottomNavBar(
               currentIndex: state.hasSecondary ? -1 : state.tabIndex,

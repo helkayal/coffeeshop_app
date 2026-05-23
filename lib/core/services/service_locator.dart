@@ -49,12 +49,12 @@ import '../../features/orders/domain/repositories/orders_repository.dart';
 import '../../features/orders/domain/usecases/orders_usecases.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 
-import '../../features/profile/data/datasources/profile_data_source.dart';
-import '../../features/profile/data/datasources/profile_data_source_impl.dart';
-import '../../features/profile/data/repositories/profile_repository_impl.dart';
-import '../../features/profile/domain/repositories/profile_repository.dart';
-import '../../features/profile/domain/usecases/profile_usecases.dart';
-import '../../features/profile/presentation/cubit/profile_cubit.dart';
+import '../../features/account/data/datasources/profile_data_source.dart';
+import '../../features/account/data/datasources/profile_data_source_impl.dart';
+import '../../features/account/data/repositories/profile_repository_impl.dart';
+import '../../features/account/domain/repositories/profile_repository.dart';
+import '../../features/account/domain/usecases/profile_usecases.dart';
+import '../../features/account/presentation/cubit/profile_cubit.dart';
 
 import '../../features/settings/data/datasources/settings_local_data_source.dart';
 import '../../features/settings/data/repositories/settings_repository_impl.dart';
@@ -74,7 +74,9 @@ Future<void> setupServiceLocator() async {
   await localStorage.init();
   sl.registerSingleton<LocalStorageService>(localStorage);
 
-  sl.registerLazySingleton<ApiService>(() => ApiService(sl<LocalStorageService>()));
+  sl.registerLazySingleton<ApiService>(
+    () => ApiService(sl<LocalStorageService>()),
+  );
 
   // ── Auth ────────────────────────────────────────────────────────────────────
 
@@ -90,21 +92,27 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
-  sl.registerFactory(() => AuthCubit(loginUseCase: sl(), registerUseCase: sl()));
+  sl.registerFactory(
+    () => AuthCubit(loginUseCase: sl(), registerUseCase: sl()),
+  );
 
   // ── Menu ────────────────────────────────────────────────────────────────────
 
   sl.registerLazySingleton<ProductRemoteDataSource>(
     () => ProductRemoteDataSourceImpl(sl()),
   );
-  sl.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(sl()));
+  sl.registerLazySingleton<ProductRepository>(
+    () => ProductRepositoryImpl(sl()),
+  );
   sl.registerLazySingleton(() => GetProducts(sl()));
   sl.registerLazySingleton(() => GetProductByIdUseCase(sl()));
 
   sl.registerLazySingleton<CategoryRemoteDataSource>(
     () => CategoryRemoteDataSourceImpl(sl()),
   );
-  sl.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(sl()));
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(sl()),
+  );
   sl.registerLazySingleton(() => GetCategories(sl()));
 
   sl.registerFactory(() => MenuCubit(getProducts: sl(), getCategories: sl()));
@@ -132,11 +140,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
   sl.registerLazySingleton(() => GetLoyaltyPointsUseCase(sl()));
-  sl.registerFactory(() => ProfileCubit(
-        getProfile: sl(),
-        updateProfile: sl(),
-        getLoyaltyPoints: sl(),
-      ));
+  sl.registerFactory(
+    () => ProfileCubit(
+      getProfile: sl(),
+      updateProfile: sl(),
+      getLoyaltyPoints: sl(),
+    ),
+  );
 
   // ── Cart / Checkout ─────────────────────────────────────────────────────────
 
@@ -151,14 +161,16 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => RemoveCartItemUseCase(sl()));
   sl.registerLazySingleton(() => ClearCartUseCase(sl()));
   sl.registerLazySingleton(() => PlaceOrderUseCase(sl()));
-  sl.registerFactory(() => CartCubit(
-        getCart: sl(),
-        addToCart: sl(),
-        updateItem: sl(),
-        removeItem: sl(),
-        clearCart: sl(),
-        placeOrder: sl(),
-      ));
+  sl.registerFactory(
+    () => CartCubit(
+      getCart: sl(),
+      addToCart: sl(),
+      updateItem: sl(),
+      removeItem: sl(),
+      clearCart: sl(),
+      placeOrder: sl(),
+    ),
+  );
 
   // ── Orders ──────────────────────────────────────────────────────────────────
 
@@ -191,8 +203,7 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton(() => GetSettingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateSettingsUseCase(sl()));
-  sl.registerFactory(() => SettingsCubit(
-        getSettings: sl(),
-        updateSettings: sl(),
-      ));
+  sl.registerFactory(
+    () => SettingsCubit(getSettings: sl(), updateSettings: sl()),
+  );
 }
