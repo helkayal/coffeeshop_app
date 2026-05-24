@@ -258,5 +258,9 @@
     "share_earn": "Share this code with friends and earn",
     "reward": "50 Points per referral!",
     "history": "Referral History"
+  },
+  "payment_methods": {
+    "saved_cards": "Saved Cards",
+    "other_methods": "Other Payment Methods"
   }
 }

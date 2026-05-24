@@ -83,7 +83,7 @@ class AccountScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           AccountCard(
-            icon: Icons.payments,
+            icon: Icons.payments, onTap: () => context.read<ShellCubit>().pushSecondary(const PaymentMethodsRoute()),
             label: 'profile_screen.payment_methods'.tr(),
           ),
           const SizedBox(height: 12),

@@ -44,6 +44,10 @@ class ReferralRoute extends SecondaryRoute {
   const ReferralRoute();
 }
 
+class PaymentMethodsRoute extends SecondaryRoute {
+  const PaymentMethodsRoute();
+}
+
 class WalletRoute extends SecondaryRoute {
   const WalletRoute();
 }
@@ -62,38 +66,39 @@ class ShellState {
   SecondaryRoute? get currentSecondary =>
       hasSecondary ? secondaryStack.last : null;
 
-  /// True when any checkout-related route is already in the stack.
-  /// Used to decide whether to show the cart icon in the app bar.
-  bool get isInCartFlow => secondaryStack.any((r) => r is CartRoute);
+  ShellState copyWith({
+    int? tabIndex,
+    List<SecondaryRoute>? secondaryStack,
+  }) =>
+      ShellState(
+        tabIndex: tabIndex ?? this.tabIndex,
+        secondaryStack: secondaryStack ?? this.secondaryStack,
+      );
 }
 
 // ---------------------------------------------------------------------------
 // Cubit — manages the entire app shell (tab + in-shell back-stack).
-// Kept in core/ because it is app-wide, not home-feature-specific.
 // ---------------------------------------------------------------------------
 
 class ShellCubit extends Cubit<ShellState> {
   ShellCubit() : super(const ShellState());
 
-  /// Select a bottom-nav tab. Always clears the secondary stack so the user
-  /// sees the raw tab screen, not a lingering secondary overlay.
+  /// Select a bottom-nav tab and clear any open secondary screens.
   void selectTab(int index) =>
-      emit(ShellState(tabIndex: index, secondaryStack: const []));
+      emit(state.copyWith(tabIndex: index, secondaryStack: const []));
 
-  void pushSecondary(SecondaryRoute route) {
-    emit(ShellState(
-      tabIndex: state.tabIndex,
-      secondaryStack: [...state.secondaryStack, route],
-    ));
-  }
+  void pushSecondary(SecondaryRoute route) =>
+      emit(state.copyWith(secondaryStack: [...state.secondaryStack, route]));
 
   void popSecondary() {
     if (state.secondaryStack.isEmpty) return;
     final stack = [...state.secondaryStack]..removeLast();
-    emit(ShellState(tabIndex: state.tabIndex, secondaryStack: stack));
+    emit(state.copyWith(secondaryStack: stack));
   }
 
-  void clearAndPush(SecondaryRoute route) {
-    emit(ShellState(tabIndex: state.tabIndex, secondaryStack: [route]));
-  }
+  /// Replace the entire secondary stack with a single route.
+  /// Used for terminal flows like Order Confirmation where going
+  /// back to Payment makes no sense.
+  void clearAndPush(SecondaryRoute route) =>
+      emit(state.copyWith(secondaryStack: [route]));
 }

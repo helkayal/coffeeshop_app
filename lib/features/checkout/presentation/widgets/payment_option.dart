@@ -6,6 +6,7 @@ class PaymentOption extends StatelessWidget {
   final bool isSelected;
   final bool isCheckbox;
   final VoidCallback onTap;
+  final bool showDefaultBadge;
 
   const PaymentOption({
     super.key,
@@ -14,6 +15,7 @@ class PaymentOption extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.isCheckbox = false,
+    this.showDefaultBadge = false,
   });
 
   @override
@@ -36,6 +38,14 @@ class PaymentOption extends StatelessWidget {
           Expanded(
             child: Text(label, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
           ),
+          if (isSelected && showDefaultBadge) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(color: cs.primary.withAlpha(26), borderRadius: BorderRadius.circular(6)),
+              child: Text('Default', style: tt.bodySmall?.copyWith(color: cs.primary, fontWeight: FontWeight.w600, fontSize: 11)),
+            ),
+            const SizedBox(width: 8),
+          ],
           Icon(
             isCheckbox
                 ? (isSelected ? Icons.check_box : Icons.check_box_outline_blank)

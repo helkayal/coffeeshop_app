@@ -45,10 +45,12 @@ class ProductListItem extends StatelessWidget {
                     builder: (context, favState) {
                       final isFav = favState is FavoritesLoaded &&
                           favState.isFavorite(product.id);
-                      return GestureDetector(
-                        onTap: () =>
+                      return IconButton(
+                        onPressed: () =>
                             context.read<FavoritesCubit>().toggle(product.id),
-                        child: Icon(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: Icon(
                           isFav ? Icons.favorite : Icons.favorite_border,
                           color: isFav ? cs.primary : cs.onSurfaceVariant,
                           size: 20,
@@ -80,9 +82,13 @@ class _ProductActions extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      GestureDetector(
+      InkWell(
         onTap: () => context.read<ShellCubit>().pushSecondary(const CustomizationRoute()),
-        child: Text('menu_screen.view_more'.tr(), style: tt.labelLarge?.copyWith(color: cs.primary)),
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+          child: Text('menu_screen.view_more'.tr(), style: tt.labelLarge?.copyWith(color: cs.primary)),
+        ),
       ),
       Container(
         width: 32, height: 32,

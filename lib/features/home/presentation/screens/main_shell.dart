@@ -3,27 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/app_config.dart';
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/routes/shell_router.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../features/checkout/presentation/cubit/cart_cubit.dart';
-import '../../../../features/checkout/presentation/screens/cart_screen.dart';
-import '../../../../features/checkout/presentation/screens/order_confirmation_screen.dart';
-import '../../../../features/checkout/presentation/screens/payment_screen.dart';
-import '../../../../features/customization/presentation/screens/customization_screen.dart';
 import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
-import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
-import '../../../../features/menu/presentation/screens/menu_screen.dart';
 import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
-import '../../../../features/orders/presentation/screens/orders_screen.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/screens/account_screen.dart';
-import '../../../account/presentation/screens/edit_profile_screen.dart';
-import '../../../account/presentation/screens/view_benefits_screen.dart';
-import '../../../account/presentation/screens/wallet_screen.dart';
-import '../../../account/presentation/screens/referral_screen.dart';
-import '../../../../features/settings/presentation/screens/settings_screen.dart';
+import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
+import '../../../../features/menu/presentation/screens/menu_screen.dart';
 import 'home_screen.dart';
 
 class MainShell extends StatelessWidget {
@@ -36,19 +27,6 @@ class MainShell extends StatelessWidget {
     AccountScreen(),
   ];
 
-  static Widget _buildSecondary(SecondaryRoute route) => switch (route) {
-    CartRoute() => const CartScreen(),
-    PaymentRoute() => const PaymentScreen(),
-    CustomizationRoute() => const CustomizationScreen(),
-    SettingsRoute() => const SettingsScreen(),
-    EditProfileRoute() => const EditProfileScreen(),
-    OrdersHistoryRoute() => const OrdersScreen(),
-    OrderConfirmationRoute() => const OrderConfirmationScreen(),
-    ViewBenefitsRoute() => const ViewBenefitsScreen(),
-    WalletRoute() => const WalletScreen(),
-    ReferralRoute() => const ReferralScreen(),
-  };
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -60,10 +38,6 @@ class MainShell extends StatelessWidget {
         BlocProvider(create: (_) => sl<ProfileCubit>()..loadProfile()),
       ],
       child: BlocBuilder<ShellCubit, ShellState>(
-        buildWhen: (prev, curr) =>
-            prev.tabIndex != curr.tabIndex ||
-            prev.hasSecondary != curr.hasSecondary ||
-            prev.secondaryStack.length != curr.secondaryStack.length,
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
@@ -73,8 +47,7 @@ class MainShell extends StatelessWidget {
                     title: AppConfig.appName,
                     // Show back on every secondary screen EXCEPT OrderConfirmation
                     // (the user must not return to the Payment screen after placing an order).
-                    leading:
-                        state.hasSecondary &&
+                    leading: state.hasSecondary &&
                             state.currentSecondary is! OrderConfirmationRoute
                         ? IconButton(
                             icon: const Icon(Icons.arrow_back),
@@ -93,7 +66,6 @@ class MainShell extends StatelessWidget {
                           icon: const Icon(Icons.settings_outlined),
                         ),
                       // Cart icon: hide whenever ANY secondary screen is open.
-                      // (Settings, EditProfile, Customisation etc. don't need it.)
                       if (!state.hasSecondary)
                         IconButton(
                           padding: EdgeInsets.zero,
@@ -105,12 +77,25 @@ class MainShell extends StatelessWidget {
                     ],
                   ),
                   Expanded(
-                    child: state.hasSecondary
-                        ? _buildSecondary(state.currentSecondary!)
-                        : IndexedStack(
-                            index: state.tabIndex,
-                            children: _tabScreens,
+                    child: Stack(
+                      children: [
+                        // Tab screens stay alive at all times.
+                        // IndexedStack is never unmounted when a secondary opens —
+                        // this is why taps always register immediately on return.
+                        IndexedStack(
+                          index: state.tabIndex,
+                          children: _tabScreens,
+                        ),
+                        // Secondary screen overlays the tabs with an opaque
+                        // Material surface. Material absorbs all touch events
+                        // so the (invisible) tab widgets cannot be triggered.
+                        if (state.hasSecondary)
+                          Material(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: ShellRouter.build(state.currentSecondary!),
                           ),
+                      ],
+                    ),
                   ),
                 ],
               ),
