@@ -1,5 +1,9 @@
+import 'dart:io';
+
 class ApiConstants {
-  static const String apiBaseUrl = 'http://0.0.0.0:8000/api/v1';
+  static final String apiBaseUrl = Platform.isAndroid
+      ? 'http://10.0.2.2:8000/api/v1'
+      : 'http://127.0.0.1:8000/api/v1';
 
   // Auth
   static const String login = '/auth/login';
