@@ -1,15 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import 'credit_card_sheet.dart';
 import 'payment_option.dart';
 import 'wallet_sheet.dart';
 
-/// Reusable payment method selector used in both [PaymentScreen]
-/// and [WalletScreen]. Manages its own selection state internally.
-///
-/// [onChanged] is fired whenever the user changes their selection,
-/// giving the parent the current values without owning the state.
 class PaymentMethodSelector extends StatefulWidget {
   final void Function(bool usePoints, String paymentMethod)? onChanged;
 
@@ -20,12 +15,30 @@ class PaymentMethodSelector extends StatefulWidget {
 }
 
 class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
-  bool _usePoints = false;
+  bool _usePoints = true; // Default: use wallet cash first
   String _paymentMethod = '';
 
   void _setMethod(String method) {
     setState(() => _paymentMethod = method);
     widget.onChanged?.call(_usePoints, method);
+  }
+
+  Future<void> _openCardSheet() async {
+    _setMethod('card');
+    await CreditCardSheet.show(context);
+    // Always notify parent after sheet closes — cards may have been
+    // synced to local storage during the sheet's initState.
+    if (mounted) {
+      widget.onChanged?.call(_usePoints, _paymentMethod);
+    }
+  }
+
+  Future<void> _openWalletSheet() async {
+    _setMethod('wallet');
+    final saved = await WalletSheet.show(context);
+    if (saved && mounted) {
+      widget.onChanged?.call(_usePoints, _paymentMethod);
+    }
   }
 
   void _togglePoints() {
@@ -53,7 +66,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
         const SizedBox(height: 16),
         PaymentOption(
           icon: Icons.star,
-          label: 'checkout.use_points'.tr(),
+          label: 'Use Coffee Wallet Cash First',
           isSelected: _usePoints,
           isCheckbox: true,
           onTap: _togglePoints,
@@ -63,20 +76,14 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
           icon: Icons.payments,
           label: 'checkout.credit_card'.tr(),
           isSelected: _paymentMethod == 'card',
-          onTap: () {
-            _setMethod('card');
-            CreditCardSheet.show(context);
-          },
+          onTap: _openCardSheet,
         ),
         const SizedBox(height: 12),
         PaymentOption(
           icon: Icons.account_balance_wallet,
           label: 'checkout.wallets'.tr(),
           isSelected: _paymentMethod == 'wallet',
-          onTap: () {
-            _setMethod('wallet');
-            WalletSheet.show(context);
-          },
+          onTap: _openWalletSheet,
         ),
         const SizedBox(height: 12),
         PaymentOption(

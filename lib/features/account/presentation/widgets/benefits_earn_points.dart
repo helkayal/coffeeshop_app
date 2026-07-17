@@ -13,6 +13,8 @@ class BenefitsEarnPoints extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(color: cs.surfaceContainerLow, borderRadius: BorderRadius.circular(16), border: Border.all(color: cs.outlineVariant.withAlpha(128))),
       child: Column(children: [
+        _earnRow(Icons.account_balance_wallet, 'benefits.earn_points_per_pound'.tr(), tt, cs),
+        const SizedBox(height: 12), Divider(color: cs.outlineVariant.withAlpha(77)), const SizedBox(height: 12),
         _earnRow(Icons.shopping_bag, 'benefits.earn_purchase'.tr(), tt, cs),
         const SizedBox(height: 12), Divider(color: cs.outlineVariant.withAlpha(77)), const SizedBox(height: 12),
         _earnRow(Icons.reviews, 'benefits.earn_review'.tr(), tt, cs),

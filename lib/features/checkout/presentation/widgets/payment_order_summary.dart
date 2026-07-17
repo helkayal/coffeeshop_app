@@ -1,8 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+import '../../domain/entities/cart_item.dart';
 
 class PaymentOrderSummary extends StatelessWidget {
-  const PaymentOrderSummary({super.key});
+  final List<CartItem> items;
+  final double total;
+
+  const PaymentOrderSummary({
+    super.key,
+    required this.items,
+    required this.total,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +26,26 @@ class PaymentOrderSummary extends StatelessWidget {
         border: Border.all(color: cs.outlineVariant.withAlpha(128)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('checkout.order_summary'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
+        Text('checkout.order_summary'.tr(),
+            style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
         const SizedBox(height: 16),
-        _OrderLine(icon: Icons.coffee, name: 'Ethiopian Yirgacheffe', desc: 'Pour over, Light roast', price: r'$8.00'),
-        const SizedBox(height: 16),
-        _OrderLine(icon: Icons.bakery_dining, name: 'Almond Croissant', desc: 'Warmed', price: r'$6.50'),
-        const SizedBox(height: 16),
+        ...items.map((item) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _OrderLine(
+                imagePath: item.imagePath,
+                name: item.name,
+                desc: item.variant.isNotEmpty ? item.variant : item.name,
+                price: '\$${item.total.toStringAsFixed(2)}',
+              ),
+            )),
+        const SizedBox(height: 8),
         Divider(color: cs.outlineVariant.withAlpha(128)),
         const SizedBox(height: 16),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('checkout.total'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          Text(r'$14.50', style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.primary)),
+          Text('checkout.total'.tr(),
+              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+          Text('\$${total.toStringAsFixed(2)}',
+              style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.primary)),
         ]),
       ]),
     );
@@ -35,12 +53,17 @@ class PaymentOrderSummary extends StatelessWidget {
 }
 
 class _OrderLine extends StatelessWidget {
-  final IconData icon;
+  final String imagePath;
   final String name;
   final String desc;
   final String price;
 
-  const _OrderLine({required this.icon, required this.name, required this.desc, required this.price});
+  const _OrderLine({
+    required this.imagePath,
+    required this.name,
+    required this.desc,
+    required this.price,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +71,33 @@ class _OrderLine extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Row(children: [
-      Container(
-        width: 48, height: 48,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: cs.surfaceContainerHighest),
-        child: Icon(icon, color: cs.primary, size: 24),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.network(
+          imagePath,
+          width: 48,
+          height: 48,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: cs.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(Icons.coffee, color: cs.primary, size: 24),
+          ),
+        ),
       ),
       const SizedBox(width: 16),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
-        Text(desc, style: tt.bodySmall),
-      ])),
-      Text(price, style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+          if (desc.isNotEmpty) Text(desc, style: tt.bodySmall),
+        ]),
+      ),
+      Text(price,
+          style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
     ]);
   }
 }

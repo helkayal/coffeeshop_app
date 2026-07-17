@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/social_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
-  const SocialLoginSection({super.key});
+  final void Function(String provider) onSocialLogin;
+
+  const SocialLoginSection({super.key, required this.onSocialLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,21 @@ class SocialLoginSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SocialButton(icon: Icons.g_mobiledata, onPressed: () {}, iconSize: 46),
+            SocialButton(
+              icon: Icons.g_mobiledata,
+              onPressed: () => onSocialLogin('google'),
+              iconSize: 46,
+            ),
             const SizedBox(width: 16),
-            SocialButton(icon: Icons.facebook, onPressed: () {}),
+            SocialButton(
+              icon: Icons.facebook,
+              onPressed: () => onSocialLogin('facebook'),
+            ),
             const SizedBox(width: 16),
-            SocialButton(icon: Icons.apple, onPressed: () {}),
+            SocialButton(
+              icon: Icons.apple,
+              onPressed: () => onSocialLogin('apple'),
+            ),
           ],
         ),
       ],

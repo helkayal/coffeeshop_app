@@ -20,6 +20,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
     super.initState();
+    // The cubit guards against redundant calls when data is already loaded.
     context.read<MenuCubit>().loadMenu();
   }
 

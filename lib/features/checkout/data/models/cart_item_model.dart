@@ -9,9 +9,15 @@ class CartItemModel extends CartItem {
     required super.variant,
     required super.unitPrice,
     required super.quantity,
+    super.modifierIds,
   });
 
   factory CartItemModel.fromMap(Map<String, dynamic> map) {
+    final idsRaw = map['modifier_ids'];
+    final modifierIds = idsRaw is List
+        ? idsRaw.map((e) => e.toString()).toList()
+        : <String>[];
+
     return CartItemModel(
       id: map['id'] as String,
       productId: map['product_id'] as String,
@@ -20,6 +26,7 @@ class CartItemModel extends CartItem {
       variant: map['variant'] as String,
       unitPrice: (map['unit_price'] as num).toDouble(),
       quantity: map['quantity'] as int,
+      modifierIds: modifierIds,
     );
   }
 
@@ -31,5 +38,6 @@ class CartItemModel extends CartItem {
         'variant': variant,
         'unit_price': unitPrice,
         'quantity': quantity,
+        'modifier_ids': modifierIds,
       };
 }

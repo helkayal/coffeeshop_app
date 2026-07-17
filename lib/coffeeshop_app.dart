@@ -42,6 +42,13 @@ class CoffeeShopApp extends StatelessWidget {
             themeMode: themeMode,
             initialRoute: initialRoute,
             onGenerateRoute: AppRoutes.onGenerateRoute,
+            onGenerateInitialRoutes: (initialRouteName) {
+              return [
+                AppRoutes.onGenerateRoute(
+                  RouteSettings(name: initialRouteName),
+                ),
+              ];
+            },
           );
         },
       ),

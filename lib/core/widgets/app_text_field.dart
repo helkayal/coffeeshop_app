@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final String? label;
   final String? hintText;
   final bool isPassword;
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final Widget? prefixIcon;
-  final Widget? suffixIcon;
+  final String? errorText;
 
   const AppTextField({
     super.key,
@@ -19,8 +19,15 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.keyboardType = TextInputType.text,
     this.prefixIcon,
-    this.suffixIcon,
+    this.errorText,
   });
+
+  @override
+  State<AppTextField> createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  bool _obscured = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +38,9 @@ class AppTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
+        if (widget.label != null) ...[
           Text(
-            label!,
+            widget.label!,
             style: textTheme.labelLarge?.copyWith(
               color: colorScheme.onSurface,
             ),
@@ -41,19 +48,30 @@ class AppTextField extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         TextField(
-          controller: controller,
-          obscureText: isPassword,
-          keyboardType: keyboardType,
+          controller: widget.controller,
+          obscureText: widget.isPassword && _obscured,
+          keyboardType: widget.keyboardType,
           style: textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurface,
           ),
           decoration: InputDecoration(
-            hintText: hintText,
+            hintText: widget.hintText,
             hintStyle: textTheme.bodyMedium?.copyWith(
               color: colorScheme.outline,
             ),
-            prefixIcon: prefixIcon,
-            suffixIcon: suffixIcon,
+            errorText: widget.errorText,
+            prefixIcon: widget.prefixIcon,
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: Icon(
+                      _obscured
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: colorScheme.outline,
+                    ),
+                    onPressed: () => setState(() => _obscured = !_obscured),
+                  )
+                : null,
             filled: true,
             fillColor: colorScheme.surface,
             border: _outlineBorder(colorScheme.outlineVariant),

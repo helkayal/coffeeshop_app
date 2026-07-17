@@ -6,8 +6,8 @@ class UserProfile {
   final String? gender;
   final String? state;
   final String? city;
-  final String? phone;
-  final String? profilePictureUrl;
+  final String? avatarUrl;
+  final String? dateOfBirth;
 
   const UserProfile({
     required this.id,
@@ -17,8 +17,8 @@ class UserProfile {
     this.gender,
     this.state,
     this.city,
-    this.phone,
-    this.profilePictureUrl,
+    this.avatarUrl,
+    this.dateOfBirth,
   });
 
   String get fullName => '$firstName $lastName';

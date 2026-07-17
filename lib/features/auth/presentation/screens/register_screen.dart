@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/constants/api_constants.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/services/api_service.dart';
 import '../../../../core/services/service_locator.dart';
-import '../../../../core/widgets/app_snack_bar.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/widgets/app_snack_bar.dart' show AppSnackBar, SnackBarType;
+import '../../../../core/widgets/app_text_field.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/register_form.dart';
@@ -36,7 +42,86 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _dateOfBirthController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  DateTime? _dateOfBirth;
+  String? _selectedImagePath;
+
+  String? _firstNameError;
+  String? _lastNameError;
+  String? _emailError;
+  String? _stateError;
+  String? _cityError;
+  String? _dateOfBirthError;
+  String? _passwordError;
+  String? _confirmPasswordError;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Clear per-field errors as soon as the user fixes the value.
+    _firstNameController.addListener(_clearFirstNameError);
+    _lastNameController.addListener(_clearLastNameError);
+    _emailController.addListener(_clearEmailError);
+    _passwordController.addListener(_clearPasswordError);
+    _confirmPasswordController.addListener(_clearConfirmPasswordError);
+
+    _stateNotifier.addListener(_clearStateError);
+    _cityNotifier.addListener(_clearCityError);
+  }
+
+  void _clearFirstNameError() {
+    if (_firstNameError != null && _firstNameController.text.trim().isNotEmpty) {
+      setState(() => _firstNameError = null);
+    }
+  }
+  void _clearLastNameError() {
+    if (_lastNameError != null && _lastNameController.text.trim().isNotEmpty) {
+      setState(() => _lastNameError = null);
+    }
+  }
+  void _clearEmailError() {
+    if (_emailError != null && _emailController.text.trim().isNotEmpty) {
+      setState(() => _emailError = null);
+    }
+  }
+  void _clearPasswordError() {
+    final text = _passwordController.text;
+    if (text.length >= 8) {
+      setState(() => _passwordError = null);
+    }
+    // Re-check confirm-password match if user already typed something there.
+    if (_confirmPasswordController.text.isNotEmpty) {
+      _clearConfirmPasswordError();
+    }
+  }
+  void _clearConfirmPasswordError() {
+    final text = _confirmPasswordController.text;
+    if (_confirmPasswordError == null && text.isEmpty) return;
+
+    if (text.isEmpty) {
+      setState(() => _confirmPasswordError = 'validation.confirm_password_required'.tr());
+    } else if (text.length < 8) {
+      setState(() => _confirmPasswordError = 'validation.password_min_length'.tr());
+    } else if (text != _passwordController.text) {
+      setState(() => _confirmPasswordError = 'validation.passwords_do_not_match'.tr());
+    } else {
+      setState(() => _confirmPasswordError = null);
+    }
+  }
+  void _clearStateError() {
+    if (_stateError != null && _stateNotifier.value != null) {
+      setState(() => _stateError = null);
+    }
+  }
+  void _clearCityError() {
+    if (_cityError != null && _cityNotifier.value != null) {
+      setState(() => _cityError = null);
+    }
+  }
 
   @override
   void dispose() {
@@ -46,11 +131,132 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
+    _dateOfBirthController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _selectedImagePath = picked.path);
+      sl<LocalStorageService>().setPendingAvatarPath(picked.path);
+    }
+  }
+
+  Future<void> _pickDateOfBirth() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dateOfBirth ?? now,
+      firstDate: DateTime(1900),
+      lastDate: now,
+      helpText: 'auth.date_of_birth'.tr(),
+    );
+    if (picked != null) {
+      setState(() {
+        _dateOfBirth = picked;
+        _dateOfBirthController.text =
+            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+        _dateOfBirthError = null;
+      });
+    }
+  }
+
+  bool _validate() {
+    var valid = true;
+
+    // First name
+    final firstName = _firstNameController.text.trim();
+    if (firstName.isEmpty) {
+      _firstNameError = 'validation.first_name_required'.tr();
+      valid = false;
+    } else {
+      _firstNameError = null;
+    }
+
+    // Last name
+    final lastName = _lastNameController.text.trim();
+    if (lastName.isEmpty) {
+      _lastNameError = 'validation.last_name_required'.tr();
+      valid = false;
+    } else {
+      _lastNameError = null;
+    }
+
+    // Email
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      _emailError = 'validation.email_required'.tr();
+      valid = false;
+    } else if (!_isValidEmail(email)) {
+      _emailError = 'validation.email_invalid'.tr();
+      valid = false;
+    } else {
+      _emailError = null;
+    }
+
+    // State
+    if (_stateNotifier.value == null) {
+      _stateError = 'validation.state_required'.tr();
+      valid = false;
+    } else {
+      _stateError = null;
+    }
+
+    // City
+    if (_cityNotifier.value == null) {
+      _cityError = 'validation.city_required'.tr();
+      valid = false;
+    } else {
+      _cityError = null;
+    }
+
+    // Date of birth
+    if (_dateOfBirth == null) {
+      _dateOfBirthError = 'validation.dob_required'.tr();
+      valid = false;
+    } else {
+      _dateOfBirthError = null;
+    }
+
+    // Password
+    final password = _passwordController.text;
+    if (password.isEmpty) {
+      _passwordError = 'validation.password_required'.tr();
+      valid = false;
+    } else if (password.length < 8) {
+      _passwordError = 'validation.password_min_length'.tr();
+      valid = false;
+    } else {
+      _passwordError = null;
+    }
+
+    // Confirm password
+    final confirmPassword = _confirmPasswordController.text;
+    if (confirmPassword.isEmpty) {
+      _confirmPasswordError = 'validation.confirm_password_required'.tr();
+      valid = false;
+    } else if (confirmPassword != password) {
+      _confirmPasswordError = 'validation.passwords_do_not_match'.tr();
+      valid = false;
+    } else {
+      _confirmPasswordError = null;
+    }
+
+    setState(() {});
+    return valid;
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+  }
+
   void _onRegisterPressed() {
+    if (!_validate()) return;
+
     context.read<AuthCubit>().register(
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
@@ -59,6 +265,58 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
       gender: _genderNotifier.value!,
       state: _stateNotifier.value,
       city: _cityNotifier.value,
+      dateOfBirth: _dateOfBirth,
+    );
+  }
+
+  void _showVerificationDialog(BuildContext context) {
+    final tokenCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: Text('verification.title'.tr()),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('verification.message'.tr()),
+            const SizedBox(height: 16),
+            AppTextField(
+              controller: tokenCtrl,
+              label: 'verification.token_label'.tr(),
+              prefixIcon: const Icon(Icons.verified_outlined),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, AppRoutes.login);
+            },
+            child: Text('verification.skip'.tr()),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final token = tokenCtrl.text.trim();
+              if (token.isEmpty) return;
+              try {
+                await sl<ApiService>().post(
+                  ApiConstants.verifyEmail,
+                  data: {'token': token},
+                );
+                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, AppRoutes.login);
+              } catch (_) {
+                AppSnackBar.show(context, 'Invalid or expired token',
+                    type: SnackBarType.error);
+              }
+            },
+            child: Text('verification.verify'.tr()),
+          ),
+        ],
+      ),
     );
   }
 
@@ -69,10 +327,9 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthError) {
-              AppSnackBar.show(context, state.message);
-            } else if (state is AuthAuthenticated) {
-              Navigator.pushNamedAndRemoveUntil(
-                context, AppRoutes.home, (route) => false);
+              AppSnackBar.show(context, state.message, type: SnackBarType.error);
+            } else if (state is AuthRegisterSuccess) {
+              _showVerificationDialog(context);
             }
           },
           builder: (context, state) => RegisterForm(
@@ -84,7 +341,20 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
             firstNameController: _firstNameController,
             lastNameController: _lastNameController,
             emailController: _emailController,
+            dateOfBirthController: _dateOfBirthController,
             passwordController: _passwordController,
+            confirmPasswordController: _confirmPasswordController,
+            onPickDateOfBirth: _pickDateOfBirth,
+            onPickImage: _pickImage,
+            selectedImagePath: _selectedImagePath,
+            firstNameError: _firstNameError,
+            lastNameError: _lastNameError,
+            emailError: _emailError,
+            stateError: _stateError,
+            cityError: _cityError,
+            dateOfBirthError: _dateOfBirthError,
+            passwordError: _passwordError,
+            confirmPasswordError: _confirmPasswordError,
           ),
         ),
       ),

@@ -30,7 +30,6 @@ class LoginForm extends StatelessWidget {
           hintText: 'auth.password'.tr(),
           isPassword: true,
           prefixIcon: Icon(Icons.lock_outline, color: colorScheme.outline),
-          suffixIcon: Icon(Icons.visibility_off_outlined, color: colorScheme.outline),
         ),
       ],
     );

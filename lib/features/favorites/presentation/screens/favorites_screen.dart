@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 
+import '../../../../core/widgets/empty_state.dart';
+import '../../../checkout/domain/entities/cart_item.dart';
+import '../../../checkout/presentation/cubit/cart_cubit.dart';
+import '../../../menu/presentation/widgets/product_list_item.dart';
 import '../cubit/favorites_cubit.dart';
 import '../cubit/favorites_state.dart';
-import '../widgets/favorite_item_card.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -31,23 +34,36 @@ class FavoritesScreen extends StatelessWidget {
                     child: Text(message,
                         style: tt.bodyMedium?.copyWith(color: cs.error))),
                 FavoritesLoaded(:final products) when products.isEmpty =>
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 48),
-                      child: Text('favorites_screen.no_favorites'.tr(),
-                          style: tt.bodyMedium?.copyWith(
-                              color: cs.onSurfaceVariant)),
-                    ),
-                  ),
+                  const EmptyState(message: 'favorites_screen.no_favorites'),
                 FavoritesLoaded(:final products) => Column(
                     children: [
                       for (final product in products) ...[
-                        FavoriteItemCard(
+                        ProductListItem(
                           product: product,
-                          onRemove: () =>
-                              context.read<FavoritesCubit>().toggle(product.id),
+                          onQuickAdd: () {
+                            final cartCubit = context.read<CartCubit>();
+                            final variantParts = <String>[];
+                            double upcharge = 0;
+                            for (final g in product.optionGroups) {
+                              if (g.values.isNotEmpty) {
+                                final opt = g.values.first;
+                                variantParts.add(opt.name);
+                                upcharge += opt.priceModifier;
+                              }
+                            }
+                            final item = CartItem(
+                              id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
+                              productId: product.id,
+                              name: product.name,
+                              imagePath: product.imagePath ?? '',
+                              variant: variantParts.join(' • '),
+                              unitPrice: product.basePrice + upcharge,
+                              quantity: 1,
+                            );
+                            cartCubit.addItem(item);
+                          },
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
                       ],
                     ],
                   ),

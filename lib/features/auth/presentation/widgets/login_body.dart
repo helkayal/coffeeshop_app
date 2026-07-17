@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -13,6 +13,8 @@ class LoginBody extends StatelessWidget {
   final TextEditingController passwordController;
   final bool isLoading;
   final VoidCallback onLoginPressed;
+  final VoidCallback onForgotPassword;
+  final void Function(String provider) onSocialLogin;
 
   const LoginBody({
     super.key,
@@ -20,6 +22,8 @@ class LoginBody extends StatelessWidget {
     required this.passwordController,
     required this.isLoading,
     required this.onLoginPressed,
+    required this.onForgotPassword,
+    required this.onSocialLogin,
   });
 
   @override
@@ -45,7 +49,7 @@ class LoginBody extends StatelessWidget {
           Align(
             alignment: AlignmentDirectional.centerEnd,
             child: TextButton(
-              onPressed: () {},
+              onPressed: onForgotPassword,
               child: Text(
                 'auth.forgot_password'.tr(),
                 style: textTheme.labelLarge?.copyWith(
@@ -63,7 +67,7 @@ class LoginBody extends StatelessWidget {
           const SizedBox(height: 16),
           const RegisterLink(),
           const SizedBox(height: 32),
-          const SocialLoginSection(),
+          SocialLoginSection(onSocialLogin: onSocialLogin),
           const SizedBox(height: 40),
         ],
       ),

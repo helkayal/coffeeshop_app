@@ -1,8 +1,9 @@
 import '../models/login_response.dart';
+import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<LoginResponse> login(String email, String password);
-  Future<LoginResponse> register({
+  Future<UserModel> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -10,5 +11,16 @@ abstract class AuthRemoteDataSource {
     required String gender,
     String? state,
     String? city,
+    DateTime? dateOfBirth,
+  });
+  Future<UserModel> getProfile();
+  Future<void> uploadAvatar(String filePath);
+  Future<Map<String, dynamic>> forgotPassword(String email);
+  Future<void> resetPassword(String token, String newPassword);
+  Future<LoginResponse> socialLogin({
+    required String provider,
+    required String email,
+    String? firstName,
+    String? lastName,
   });
 }

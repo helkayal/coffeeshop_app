@@ -6,7 +6,7 @@ class CompleteOnboardingUseCase {
 
   CompleteOnboardingUseCase(this.repository);
 
-  Future<Result<void>> call() {
-    return repository.completeOnboarding();
+  Future<Result<void>> call({Map<String, String>? answers}) {
+    return repository.completeOnboarding(answers: answers);
   }
 }

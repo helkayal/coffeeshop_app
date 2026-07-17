@@ -1,8 +1,5 @@
-import '../../../../config/app_config.dart';
 import '../../../../core/constants/api_constants.dart';
-import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/api_service.dart';
-import '../../../menu/data/mock_data.dart';
 import '../../../menu/data/models/product_model.dart';
 import '../../../menu/domain/entities/product.dart';
 
@@ -16,63 +13,44 @@ abstract class FavoritesDataSource {
 class FavoritesDataSourceImpl implements FavoritesDataSource {
   final ApiService _api;
 
-  // In-memory set for mock mode — resets on app restart.
-  final Set<String> _mockFavoriteIds = {'1', '2', '3', '4'};
+  // final Set<String> _mockFavoriteIds = {'1', '2', '3', '4'};
+  final Set<String> _cachedFavoriteIds = {};
 
   FavoritesDataSourceImpl(this._api);
 
   @override
   Future<List<Product>> getFavorites() async {
-    if (AppConfig.useMockData) {
-      return MockData.products
-          .where((p) => _mockFavoriteIds.contains(p.id))
-          .toList();
+    final data = await _api.get(ApiConstants.favorites);
+    final list = data as List<dynamic>;
+    final products = list
+        .map((j) => ProductModel.fromJson(j as Map<String, dynamic>))
+        .toList();
+
+    _cachedFavoriteIds.clear();
+    for (final p in products) {
+      _cachedFavoriteIds.add(p.id);
     }
-    try {
-      final response = await _api.get(ApiConstants.favorites);
-      final list = response.data as List;
-      return list
-          .map((j) => ProductModel.fromJson(j as Map<String, dynamic>))
-          .toList();
-    } catch (_) {
-      throw const ServerException('Failed to load favorites');
-    }
+
+    return products;
   }
 
   @override
   Future<bool> isFavorite(String productId) async {
-    if (AppConfig.useMockData) return _mockFavoriteIds.contains(productId);
-    try {
-      final response = await _api.get('${ApiConstants.favorites}/$productId');
-      return (response.data as Map<String, dynamic>)['is_favorite'] as bool;
-    } catch (_) {
-      return false;
-    }
+    return _cachedFavoriteIds.contains(productId);
   }
 
   @override
   Future<void> addFavorite(String productId) async {
-    if (AppConfig.useMockData) {
-      _mockFavoriteIds.add(productId);
-      return;
-    }
-    try {
-      await _api.post(ApiConstants.favorites, data: {'product_id': productId});
-    } catch (_) {
-      throw const ServerException('Failed to add favorite');
-    }
+    await _api.post(
+      ApiConstants.favorites,
+      data: {'menu_item_id': productId},
+    );
+    _cachedFavoriteIds.add(productId);
   }
 
   @override
   Future<void> removeFavorite(String productId) async {
-    if (AppConfig.useMockData) {
-      _mockFavoriteIds.remove(productId);
-      return;
-    }
-    try {
-      await _api.delete('${ApiConstants.favorites}/$productId');
-    } catch (_) {
-      throw const ServerException('Failed to remove favorite');
-    }
+    await _api.delete('${ApiConstants.favorites}/$productId');
+    _cachedFavoriteIds.remove(productId);
   }
 }

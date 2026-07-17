@@ -1,5 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../menu/domain/entities/product.dart';
+import '../../../menu/presentation/cubit/menu_cubit.dart';
+import '../../../menu/presentation/cubit/menu_state.dart';
 import '../../domain/entities/cart_item.dart';
 
 class CartItemCard extends StatelessWidget {
@@ -16,10 +21,29 @@ class CartItemCard extends StatelessWidget {
     required this.onRemove,
   });
 
+  String _resolveImage(MenuState? menuState) {
+    if (item.imagePath.isNotEmpty) return item.imagePath;
+    if (menuState is MenuLoaded && item.productId.isNotEmpty) {
+      Product? product;
+      for (final p in menuState.products) {
+        if (p.id == item.productId) {
+          product = p;
+          break;
+        }
+      }
+      if (product != null && product.imagePath != null) {
+        return product.imagePath!;
+      }
+    }
+    return item.imagePath;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+
+    final imageUrl = _resolveImage(context.watch<MenuCubit>().state);
 
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
@@ -29,8 +53,15 @@ class CartItemCard extends StatelessWidget {
           color: cs.surfaceContainerHighest,
         ),
         clipBehavior: Clip.antiAlias,
-        child: Image.asset(item.imagePath, fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest)),
+        child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+            placeholder: (_, _) => Container(color: cs.surfaceContainerHighest),
+            errorWidget: (_, _, _) => Image.asset(
+              'assets/images/no_item_image.png',
+              fit: BoxFit.cover,
+            ),
+          ),
       ),
       const SizedBox(width: 16),
       Expanded(

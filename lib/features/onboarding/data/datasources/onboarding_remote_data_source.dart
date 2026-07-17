@@ -1,27 +1,58 @@
-import '../../../../config/app_config.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../models/onboarding_question_model.dart';
+
+/// Maps frontend question option IDs to backend onboarding enums.
+const _coffeePreferenceMap = <String, String>{
+  '1a': 'black_bold',
+  '1b': 'sweet_creamy',
+  '1c': 'balanced',
+};
+
+const _flavorProfileMap = <String, String>{
+  '2a': 'nutty_chocolatey',
+  '2b': 'fruity_bright',
+  '2c': 'spiced_warm',
+};
+
+const _milkPreferenceMap = <String, String>{
+  '3a': 'whole_milk',
+  '3b': 'oat_milk',
+  '3c': 'almond_milk',
+  '3d': 'no_milk',
+};
 
 class OnboardingRemoteDataSource {
   final ApiService _apiService;
 
   OnboardingRemoteDataSource(this._apiService);
 
+  /// Questions are frontend-only — returns hardcoded localized question data.
   Future<List<OnboardingQuestionModel>> getQuestions() async {
-    if (AppConfig.useMockData) return _getMockQuestions();
-    return _getQuestionsFromApi();
+    return _getMockQuestions();
   }
 
-  Future<List<OnboardingQuestionModel>> _getQuestionsFromApi() async {
-    final response = await _apiService.get(ApiConstants.onboardingQuestions);
-    final List<dynamic> data = response.data as List<dynamic>;
-    return data
-        .map((json) =>
-            OnboardingQuestionModel.fromJson(json as Map<String, dynamic>))
-        .toList();
+  /// Saves the user's onboarding preferences to the backend.
+  Future<void> saveOnboarding(Map<String, String> answers) async {
+    final coffeePreference = _coffeePreferenceMap[answers['1']];
+    final flavorProfile = _flavorProfileMap[answers['2']];
+    final milkPreference = _milkPreferenceMap[answers['3']];
+
+    try {
+      await _apiService.post(
+        ApiConstants.onboarding,
+        data: {
+          'coffee_preference': ?coffeePreference,
+          'flavor_profile': ?flavorProfile,
+          'milk_preference': ?milkPreference,
+        },
+      );
+    } catch (_) {
+      // Silently skip — onboarding happens before login.
+    }
   }
 
+  // // --- Onboarding questions (frontend-only, always local) ---
   Future<List<OnboardingQuestionModel>> _getMockQuestions() async {
     await Future.delayed(const Duration(milliseconds: 500));
 

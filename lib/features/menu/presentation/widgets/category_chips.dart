@@ -36,7 +36,6 @@ class CategoryChips extends StatelessWidget {
           final isSelected = category.id == selectedId;
           return ChipItem(
             label: category.name,
-            imagePath: category.imagePath,
             isSelected: isSelected,
             onTap: () => onSelected(isSelected ? null : category.id),
           );

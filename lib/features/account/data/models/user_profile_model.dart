@@ -9,21 +9,21 @@ class UserProfileModel extends UserProfile {
     super.gender,
     super.state,
     super.city,
-    super.phone,
-    super.profilePictureUrl,
+    super.avatarUrl,
+    super.dateOfBirth,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
       id: json['id'] as String,
-      firstName: json['first_name'] as String,
-      lastName: json['last_name'] as String,
+      firstName: (json['first_name'] as String?) ?? '',
+      lastName: (json['last_name'] as String?) ?? '',
       email: json['email'] as String,
       gender: json['gender'] as String?,
       state: json['state'] as String?,
       city: json['city'] as String?,
-      phone: json['phone'] as String?,
-      profilePictureUrl: json['profile_picture_url'] as String?,
+      avatarUrl: json['avatar_url'] as String?,
+      dateOfBirth: json['date_of_birth'] as String?,
     );
   }
 
@@ -35,7 +35,7 @@ class UserProfileModel extends UserProfile {
         if (gender != null) 'gender': gender,
         if (state != null) 'state': state,
         if (city != null) 'city': city,
-        if (phone != null) 'phone': phone,
-        if (profilePictureUrl != null) 'profile_picture_url': profilePictureUrl,
+        if (avatarUrl != null) 'avatar_url': avatarUrl,
+        if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
       };
 }

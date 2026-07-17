@@ -19,6 +19,8 @@ dependencies:
   google_fonts: ^8.1.0
   get_it: ^9.2.1
   dio: ^5.9.2
+  image_picker: ^1.1.2
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -31,4 +33,3 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
-    - assets/menu_images/

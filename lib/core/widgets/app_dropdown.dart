@@ -9,6 +9,8 @@ class AppDropdown extends StatelessWidget {
   final List<String> items;
   final String? value;
   final ValueChanged<String?> onChanged;
+  final String? errorText;
+  final bool useLocalization;
 
   const AppDropdown({
     super.key,
@@ -16,6 +18,8 @@ class AppDropdown extends StatelessWidget {
     required this.items,
     required this.value,
     required this.onChanged,
+    this.errorText,
+    this.useLocalization = true,
   });
 
   @override
@@ -23,36 +27,52 @@ class AppDropdown extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final hasError = errorText != null;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: AppDesignConstants.radiusMedium,
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          hint: Text(
-            hint,
-            style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: AppDesignConstants.radiusMedium,
+            border: Border.all(
+              color: hasError ? colorScheme.error : colorScheme.outlineVariant,
+            ),
           ),
-          isExpanded: true,
-          dropdownColor: colorScheme.surface,
-          icon: Icon(Icons.keyboard_arrow_down, color: colorScheme.outline),
-          items: items.map((String item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              child: Text(
-                item.tr(),
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: value,
+              hint: Text(
+                hint,
+                style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
               ),
-            );
-          }).toList(),
-          onChanged: onChanged,
+              isExpanded: true,
+              dropdownColor: colorScheme.surface,
+              icon: Icon(Icons.keyboard_arrow_down, color: colorScheme.outline),
+              items: items.map((String item) {
+                return DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    useLocalization ? item.tr() : item,
+                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
+                  ),
+                );
+              }).toList(),
+              onChanged: onChanged,
+            ),
+          ),
         ),
-      ),
+        if (hasError)
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 4),
+            child: Text(
+              errorText!,
+              style: textTheme.bodySmall?.copyWith(color: colorScheme.error),
+            ),
+          ),
+      ],
     );
   }
 }

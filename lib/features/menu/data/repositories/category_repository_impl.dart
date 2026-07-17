@@ -1,8 +1,9 @@
+import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/repositories/category_repository.dart';
 import '../datasources/category_remote_data_source.dart';
-import '../mock_data.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource _remoteDataSource;
@@ -15,8 +16,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       final models = await _remoteDataSource.getCategories();
       return Success(models);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Failed to load categories'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return Success(MockData.categories);
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 }

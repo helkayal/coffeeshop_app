@@ -5,7 +5,12 @@ class AdditionCard extends StatefulWidget {
   final String price;
   final IconData icon;
 
-  const AdditionCard({super.key, required this.name, required this.price, required this.icon});
+  const AdditionCard({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.icon,
+  });
 
   @override
   State<AdditionCard> createState() => _AdditionCardState();
@@ -22,30 +27,37 @@ class _AdditionCardState extends State<AdditionCard> {
     return GestureDetector(
       onTap: () => setState(() => _selected = !_selected),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
-          color: _selected ? cs.surfaceContainer : cs.surfaceContainerLow.withAlpha(128),
+          color: _selected
+              ? cs.surfaceContainerHighest
+              : cs.surfaceContainerLow.withAlpha(128),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-              color: _selected ? cs.primary : cs.outlineVariant.withAlpha(102)),
+            color: _selected
+                ? cs.primary
+                : cs.outlineVariant.withAlpha(102),
+          ),
         ),
-        child: Row(children: [
-          Container(
-            width: 40, height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: cs.surfaceContainerHighest,
+        child: Row(
+          children: [
+            Container(
+              width: 40, height: 40,
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(widget.icon, size: 20, color: cs.onSurfaceVariant),
             ),
-            child: Icon(widget.icon, size: 20, color: cs.onSurfaceVariant),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(widget.name,
-                style: tt.labelLarge?.copyWith(
-                    fontSize: 14, color: cs.onSurface)),
-          ),
-          Text(widget.price, style: tt.bodySmall),
-        ]),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(widget.name,
+                  style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+            ),
+            Text(widget.price,
+                style: tt.labelLarge?.copyWith(color: cs.primary)),
+          ],
+        ),
       ),
     );
   }

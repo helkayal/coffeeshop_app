@@ -15,6 +15,7 @@ class RegisterUseCase {
     required String gender,
     String? state,
     String? city,
+    DateTime? dateOfBirth,
   }) =>
       repository.register(
         firstName: firstName,
@@ -24,5 +25,6 @@ class RegisterUseCase {
         gender: gender,
         state: state,
         city: city,
+        dateOfBirth: dateOfBirth,
       );
 }

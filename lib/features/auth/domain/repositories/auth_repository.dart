@@ -11,7 +11,16 @@ abstract class AuthRepository {
     required String gender,
     String? state,
     String? city,
+    DateTime? dateOfBirth,
   });
   Future<Result<void>> logout();
   Future<Result<User?>> getCachedUser();
+  Future<Result<Map<String, dynamic>>> forgotPassword(String email);
+  Future<Result<void>> resetPassword(String token, String newPassword);
+  Future<Result<User>> socialLogin({
+    required String provider,
+    required String email,
+    String? firstName,
+    String? lastName,
+  });
 }

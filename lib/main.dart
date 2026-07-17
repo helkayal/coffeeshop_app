@@ -14,9 +14,14 @@ void main() async {
   await setupServiceLocator();
 
   final localDataSource = sl<LocalStorageService>();
-  final initialRoute = localDataSource.isFirstRun()
-      ? AppRoutes.onboarding
-      : AppRoutes.login;
+
+  final String initialRoute;
+  if (localDataSource.getAuthToken() != null) {
+    // Token present from a previous session — go straight to home.
+    initialRoute = AppRoutes.home;
+  } else {
+    initialRoute = AppRoutes.login;
+  }
 
   runApp(
     EasyLocalization(

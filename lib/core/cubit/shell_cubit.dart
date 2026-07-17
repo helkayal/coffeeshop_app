@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/menu/domain/entities/product.dart';
+
 // ---------------------------------------------------------------------------
 // Secondary route definitions — one sealed type per in-shell destination.
 // ---------------------------------------------------------------------------
@@ -17,7 +19,8 @@ class PaymentRoute extends SecondaryRoute {
 }
 
 class CustomizationRoute extends SecondaryRoute {
-  const CustomizationRoute();
+  final Product? product;
+  const CustomizationRoute({this.product});
 }
 
 class SettingsRoute extends SecondaryRoute {
@@ -33,7 +36,8 @@ class OrdersHistoryRoute extends SecondaryRoute {
 }
 
 class OrderConfirmationRoute extends SecondaryRoute {
-  const OrderConfirmationRoute();
+  final String orderId;
+  const OrderConfirmationRoute({required this.orderId});
 }
 
 class ViewBenefitsRoute extends SecondaryRoute {
@@ -46,6 +50,10 @@ class ReferralRoute extends SecondaryRoute {
 
 class PaymentMethodsRoute extends SecondaryRoute {
   const PaymentMethodsRoute();
+}
+
+class LoyaltyHistoryRoute extends SecondaryRoute {
+  const LoyaltyHistoryRoute();
 }
 
 class WalletRoute extends SecondaryRoute {

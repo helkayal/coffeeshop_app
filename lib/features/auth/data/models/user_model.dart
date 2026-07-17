@@ -6,16 +6,22 @@ class UserModel extends User {
     required super.firstName,
     required super.lastName,
     required super.email,
-    super.profilePictureUrl,
+    super.avatarUrl,
+    super.gender,
+    super.state,
+    super.city,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      email: json['email'],
-      profilePictureUrl: json['profile_picture_url'],
+      id: json['id'] as String,
+      firstName: (json['first_name'] as String?) ?? '',
+      lastName: (json['last_name'] as String?) ?? '',
+      email: json['email'] as String,
+      avatarUrl: json['avatar_url'] as String?,
+      gender: json['gender'] as String?,
+      state: json['state'] as String?,
+      city: json['city'] as String?,
     );
   }
 
@@ -25,7 +31,10 @@ class UserModel extends User {
       'first_name': firstName,
       'last_name': lastName,
       'email': email,
-      'profile_picture_url': profilePictureUrl,
+      'avatar_url': avatarUrl,
+      'gender': gender,
+      'state': state,
+      'city': city,
     };
   }
 }

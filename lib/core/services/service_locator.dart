@@ -9,7 +9,8 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 
-import '../../features/checkout/data/datasources/cart_local_data_source.dart';
+import '../../features/checkout/data/datasources/cart_remote_data_source.dart';
+import '../../features/checkout/data/datasources/checkout_remote_data_source.dart';
 import '../../features/checkout/data/repositories/cart_repository_impl.dart';
 import '../../features/checkout/domain/repositories/cart_repository.dart';
 import '../../features/checkout/domain/usecases/cart_usecases.dart';
@@ -30,7 +31,7 @@ import '../../features/menu/data/repositories/category_repository_impl.dart';
 import '../../features/menu/data/repositories/product_repository_impl.dart';
 import '../../features/menu/domain/repositories/category_repository.dart';
 import '../../features/menu/domain/repositories/product_repository.dart';
-import '../../features/menu/domain/usecases/get_categories.dart';
+import '../../features/menu/domain/usecases/get_menu.dart';
 import '../../features/menu/domain/usecases/get_product_by_id.dart';
 import '../../features/menu/domain/usecases/get_products.dart';
 import '../../features/menu/presentation/cubit/menu_cubit.dart';
@@ -64,6 +65,7 @@ import '../../features/settings/presentation/cubit/settings_cubit.dart';
 
 import 'api_service.dart';
 import 'local_storage_service.dart';
+import 'location_service.dart';
 
 final sl = GetIt.instance;
 
@@ -76,6 +78,9 @@ Future<void> setupServiceLocator() async {
 
   sl.registerLazySingleton<ApiService>(
     () => ApiService(sl<LocalStorageService>()),
+  );
+  sl.registerLazySingleton<LocationService>(
+    () => LocationService(sl()),
   );
 
   // ── Auth ────────────────────────────────────────────────────────────────────
@@ -93,7 +98,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
   sl.registerFactory(
-    () => AuthCubit(loginUseCase: sl(), registerUseCase: sl()),
+    () => AuthCubit(loginUseCase: sl(), registerUseCase: sl(), authRepository: sl()),
   );
 
   // ── Menu ────────────────────────────────────────────────────────────────────
@@ -113,9 +118,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(sl()),
   );
-  sl.registerLazySingleton(() => GetCategories(sl()));
+  sl.registerLazySingleton(() => GetMenu(sl()));
 
-  sl.registerFactory(() => MenuCubit(getProducts: sl(), getCategories: sl()));
+  sl.registerFactory(() => MenuCubit(getMenu: sl(), getProducts: sl()));
 
   // ── Onboarding ──────────────────────────────────────────────────────────────
 
@@ -132,7 +137,7 @@ Future<void> setupServiceLocator() async {
   // ── Profile ─────────────────────────────────────────────────────────────────
 
   sl.registerLazySingleton<ProfileDataSource>(
-    () => ProfileDataSourceImpl(sl(), sl<LocalStorageService>()),
+    () => ProfileDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(sl()),
@@ -145,22 +150,26 @@ Future<void> setupServiceLocator() async {
       getProfile: sl(),
       updateProfile: sl(),
       getLoyaltyPoints: sl(),
+      apiService: sl(),
     ),
   );
 
   // ── Cart / Checkout ─────────────────────────────────────────────────────────
 
-  final cartLocal = CartLocalDataSource();
-  await cartLocal.init();
-  sl.registerSingleton<CartLocalDataSource>(cartLocal);
+  sl.registerLazySingleton<CartRemoteDataSource>(
+    () => CartRemoteDataSourceImpl(sl()),
+  );
 
+  sl.registerLazySingleton<CheckoutRemoteDataSource>(
+    () => CheckoutRemoteDataSourceImpl(sl()),
+  );
   sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
   sl.registerLazySingleton(() => GetCartUseCase(sl()));
   sl.registerLazySingleton(() => AddToCartUseCase(sl()));
   sl.registerLazySingleton(() => UpdateCartItemUseCase(sl()));
   sl.registerLazySingleton(() => RemoveCartItemUseCase(sl()));
   sl.registerLazySingleton(() => ClearCartUseCase(sl()));
-  sl.registerLazySingleton(() => PlaceOrderUseCase(sl()));
+  sl.registerLazySingleton(() => PlaceOrderUseCase(sl(), sl()));
   sl.registerFactory(
     () => CartCubit(
       getCart: sl(),
@@ -199,7 +208,7 @@ Future<void> setupServiceLocator() async {
   sl.registerSingleton<SettingsLocalDataSource>(settingsLocal);
 
   sl.registerLazySingleton<SettingsRepository>(
-    () => SettingsRepositoryImpl(sl()),
+    () => SettingsRepositoryImpl(sl(), sl(), sl<LocalStorageService>()),
   );
   sl.registerLazySingleton(() => GetSettingsUseCase(sl()));
   sl.registerLazySingleton(() => UpdateSettingsUseCase(sl()));

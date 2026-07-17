@@ -16,8 +16,10 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Success(await _dataSource.getOrders());
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to load orders'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -27,8 +29,10 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Success(await _dataSource.getOrderById(id));
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Order not found'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 }

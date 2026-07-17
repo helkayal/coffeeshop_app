@@ -1,64 +1,53 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
-import '../../domain/usecases/get_categories.dart';
+import '../../domain/usecases/get_menu.dart';
 import '../../domain/usecases/get_products.dart';
 import 'menu_state.dart';
 
 class MenuCubit extends Cubit<MenuState> {
+  final GetMenu _getMenu;
   final GetProducts _getProducts;
-  final GetCategories _getCategories;
 
-  MenuCubit({
-    required GetProducts getProducts,
-    required GetCategories getCategories,
-  })  : _getProducts = getProducts,
-        _getCategories = getCategories,
-        super(const MenuInitial());
+  MenuCubit({required GetMenu getMenu, required GetProducts getProducts})
+    : _getMenu = getMenu,
+      _getProducts = getProducts,
+      super(const MenuInitial());
 
+  /// Loads the full menu with a **single** GET /menu request.
+  /// Guards against redundant or concurrent calls.
   Future<void> loadMenu() async {
+    if (state is MenuLoading || state is MenuLoaded) return;
     emit(const MenuLoading());
 
-    final productsResult = await _getProducts();
-    final categoriesResult = await _getCategories();
+    final result = await _getMenu();
 
-    final hasError = productsResult
-        .fold((_) => true, (_) => false) ||
-        categoriesResult.fold((_) => true, (_) => false);
-
-    if (hasError) {
-      // Products failure takes priority; fall through to category failure when products succeeded.
-      final message = productsResult.fold(
-        (f) => f.message,
-        (_) => categoriesResult.fold((f) => f.message, (_) => ''),
-      );
-      emit(MenuError(message.isNotEmpty ? message : tr('menu_screen.error_load')));
-      return;
-    }
-
-    productsResult.fold(
-      (_) => null,
-      (products) => categoriesResult.fold(
-        (_) => null,
-        (categories) => emit(MenuLoaded(products: products, categories: categories)),
+    result.fold(
+      (failure) => emit(MenuError(failure.message)),
+      (menu) => emit(
+        MenuLoaded(
+          categories: menu.categories,
+          products: menu.products,
+        ),
       ),
     );
   }
 
+  /// Filters products by category with a targeted GET /menu call.
   Future<void> selectCategory(String? categoryId) async {
     final current = state;
     if (current is! MenuLoaded) return;
 
-    final categories = current.categories;
     final result = await _getProducts(categoryId: categoryId);
 
     result.fold(
       (failure) => emit(MenuError(failure.message)),
-      (products) => emit(MenuLoaded(
-        products: products,
-        categories: categories,
-        selectedCategoryId: categoryId,
-      )),
+      (products) => emit(
+        MenuLoaded(
+          products: products,
+          categories: current.categories,
+          selectedCategoryId: categoryId,
+        ),
+      ),
     );
   }
 }

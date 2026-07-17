@@ -25,14 +25,19 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   }
 
   @override
-  Future<Result<void>> completeOnboarding() async {
+  Future<Result<void>> completeOnboarding({Map<String, String>? answers}) async {
     try {
+      if (answers != null && answers.isNotEmpty) {
+        await remoteDataSource.saveOnboarding(answers);
+      }
       await localDataSource.setFirstRunCompleted();
       return const Success(null);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Server Error'));
     } on CacheException catch (e) {
       return Error(CacheFailure(e.message ?? 'Cache Error'));
     } catch (e) {
-      return const Error(CacheFailure('Unexpected Error'));
+      return const Error(ServerFailure('Unexpected Error'));
     }
   }
 }

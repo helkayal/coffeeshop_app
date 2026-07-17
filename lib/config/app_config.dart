@@ -13,7 +13,7 @@ class AppConfig {
   static const ThemeMode defaultThemeMode = ThemeMode.dark;
 
   // Data source mode — set to false when a real backend is available.
-  static const bool useMockData = true;
+  static const bool useMockData = false;
 
   // Loyalty Tiers
   static const double tier1Boundary = 180.0;

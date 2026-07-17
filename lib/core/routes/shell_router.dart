@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../cubit/shell_cubit.dart';
 import '../../features/account/presentation/screens/edit_profile_screen.dart';
+import '../../features/account/presentation/screens/loyalty_history_screen.dart';
 import '../../features/account/presentation/screens/payment_methods_screen.dart';
 import '../../features/account/presentation/screens/referral_screen.dart';
 import '../../features/account/presentation/screens/view_benefits_screen.dart';
@@ -23,12 +24,14 @@ class ShellRouter {
   static Widget build(SecondaryRoute route) => switch (route) {
         CartRoute() => const CartScreen(),
         PaymentRoute() => const PaymentScreen(),
-        CustomizationRoute() => const CustomizationScreen(),
+        CustomizationRoute(:final product) => CustomizationScreen(product: product),
         SettingsRoute() => const SettingsScreen(),
         EditProfileRoute() => const EditProfileScreen(),
         OrdersHistoryRoute() => const OrdersScreen(),
-        OrderConfirmationRoute() => const OrderConfirmationScreen(),
+        OrderConfirmationRoute(:final orderId) =>
+            OrderConfirmationScreen(orderId: orderId),
         ViewBenefitsRoute() => const ViewBenefitsScreen(),
+        LoyaltyHistoryRoute() => const LoyaltyHistoryScreen(),
         WalletRoute() => const WalletScreen(),
         ReferralRoute() => const ReferralScreen(),
         PaymentMethodsRoute() => const PaymentMethodsScreen(),

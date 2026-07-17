@@ -6,11 +6,15 @@ import '../../../../core/widgets/app_text_field.dart';
 class NameFields extends StatelessWidget {
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
+  final String? firstNameError;
+  final String? lastNameError;
 
   const NameFields({
     super.key,
     required this.firstNameController,
     required this.lastNameController,
+    this.firstNameError,
+    this.lastNameError,
   });
 
   @override
@@ -24,6 +28,7 @@ class NameFields extends StatelessWidget {
             controller: firstNameController,
             hintText: 'auth.first_name'.tr(),
             prefixIcon: Icon(Icons.person_outline, color: colorScheme.outline),
+            errorText: firstNameError,
           ),
         ),
         const SizedBox(width: 16),
@@ -31,6 +36,7 @@ class NameFields extends StatelessWidget {
           child: AppTextField(
             controller: lastNameController,
             hintText: 'auth.last_name'.tr(),
+            errorText: lastNameError,
           ),
         ),
       ],

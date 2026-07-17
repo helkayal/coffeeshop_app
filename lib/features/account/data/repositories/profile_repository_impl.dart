@@ -16,8 +16,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Success(await _dataSource.getProfile());
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to load profile'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -27,8 +29,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Success(await _dataSource.updateProfile(profile));
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to update profile'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -38,8 +42,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Success(await _dataSource.getLoyaltyPoints());
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to load loyalty points'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
 }

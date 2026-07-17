@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/service_locator.dart';
+import '../../../orders/presentation/cubit/orders_cubit.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/usecases/cart_usecases.dart';
@@ -93,14 +95,20 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
-  Future<void> placeOrder() async {
+  Future<void> placeOrder({String paymentMethod = 'wallet'}) async {
     final current = _currentCart;
     if (current == null) return;
+    final items = List<CartItem>.from(current.items);
+    final total = current.subtotal;
     emit(CartActionInProgress(current));
-    final result = await _placeOrder(current);
+    final result = await _placeOrder(current, paymentMethod: paymentMethod);
     result.fold(
       (failure) => emit(CartError(failure.message)),
-      (orderId) => emit(OrderPlaced(orderId)),
+      (orderId) {
+        emit(OrderPlaced(orderId: orderId, items: items, total: total));
+        // Refresh orders in the background.
+        sl<OrdersCubit>().loadOrders();
+      },
     );
   }
 

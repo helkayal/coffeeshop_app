@@ -1,9 +1,12 @@
 {
+  "app_name": "Coffee Shop",
   "home": "Home",
   "menu": "Menu",
   "orders": "Orders",
   "favorite": "Favorite",
   "cart": "Cart",
+  "cancel": "Cancel",
+  "save": "Save",
   "error_route_not_found": "No route defined for {}",
   "onboarding": {
     "back": "Back",
@@ -111,10 +114,12 @@
   "orders_screen": {
     "your_orders": "Your Orders",
     "receipt": "Receipt",
-    "reorder": "Reorder"
+    "reorder": "Reorder",
+    "no_orders": "No orders yet"
   },
   "favorites_screen": {
-    "your_favorites": "Your Favorites"
+    "your_favorites": "Your Favorites",
+    "no_favorites": "No favorites yet"
   },
   "profile_screen": {
     "account": "Account",
@@ -181,7 +186,8 @@
     "receipt": "Receipt",
     "order_number": "Order Number",
     "date": "Date",
-    "back_home": "Back to Home"
+    "back_home": "Back to Home",
+    "empty_bag": "Your bag is empty"
   },
   "credit_card": {
     "saved_cards": "Saved Cards",
@@ -190,7 +196,10 @@
     "expiry": "Expiry",
     "cvv": "CVV",
     "name_on_card": "Name on Card",
-    "save_card": "Save Card"
+    "save_card": "Save Card",
+    "no_saved_cards": "No saved cards",
+    "load_error": "Could not load cards",
+    "retry": "Retry"
   },
   "wallet": {
     "current_balance": "Current Balance",
@@ -199,10 +208,14 @@
     "purchase": "Coffee Purchase",
     "transactions": "Recent Transactions",
     "payment_method": "Payment Method",
-    "add": "Add Balance"
+    "add": "Add Balance",
+    "phone_for_wallet": "Wallet Phone Number",
+    "phone_number": "Phone Number",
+    "continue": "Continue"
   },
   "quick_add": {
     "saved_orders": "Saved Orders",
+    "last_order": "Last Order",
     "quick_add": "Quick Add",
     "customize": "Customize",
     "option_default": "Default",
@@ -247,7 +260,8 @@
     "priority": "Priority Support",
     "free_drink": "Free Drink Monthly",
     "exclusive": "Exclusive Events",
-    "earn_purchase": "Earn 1 point for every E\u00a31 spent",
+    "earn_purchase": "Earn 1 points for every E\u00a31 purchase",
+    "earn_points_per_pound": "Earn 2 points for every E\u00a31 uploaded to wallet",
     "earn_review": "Earn 10 points for writing a review",
     "earn_referral": "Earn 50 points for each referral",
     "earn_birthday": "Earn 100 bonus points on your birthday",
@@ -258,6 +272,36 @@
     "share_earn": "Share this code with friends and earn",
     "reward": "50 Points per referral!",
     "history": "Referral History"
+  },
+  "verification": {
+    "title": "Verify Your Email",
+    "message": "A verification email has been sent. Enter the verification token to verify your email.",
+    "token_label": "Verification Token",
+    "skip": "Skip",
+    "verify": "Verify",
+    "email_not_verified": "Email Not Verified",
+    "forgot_password": "Forgot Password",
+    "forgot_password_msg": "Enter your email to receive a password reset link.",
+    "send": "Send",
+    "reset_password": "Reset Password",
+    "reset_token_msg": "A reset token has been generated. Enter a new password.",
+    "reset_token_label": "Reset Token",
+    "new_password": "New Password",
+    "reset": "Reset",
+    "product_not_available": "Product not available"
+  },
+  "validation": {
+    "first_name_required": "First name is required",
+    "last_name_required": "Last name is required",
+    "email_required": "Email is required",
+    "email_invalid": "Enter a valid email address",
+    "state_required": "State is required",
+    "city_required": "City is required",
+    "dob_required": "Date of birth is required",
+    "password_required": "Password is required",
+    "password_min_length": "Password must be at least 8 characters",
+    "confirm_password_required": "Please confirm your password",
+    "passwords_do_not_match": "Passwords do not match"
   },
   "payment_methods": {
     "saved_cards": "Saved Cards",

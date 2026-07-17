@@ -1,13 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../config/app_config.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/routes/shell_router.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../features/checkout/presentation/cubit/cart_cubit.dart';
+import '../../../../features/checkout/presentation/cubit/cart_state.dart';
 import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
@@ -31,7 +32,7 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<MenuCubit>()),
+        BlocProvider(create: (_) => sl<MenuCubit>()..loadMenu()),
         BlocProvider(create: (_) => sl<CartCubit>()..loadCart()),
         BlocProvider(create: (_) => sl<OrdersCubit>()..loadOrders()),
         BlocProvider(create: (_) => sl<FavoritesCubit>()..loadFavorites()),
@@ -44,7 +45,7 @@ class MainShell extends StatelessWidget {
               child: Column(
                 children: [
                   AppAppBar(
-                    title: AppConfig.appName,
+                    title: 'app_name'.tr(),
                     // Show back on every secondary screen EXCEPT OrderConfirmation
                     // (the user must not return to the Payment screen after placing an order).
                     leading: state.hasSecondary &&
@@ -65,14 +66,28 @@ class MainShell extends StatelessWidget {
                               .pushSecondary(const SettingsRoute()),
                           icon: const Icon(Icons.settings_outlined),
                         ),
-                      // Cart icon: hide whenever ANY secondary screen is open.
+                      // Cart icon with badge: hide when a secondary screen is open.
                       if (!state.hasSecondary)
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () => context
-                              .read<ShellCubit>()
-                              .pushSecondary(const CartRoute()),
-                          icon: const Icon(Icons.shopping_cart_outlined),
+                        BlocBuilder<CartCubit, CartState>(
+                          builder: (_, cartState) {
+                            final count = switch (cartState) {
+                              CartLoaded(:final cart) => cart.itemCount,
+                              CartActionInProgress(:final cart) => cart.itemCount,
+                              _ => 0,
+                            };
+                            return IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () => context
+                                  .read<ShellCubit>()
+                                  .pushSecondary(const CartRoute()),
+                              icon: Badge(
+                                isLabelVisible: count > 0,
+                                label: Text('$count',
+                                    style: const TextStyle(fontSize: 10)),
+                                child: const Icon(Icons.shopping_cart_outlined),
+                              ),
+                            );
+                          },
                         ),
                     ],
                   ),

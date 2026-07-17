@@ -3,9 +3,10 @@ class CartItem {
   final String productId;
   final String name;
   final String imagePath;
-  final String variant; // e.g. "Large • Oat Milk"
+  final String variant;
   final double unitPrice;
   final int quantity;
+  final List<String> modifierIds;
 
   const CartItem({
     required this.id,
@@ -15,6 +16,7 @@ class CartItem {
     required this.variant,
     required this.unitPrice,
     required this.quantity,
+    this.modifierIds = const [],
   });
 
   double get total => unitPrice * quantity;
@@ -27,5 +29,6 @@ class CartItem {
         variant: variant,
         unitPrice: unitPrice,
         quantity: quantity ?? this.quantity,
+        modifierIds: modifierIds,
       );
 }

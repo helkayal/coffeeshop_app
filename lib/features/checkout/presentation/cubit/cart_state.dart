@@ -1,4 +1,5 @@
 import '../../domain/entities/cart.dart';
+import '../../domain/entities/cart_item.dart';
 
 sealed class CartState {
   const CartState();
@@ -23,11 +24,17 @@ class CartError extends CartState {
 }
 
 class CartActionInProgress extends CartState {
-  final Cart cart; // keep showing current cart while action runs
+  final Cart cart;
   const CartActionInProgress(this.cart);
 }
 
 class OrderPlaced extends CartState {
   final String orderId;
-  const OrderPlaced(this.orderId);
+  final List<CartItem> items;
+  final double total;
+  const OrderPlaced({
+    required this.orderId,
+    required this.items,
+    required this.total,
+  });
 }
