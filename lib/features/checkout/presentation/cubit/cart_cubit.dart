@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/service_locator.dart';
-import '../../../orders/presentation/cubit/orders_cubit.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/usecases/cart_usecases.dart';
@@ -106,8 +104,6 @@ class CartCubit extends Cubit<CartState> {
       (failure) => emit(CartError(failure.message)),
       (orderId) {
         emit(OrderPlaced(orderId: orderId, items: items, total: total));
-        // Refresh orders in the background.
-        sl<OrdersCubit>().loadOrders();
       },
     );
   }

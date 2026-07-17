@@ -7,6 +7,7 @@ import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../orders/presentation/cubit/orders_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import '../widgets/payment_method_selector.dart';
@@ -62,6 +63,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
         if (state is OrderPlaced) {
+          context.read<OrdersCubit>().loadOrders();
           context.read<ShellCubit>().clearAndPush(
                 OrderConfirmationRoute(orderId: state.orderId),
               );
