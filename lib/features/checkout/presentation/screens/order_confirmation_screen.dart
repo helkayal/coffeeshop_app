@@ -19,9 +19,11 @@ class OrderConfirmationScreen extends StatelessWidget {
     final items = state is OrderPlaced ? state.items : <CartItem>[];
     final total = state is OrderPlaced ? state.total : 0.0;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
-      child: Column(children: [
+    return Scaffold(
+      backgroundColor: cs.surface,
+      body: SingleChildScrollView(
+        padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+        child: Column(children: [
         Icon(Icons.check_circle, size: 72, color: cs.primary),
         const SizedBox(height: 24),
         Text('checkout.order_complete'.tr(),
@@ -61,6 +63,7 @@ class OrderConfirmationScreen extends StatelessWidget {
           ]),
         ),
       ]),
+      ),
     );
   }
 

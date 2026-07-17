@@ -26,7 +26,14 @@ class PlaceOrderUseCase {
       } catch (_) {
         // Non-fatal — order is created even if checkout fails.
       }
-      await _cartRepo.clearCart();
+      // Remove items one by one — the clear-all endpoint doesn't exist yet.
+      for (final item in cart.items) {
+        try {
+          await _cartRepo.removeItem(item.id);
+        } catch (_) {
+          // Non-fatal — keep going through remaining items.
+        }
+      }
       return Success(orderId);
     } on Exception catch (e) {
       return Error(PlaceOrderFailure(

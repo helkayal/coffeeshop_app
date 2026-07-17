@@ -50,9 +50,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ? '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}${profile!.avatarUrl}'
             : null;
 
-        return SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 40, 24, 96),
-          child: Column(
+        return Scaffold(
+          backgroundColor: cs.surface,
+          body: SingleChildScrollView(
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 40, 24, 96),
+            child: Column(
             children: [
               ProfileAvatar(
                 avatarUrl: fullAvatarUrl,
@@ -110,6 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
             ],
+            ),
           ),
         );
       },

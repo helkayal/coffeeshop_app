@@ -60,16 +60,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return BlocConsumer<CartCubit, CartState>(
-      listener: (context, state) {
-        if (state is OrderPlaced) {
-          context.read<OrdersCubit>().loadOrders();
-          context.read<ShellCubit>().clearAndPush(
-                OrderConfirmationRoute(orderId: state.orderId),
-              );
-        }
-      },
-      builder: (context, state) {
+    return Scaffold(
+      backgroundColor: cs.surface,
+      body: BlocConsumer<CartCubit, CartState>(
+        listener: (context, state) {
+          if (state is OrderPlaced) {
+            context.read<OrdersCubit>().loadOrders();
+            context.read<ShellCubit>().clearAndPush(
+                  OrderConfirmationRoute(orderId: state.orderId),
+                );
+          }
+        },
+        builder: (context, state) {
         final cart = state is CartLoaded
             ? state.cart
             : (state is CartActionInProgress ? (state).cart : null);
@@ -194,6 +196,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ]);
       },
+      ),
     );
   }
 }

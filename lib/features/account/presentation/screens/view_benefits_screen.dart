@@ -14,6 +14,7 @@ class ViewBenefitsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
     return BlocBuilder<ProfileCubit, ProfileState>(
@@ -22,7 +23,9 @@ class ViewBenefitsScreen extends StatelessWidget {
         final tier = LoyaltyTier.fromPoints(points);
         final tierName = 'loyalty.${tier.name}'.tr();
 
-        return SingleChildScrollView(
+        return Scaffold(
+          backgroundColor: cs.surface,
+          body: SingleChildScrollView(
           padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 96),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,6 +45,7 @@ class ViewBenefitsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               const BenefitsEarnPoints(),
             ],
+            ),
           ),
         );
       },

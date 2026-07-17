@@ -27,24 +27,27 @@ class _CartScreenState extends State<CartScreen> {
     final tt = Theme.of(context).textTheme;
     final cs = Theme.of(context).colorScheme;
 
-    return BlocBuilder<CartCubit, CartState>(
-      builder: (context, state) {
-        final cubit = context.read<CartCubit>();
+    return Scaffold(
+      backgroundColor: cs.surface,
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          final cubit = context.read<CartCubit>();
 
-        return switch (state) {
-          CartLoading() => const Center(child: CircularProgressIndicator()),
-          CartError(:final message) => Center(
-            child: Text(
-              message,
-              style: tt.bodyMedium?.copyWith(color: cs.error),
+          return switch (state) {
+            CartLoading() => const Center(child: CircularProgressIndicator()),
+            CartError(:final message) => Center(
+              child: Text(
+                message,
+                style: tt.bodyMedium?.copyWith(color: cs.error),
+              ),
             ),
-          ),
-          CartLoaded() ||
-          CartActionInProgress() ||
-          OrderPlaced() => _buildContent(context, tt, cs, cubit, state),
-          _ => const SizedBox.shrink(),
-        };
-      },
+            CartLoaded() ||
+            CartActionInProgress() ||
+            OrderPlaced() => _buildContent(context, tt, cs, cubit, state),
+            _ => const SizedBox.shrink(),
+          };
+        },
+      ),
     );
   }
 
