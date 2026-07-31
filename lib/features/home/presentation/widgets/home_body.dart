@@ -20,34 +20,46 @@ class HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 5, 16, 0),
+      padding: const EdgeInsetsDirectional.only(top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const HomeProfileSection(),
-          const SizedBox(height: 15),
-          const FeaturedItemsView(),
-          const SizedBox(height: 20),
-          BlocBuilder<OrdersCubit, OrdersState>(
-            builder: (_, state) {
-              if (state is OrdersLoaded &&
-                  state.latestOrder != null &&
-                  state.latestOrder!.items.isNotEmpty) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionHeader(title: 'home_screen.your_last_order'.tr()),
-                    const SizedBox(height: 5),
-                    _LastOrderCard(),
-                  ],
-                );
-              }
-              return const SizedBox.shrink();
-            },
+          const Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            child: HomeProfileSection(),
           ),
           const SizedBox(height: 15),
-          const ExploreMenuButton(),
-          const SizedBox(height: 40),
+          const FeaturedItemsView(),
+          const SizedBox(height: 15),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder<OrdersCubit, OrdersState>(
+                  builder: (_, state) {
+                    if (state is OrdersLoaded &&
+                        state.latestOrder != null &&
+                        state.latestOrder!.items.isNotEmpty) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SectionHeader(
+                              title: 'home_screen.your_last_order'.tr()),
+                          const SizedBox(height: 5),
+                          _LastOrderCard(),
+                          const SizedBox(height: 15),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+                const ExploreMenuButton(),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -124,9 +136,6 @@ class _LastOrderCard extends StatelessWidget {
                     children: [
                       Text('Order #$shortId',
                           style: tt.labelLarge?.copyWith(color: cs.secondary)),
-                      const SizedBox(width: 8),
-                      Text('· ${latestOrder.status}',
-                          style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                       const Spacer(),
                       Text('\$${latestOrder.total.toStringAsFixed(2)}',
                           style: tt.bodyLarge?.copyWith(

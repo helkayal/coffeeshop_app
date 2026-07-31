@@ -166,4 +166,55 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
+
+  /// Proactively uses the stored refresh token to obtain a new access token.
+  /// Called at app startup by [SplashScreen]. Returns [AuthSessionExpired]
+  /// failure when the refresh token is missing or rejected by the server.
+  @override
+  Future<Result<User>> refreshSession() async {
+    final storedRefresh = _localStorage.getRefreshToken();
+    if (storedRefresh == null) {
+      return const Error(ServerFailure('No refresh token'));
+    }
+    try {
+      final response = await _remoteDataSource.refreshToken(storedRefresh);
+      await _localStorage.setAuthToken(response.accessToken);
+      await _localStorage.setRefreshToken(response.refreshToken);
+      final user = await _remoteDataSource.getProfile();
+      await _localStorage.cacheUser(user.toJson());
+      return Success(user);
+    } on ServerException catch (e) {
+      await _localStorage.clearSession();
+      return Error(ServerFailure(e.message ?? 'Session expired'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
+    } catch (_) {
+      await _localStorage.clearSession();
+      return const Error(ServerFailure('Session expired'));
+    }
+  }
+
+  @override
+  Future<Result<void>> verifyEmail(String token) async {
+    try {
+      await _remoteDataSource.verifyEmail(token);
+      return const Success(null);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Verification failed'));
+    } catch (_) {
+      return const Error(ServerFailure('An unexpected error occurred'));
+    }
+  }
+
+  @override
+  Future<Result<void>> resendVerification(String email) async {
+    try {
+      await _remoteDataSource.resendVerification(email);
+      return const Success(null);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Failed to resend verification'));
+    } catch (_) {
+      return const Error(ServerFailure('An unexpected error occurred'));
+    }
+  }
 }

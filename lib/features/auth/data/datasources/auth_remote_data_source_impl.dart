@@ -13,7 +13,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<LoginResponse> login(String email, String password) async {
-    // if (AppConfig.useMockData) return _mockLogin(email, password);
     final data = await _apiService.post(
       ApiConstants.login,
       data: {'email': email, 'password': password},
@@ -103,7 +102,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return LoginResponse.fromJson(data as Map<String, dynamic>);
   }
 
-  // // --- Mock implementations (commented out) ---
-  // Future<LoginResponse> _mockLogin(String email, String password) async { ... }
-  // Future<UserModel> _mockRegister(...) async { ... }
+  @override
+  Future<LoginResponse> refreshToken(String refreshToken) async {
+    final data = await _apiService.post(
+      ApiConstants.tokenRefresh,
+      data: {'refresh': refreshToken},
+      // Must not send the old (expired) access token in the header.
+      options: Options(headers: {'Authorization': null}),
+    );
+    return LoginResponse.fromJson(data as Map<String, dynamic>);
+  }
+
+  @override
+  Future<void> verifyEmail(String token) async {
+    await _apiService.post(
+      ApiConstants.verifyEmail,
+      data: {'token': token},
+    );
+  }
+
+  @override
+  Future<void> resendVerification(String email) async {
+    await _apiService.post(
+      ApiConstants.resendVerification,
+      data: {'email': email},
+    );
+  }
 }

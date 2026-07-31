@@ -23,4 +23,7 @@ abstract class AuthRepository {
     String? firstName,
     String? lastName,
   });
+  Future<Result<User>> refreshSession();
+  Future<Result<void>> verifyEmail(String token);
+  Future<Result<void>> resendVerification(String email);
 }

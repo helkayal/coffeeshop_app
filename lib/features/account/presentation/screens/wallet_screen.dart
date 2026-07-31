@@ -51,11 +51,12 @@ class _WalletScreenState extends State<WalletScreen> {
     try {
       await _api.post(ApiConstants.walletTopup, data: {'amount': amount});
       await _load();
-      context.read<ProfileCubit>().refreshLoyalty();
       if (mounted) {
+        context.read<ProfileCubit>().refreshLoyalty();
         AppSnackBar.show(context, 'Wallet topped up successfully',
             type: SnackBarType.success);
       }
+
     } catch (_) {
       if (mounted) {
         AppSnackBar.show(context, 'Top-up failed', type: SnackBarType.error);

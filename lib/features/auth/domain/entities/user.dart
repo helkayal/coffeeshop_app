@@ -9,6 +9,7 @@ class User extends Equatable {
   final String? gender;
   final String? state;
   final String? city;
+  final bool isVerified;
 
   const User({
     required this.id,
@@ -19,6 +20,7 @@ class User extends Equatable {
     this.gender,
     this.state,
     this.city,
+    this.isVerified = false,
   });
 
   @override
@@ -31,5 +33,6 @@ class User extends Equatable {
         gender,
         state,
         city,
+        isVerified,
       ];
 }

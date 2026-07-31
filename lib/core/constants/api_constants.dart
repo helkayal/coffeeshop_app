@@ -13,6 +13,7 @@ class ApiConstants {
   static const String resetPassword = '/auth/reset-password';
   static const String socialLogin = '/auth/social';
   static const String verifyEmail = '/auth/verify-email';
+  static const String resendVerification = '/auth/resend-verification';
 
   // Onboarding
   static const String onboarding = '/onboarding';

@@ -1,44 +1,120 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'featured_item_card.dart';
 import 'promo_banner.dart';
 
-class FeaturedItemsView extends StatelessWidget {
+class FeaturedItemsView extends StatefulWidget {
   const FeaturedItemsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final cardHeight = screenHeight * 0.4;
-    final cardWidth = screenWidth * 0.85;
+  State<FeaturedItemsView> createState() => _FeaturedItemsViewState();
+}
 
-    return SizedBox(
-      height: cardHeight,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: 5,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (_, index) => SizedBox(
-          width: cardWidth,
-          child: index.isEven ? _buildCard() : _buildPromo(),
-        ),
-      ),
-    );
-  }
+class _FeaturedItemsViewState extends State<FeaturedItemsView> {
+  late final PageController _pageController;
+  Timer? _timer;
+  int _currentPage = 0;
 
-  static Widget _buildCard() {
-    return const FeaturedItemCard(
+  static const _autoAdvanceDuration = Duration(seconds: 4);
+  static const _pageCount = 5;
+
+  static const _pages = <Widget>[
+    FeaturedItemCard(
       imagePath: 'assets/images/cardamom_cose_latte.png',
       name: 'Cardamom Rose Latte',
       description:
           'Robust espresso, steamed oat milk, and house-made cardamom-rose syrup.',
       price: r'$7.25',
+    ),
+    PromoBanner(),
+    FeaturedItemCard(
+      imagePath: 'assets/images/cardamom_cose_latte.png',
+      name: 'Cardamom Rose Latte',
+      description:
+          'Robust espresso, steamed oat milk, and house-made cardamom-rose syrup.',
+      price: r'$7.25',
+    ),
+    PromoBanner(),
+    PromoBanner(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _startAutoAdvance();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoAdvance() {
+    _timer?.cancel();
+    _timer = Timer.periodic(_autoAdvanceDuration, (_) {
+      if (!mounted) return;
+      final nextPage = (_currentPage + 1) % _pageCount;
+      _pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  void _onPageChanged(int page) {
+    setState(() => _currentPage = page);
+    _startAutoAdvance();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final cardHeight = screenHeight * 0.4;
+
+    return SizedBox(
+      height: cardHeight,
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+            itemCount: _pageCount,
+            itemBuilder: (_, index) => _pages[index],
+          ),
+          Positioned(
+            bottom: 8,
+            left: 0,
+            right: 0,
+            child: _buildIndicators(),
+          ),
+        ],
+      ),
     );
   }
 
-  static Widget _buildPromo() {
-    return const PromoBanner();
+  Widget _buildIndicators() {
+    final cs = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(_pageCount, (i) {
+        final isActive = i == _currentPage;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isActive ? 24 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: isActive ? cs.primary : cs.outlineVariant,
+          ),
+        );
+      }),
+    );
   }
 }

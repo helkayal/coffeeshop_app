@@ -7,18 +7,22 @@ import 'core/cubit/shell_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/service_locator.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/settings/presentation/cubit/settings_cubit.dart';
 import 'features/settings/presentation/cubit/settings_state.dart';
 
 class CoffeeShopApp extends StatelessWidget {
-  final String initialRoute;
-
-  const CoffeeShopApp({super.key, required this.initialRoute});
+  const CoffeeShopApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        // AuthCubit lives at root so SplashScreen, LoginScreen, and
+        // RegisterScreen all share the same instance throughout the auth flow.
+        BlocProvider(
+          create: (_) => sl<AuthCubit>(),
+        ),
         BlocProvider(create: (_) => ShellCubit()),
         BlocProvider(
           create: (_) => sl<SettingsCubit>()..loadSettings(),
@@ -40,15 +44,10 @@ class CoffeeShopApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,
-            initialRoute: initialRoute,
+            // SplashScreen is always the initial screen ('/').
+            // It proactively refreshes the session and routes accordingly.
+            initialRoute: AppRoutes.splash,
             onGenerateRoute: AppRoutes.onGenerateRoute,
-            onGenerateInitialRoutes: (initialRouteName) {
-              return [
-                AppRoutes.onGenerateRoute(
-                  RouteSettings(name: initialRouteName),
-                ),
-              ];
-            },
           );
         },
       ),

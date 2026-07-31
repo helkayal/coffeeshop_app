@@ -39,12 +39,13 @@ class ProfileField extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: onEdit,
-            icon: Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
-          ),
+          if (onEdit != null)
+            IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: onEdit,
+              icon: Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
+            ),
         ],
       ),
     );

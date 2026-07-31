@@ -6,7 +6,10 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/get_cached_user.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/auth/domain/usecases/refresh_session_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
+import '../../features/auth/domain/usecases/resend_verification_usecase.dart';
+import '../../features/auth/domain/usecases/verify_email_usecase.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 
 import '../../features/checkout/data/datasources/cart_remote_data_source.dart';
@@ -97,8 +100,18 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
+  sl.registerLazySingleton(() => RefreshSessionUseCase(sl()));
+  sl.registerLazySingleton(() => VerifyEmailUseCase(sl()));
+  sl.registerLazySingleton(() => ResendVerificationUseCase(sl()));
   sl.registerFactory(
-    () => AuthCubit(loginUseCase: sl(), registerUseCase: sl(), authRepository: sl()),
+    () => AuthCubit(
+      loginUseCase: sl(),
+      registerUseCase: sl(),
+      refreshSessionUseCase: sl(),
+      verifyEmailUseCase: sl(),
+      resendVerificationUseCase: sl(),
+      authRepository: sl(),
+    ),
   );
 
   // ── Menu ────────────────────────────────────────────────────────────────────

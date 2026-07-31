@@ -8,7 +8,6 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_dropdown.dart';
-import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../domain/entities/user_profile.dart';
@@ -74,7 +73,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ProfileField(
                 label: 'profile_screen.email'.tr(),
                 value: email,
-                onEdit: () => _editEmail(context, profile),
               ),
               const SizedBox(height: 12),
               ProfileField(
@@ -171,64 +169,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 avatarUrl: profile.avatarUrl,
               );
               context.read<ProfileCubit>().updateProfile(updated);
-            },
-            child: Text('save'.tr()),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Email ────────────────────────────────────────────────────────────────
-
-  void _editEmail(BuildContext context, UserProfile? profile) {
-    if (profile == null) return;
-    final newEmailCtrl = TextEditingController();
-    final passwordCtrl = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('profile_screen.email'.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppTextField(
-              controller: newEmailCtrl,
-              label: 'New email',
-              keyboardType: TextInputType.emailAddress,
-              prefixIcon: const Icon(Icons.email_outlined),
-            ),
-            const SizedBox(height: 12),
-            AppTextField(
-              controller: passwordCtrl,
-              label: 'auth.password'.tr(),
-              isPassword: true,
-              prefixIcon: const Icon(Icons.lock_outlined),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
-          FilledButton(
-            onPressed: () async {
-              final newEmail = newEmailCtrl.text.trim();
-              final password = passwordCtrl.text;
-              if (newEmail.isEmpty || password.isEmpty) return;
-              Navigator.pop(context);
-              try {
-                await context.read<ProfileCubit>().changeEmail(newEmail, password);
-                sl<AuthCubit>().logout();
-                if (context.mounted) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.login, (_) => false);
-                }
-              } catch (_) {
-                if (context.mounted) {
-                  AppSnackBar.show(context, 'Failed to change email',
-                      type: SnackBarType.error);
-                }
-              }
             },
             child: Text('save'.tr()),
           ),

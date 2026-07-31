@@ -43,8 +43,8 @@ class CheckoutRemoteDataSourceImpl implements CheckoutRemoteDataSource {
   Future<void> checkoutOrder(String orderId, {String? paymentMethod, String? cardNumber}) async {
     final body = <String, dynamic>{
       'payment_method': paymentMethod ?? 'wallet',
+      'card_number': cardNumber ?? '4111111111111111',
     };
-    if (cardNumber != null) body['card_number'] = cardNumber;
 
     await _api.post(
       '${ApiConstants.orders}/$orderId/checkout',

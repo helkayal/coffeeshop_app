@@ -16,6 +16,10 @@ class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
+class AuthSessionRefreshing extends AuthState {
+  const AuthSessionRefreshing();
+}
+
 class AuthAuthenticated extends AuthState {
   final User user;
   const AuthAuthenticated(this.user);
@@ -24,12 +28,29 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-class AuthRegisterSuccess extends AuthState {
-  final String message;
-  const AuthRegisterSuccess([this.message = 'Registration successful. Please log in.']);
+class AuthSessionExpired extends AuthState {
+  const AuthSessionExpired();
+}
+
+/// Emitted when the user tries to log in but hasn't verified their email yet.
+class AuthEmailNotVerified extends AuthState {
+  final String email;
+  const AuthEmailNotVerified(this.email);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [email];
+}
+
+class AuthVerifyEmailSuccess extends AuthState {
+  const AuthVerifyEmailSuccess();
+}
+
+class AuthRegisterSuccess extends AuthState {
+  final String email;
+  const AuthRegisterSuccess(this.email);
+
+  @override
+  List<Object?> get props => [email];
 }
 
 class AuthError extends AuthState {

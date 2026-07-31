@@ -23,4 +23,7 @@ abstract class AuthRemoteDataSource {
     String? firstName,
     String? lastName,
   });
+  Future<LoginResponse> refreshToken(String refreshToken);
+  Future<void> verifyEmail(String token);
+  Future<void> resendVerification(String email);
 }

@@ -35,6 +35,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
   List<Map<String, dynamic>> _cards = [];
   bool _loading = true;
   String? _error;
+  String? _formError;
 
   @override
   void initState() {
@@ -74,14 +75,71 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
     super.dispose();
   }
 
+  (int, int)? _parseExpiry() {
+    final text = _expiryCtrl.text.trim();
+    if (text.isEmpty) return null;
+
+    int month, year;
+
+    if (text.contains('/')) {
+      final parts = text.split('/');
+      month = int.tryParse(parts[0].trim()) ?? 0;
+      year = int.tryParse(parts[1].trim()) ?? 0;
+    } else if (text.length == 4) {
+      month = int.tryParse(text.substring(0, 2)) ?? 0;
+      year = int.tryParse(text.substring(2)) ?? 0;
+    } else {
+      return null;
+    }
+
+    if (year < 100) year += 2000;
+    if (month < 1 || month > 12 || year < 2000) return null;
+    return (month, year);
+  }
+
+  String? _validate() {
+    final number = _numberCtrl.text.trim().replaceAll(RegExp(r'\s+'), '');
+    if (number.length != 16 || int.tryParse(number) == null) {
+      return 'Card number must be 16 digits';
+    }
+
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) {
+      return 'Name on card is required';
+    }
+
+    final expiry = _parseExpiry();
+    if (expiry == null) {
+      return 'Enter expiry as MM/YY (e.g. 12/28)';
+    }
+
+    final (month, year) = expiry;
+    if (month < 1 || month > 12) {
+      return 'Expiry month must be between 1 and 12';
+    }
+
+    final now = DateTime.now();
+    final expiryDate = DateTime(year, month + 1, 0); // last day of expiry month
+    final currentMonthEnd = DateTime(now.year, now.month + 1, 0);
+    if (expiryDate.isBefore(currentMonthEnd)) {
+      return 'Card has expired';
+    }
+
+    return null;
+  }
+
   Future<void> _saveCard() async {
-    final number = _numberCtrl.text.trim();
-    if (number.length < 4) return;
+    setState(() => _formError = null);
+    final error = _validate();
+    if (error != null) {
+      setState(() => _formError = error);
+      return;
+    }
+
+    final number = _numberCtrl.text.trim().replaceAll(RegExp(r'\s+'), '');
     final last4 = number.substring(number.length - 4);
 
-    var expiryYear = int.tryParse(_expiryCtrl.text.trim()) ?? 0;
-    if (expiryYear < 100) expiryYear += 2000;
-    final expiryMonth = int.tryParse(_expiryCtrl.text.trim()) ?? 1;
+    final (expiryMonth, expiryYear) = _parseExpiry()!;
 
     final cardData = <String, dynamic>{
       'card_last4': last4,
@@ -199,6 +257,11 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                 label: 'credit_card.name_on_card'.tr(),
                 prefixIcon: const Icon(Icons.person_outline),
               ),
+              if (_formError != null) ...[
+                const SizedBox(height: 8),
+                Text(_formError!,
+                    style: tt.bodySmall?.copyWith(color: cs.error)),
+              ],
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,

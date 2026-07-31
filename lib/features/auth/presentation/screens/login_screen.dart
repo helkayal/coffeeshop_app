@@ -2,14 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/api_constants.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/services/api_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../screens/verify_email_args.dart';
 import '../widgets/login_body.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -17,10 +15,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthCubit>(),
-      child: const _LoginScreenContent(),
-    );
+    return const _LoginScreenContent();
   }
 }
 
@@ -47,60 +42,15 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      AppSnackBar.show(context, 'auth.please_fill_all_fields'.tr(), type: SnackBarType.error);
+      AppSnackBar.show(
+        context,
+        'auth.please_fill_all_fields'.tr(),
+        type: SnackBarType.error,
+      );
       return;
     }
 
     context.read<AuthCubit>().login(email, password);
-  }
-
-  void _showVerificationAlert(BuildContext context, String message) {
-    final tokenCtrl = TextEditingController();
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: Text('verification.email_not_verified'.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: tokenCtrl,
-              label: 'verification.token_label'.tr(),
-              prefixIcon: const Icon(Icons.verified_outlined),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final token = tokenCtrl.text.trim();
-              if (token.isEmpty) return;
-              try {
-                await sl<ApiService>().post(
-                  ApiConstants.verifyEmail,
-                  data: {'token': token},
-                );
-                Navigator.pop(context);
-                AppSnackBar.show(context, 'Email verified! Please login.',
-                    type: SnackBarType.success);
-              } catch (_) {
-                AppSnackBar.show(context, 'Invalid or expired token',
-                    type: SnackBarType.error);
-              }
-            },
-            child: Text('verification.verify'.tr()),
-          ),
-        ],
-      ),
-    );
   }
 
   void _onForgotPassword() {
@@ -138,7 +88,11 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
               final result = await cubit.forgotPassword(email);
               if (context.mounted) {
                 result.fold(
-                  (failure) => AppSnackBar.show(context, failure.message, type: SnackBarType.error),
+                  (failure) => AppSnackBar.show(
+                    context,
+                    failure.message,
+                    type: SnackBarType.error,
+                  ),
                   (data) => _showResetTokenDialog(data),
                 );
               }
@@ -192,11 +146,16 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
               final result = await cubit.resetPassword(token, newPassword);
               if (context.mounted) {
                 result.fold(
-                  (failure) => AppSnackBar.show(context, failure.message, type: SnackBarType.error),
-                  (_) {
-                    AppSnackBar.show(context, 'Password reset successfully. Please login.',
-                        type: SnackBarType.success);
-                  },
+                  (failure) => AppSnackBar.show(
+                    context,
+                    failure.message,
+                    type: SnackBarType.error,
+                  ),
+                  (_) => AppSnackBar.show(
+                    context,
+                    'Password reset successfully. Please login.',
+                    type: SnackBarType.success,
+                  ),
                 );
               }
             },
@@ -248,7 +207,8 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
                 provider: provider,
                 email: email,
                 firstName: names.isNotEmpty ? names.first : null,
-                lastName: names.length > 1 ? names.sublist(1).join(' ') : null,
+                lastName:
+                    names.length > 1 ? names.sublist(1).join(' ') : null,
               );
             },
             child: Text('Sign in with $provider'),
@@ -264,18 +224,32 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
       body: SafeArea(
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
-            if (state is AuthError) {
-              if (state.message.contains('not verified')) {
-                _showVerificationAlert(context, state.message);
-              } else {
-                AppSnackBar.show(context, state.message, type: SnackBarType.error);
-              }
-            } else if (state is AuthAuthenticated) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.home,
-                (route) => false,
-              );
+            switch (state) {
+              case AuthError():
+                AppSnackBar.show(
+                  context,
+                  state.message,
+                  type: SnackBarType.error,
+                );
+              case AuthAuthenticated():
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.home,
+                  (route) => false,
+                );
+              case AuthEmailNotVerified():
+                // Navigate to the verification screen and auto-trigger a
+                // fresh token so the user doesn't have to tap Resend.
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.verifyEmail,
+                  arguments: VerifyEmailArgs(
+                    email: state.email,
+                    autoResend: true,
+                  ),
+                );
+              default:
+                break;
             }
           },
           builder: (context, state) => LoginBody(

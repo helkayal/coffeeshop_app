@@ -10,6 +10,7 @@ class UserModel extends User {
     super.gender,
     super.state,
     super.city,
+    super.isVerified,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class UserModel extends User {
       gender: json['gender'] as String?,
       state: json['state'] as String?,
       city: json['city'] as String?,
+      isVerified: (json['is_verified'] as bool?) ?? false,
     );
   }
 
@@ -35,6 +37,7 @@ class UserModel extends User {
       'gender': gender,
       'state': state,
       'city': city,
+      'is_verified': isVerified,
     };
   }
 }
