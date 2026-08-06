@@ -8,9 +8,10 @@ import '../../../../core/services/api_service.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
-import '../../../../core/widgets/app_text_field.dart';
 import '../../data/models/wallet_package_model.dart';
 import '../cubit/profile_cubit.dart';
+import 'package:coffeeshop_app/features/account/presentation/widgets/package_purchase_dialogs.dart';
+import 'package:coffeeshop_app/features/account/presentation/widgets/wallet_package_tile.dart';
 
 class PackageSelectionSheet extends StatefulWidget {
   final double? requiredAmount;
@@ -20,8 +21,6 @@ class PackageSelectionSheet extends StatefulWidget {
     this.requiredAmount,
   });
 
-  /// Shows the package purchase bottom sheet.
-  /// Returns the updated balance (double) or `true` if purchase succeeded, or null.
   static Future<dynamic> show(
     BuildContext context, {
     double? requiredAmount,
@@ -81,7 +80,7 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
         }
         _loading = false;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         _loading = false;
@@ -115,142 +114,44 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
     final defaultMethod = _storage.getDefaultPaymentMethod();
 
     if (defaultMethod == 'wallet' || (cards.isEmpty && walletPhone != null && walletPhone.trim().isNotEmpty)) {
-      _showMobileWalletConfirm(walletPhone?.trim() ?? '', pkg);
+      PackagePurchaseDialogs.showMobileWalletConfirm(
+        context,
+        walletPhone: walletPhone?.trim() ?? '',
+        package: pkg,
+        onConfirm: () => _executeBuy(pkg),
+      );
     } else if (defaultMethod == 'applepay') {
-      _showApplePayConfirm(pkg);
+      PackagePurchaseDialogs.showApplePayConfirm(
+        context,
+        package: pkg,
+        onConfirm: () => _executeBuy(pkg),
+      );
     } else if (cards.isNotEmpty) {
       final defaultCard = cards.firstWhere(
         (c) => c['id'] == defaultMethod || c['is_default'] == true,
         orElse: () => cards.first,
       );
       final last4 = defaultCard['card_last4'] as String? ?? '••••';
-      _showCvcPrompt(last4, pkg);
+      PackagePurchaseDialogs.showCvcPrompt(
+        context,
+        last4: last4,
+        package: pkg,
+        onConfirm: () => _executeBuy(pkg),
+      );
     } else if (walletPhone != null && walletPhone.trim().isNotEmpty) {
-      _showMobileWalletConfirm(walletPhone.trim(), pkg);
+      PackagePurchaseDialogs.showMobileWalletConfirm(
+        context,
+        walletPhone: walletPhone.trim(),
+        package: pkg,
+        onConfirm: () => _executeBuy(pkg),
+      );
     } else {
-      _showNoPaymentMethodAlert();
+      PackagePurchaseDialogs.showNoPaymentMethodAlert(
+        context,
+        shellCubit: context.read<ShellCubit>(),
+        onCloseSheet: () => Navigator.pop(context),
+      );
     }
-  }
-
-  void _showApplePayConfirm(WalletPackage pkg) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('checkout.apple_pay'.tr()),
-        content: Text('wallet.confirm_payment'.tr()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _executeBuy(pkg);
-            },
-            child: Text('wallet.confirm_payment'.tr()),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showCvcPrompt(String last4, WalletPackage pkg) {
-    final cvcCtrl = TextEditingController();
-    String? cvcError;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(
-            'wallet.confirm_credit_card'.tr(args: [last4]),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppTextField(
-                controller: cvcCtrl,
-                hintText: 'wallet.enter_cvc'.tr(),
-                keyboardType: TextInputType.number,
-                isPassword: true,
-                errorText: cvcError,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('cancel'.tr()),
-            ),
-            FilledButton(
-              onPressed: () {
-                final cvc = cvcCtrl.text.trim();
-                if (cvc.length < 3 || cvc.length > 4 || int.tryParse(cvc) == null) {
-                  setDialogState(() {
-                    cvcError = 'wallet.cvc_required'.tr();
-                  });
-                  return;
-                }
-                Navigator.pop(ctx);
-                _executeBuy(pkg);
-              },
-              child: Text('wallet.confirm_payment'.tr()),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showMobileWalletConfirm(String walletPhone, WalletPackage pkg) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('wallet.payment_method'.tr()),
-        content: Text('wallet.mobile_wallet_confirm'.tr(args: [walletPhone])),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _executeBuy(pkg);
-            },
-            child: Text('wallet.confirm_payment'.tr()),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showNoPaymentMethodAlert() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('wallet.no_payment_method'.tr()),
-        content: Text('wallet.no_payment_method_msg'.tr()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx); // Close dialog
-              Navigator.pop(context); // Close PackageSelectionSheet
-              try {
-                context.read<ShellCubit>().pushSecondary(const PaymentMethodsRoute());
-              } catch (_) {}
-            },
-            child: Text('wallet.go_to_payment_methods'.tr()),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _executeBuy(WalletPackage pkg) async {
@@ -265,7 +166,6 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
         data: {'package_id': pkg.id},
       );
 
-      // Refresh profile & loyalty points immediately (2x package points awarded by backend)
       try {
         if (mounted) {
           context.read<ProfileCubit>().loadProfile();
@@ -289,10 +189,9 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
           'Package purchased successfully!',
           type: SnackBarType.success,
         );
-
         Navigator.pop(context, newBalance ?? true);
       }
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         _purchasing = false;
@@ -387,82 +286,10 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                   final pkg = _packages[index];
                   final isSelected = _selectedPackage?.id == pkg.id;
 
-                  return GestureDetector(
+                  return WalletPackageTile(
+                    package: pkg,
+                    isSelected: isSelected,
                     onTap: () => setState(() => _selectedPackage = pkg),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? cs.primary.withAlpha(26)
-                            : cs.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isSelected ? cs.primary : cs.outlineVariant.withAlpha(77),
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-                            color: isSelected ? cs.primary : cs.outlineVariant,
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  pkg.name,
-                                  style: tt.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: cs.onSurface,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: cs.primaryContainer,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        '+${pkg.loyaltyPoints} pts',
-                                        style: tt.labelSmall?.copyWith(
-                                          color: cs.onPrimaryContainer,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '2x Loyalty Bonus',
-                                      style: tt.bodySmall?.copyWith(
-                                        color: cs.secondary,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            '${pkg.amount.toStringAsFixed(0)} EGP',
-                            style: tt.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: cs.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   );
                 },
               ),

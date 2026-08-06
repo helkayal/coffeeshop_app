@@ -108,6 +108,7 @@
   "menu_screen": {
     "our_menu": "Our Menu",
     "view_more": "Customize",
+    "customize": "Customize",
     "all": "All",
     "error_load": "Failed to load menu"
   },

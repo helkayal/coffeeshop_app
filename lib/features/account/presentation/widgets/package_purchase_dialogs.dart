@@ -1,0 +1,153 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/widgets/app_text_field.dart';
+import '../../data/models/wallet_package_model.dart';
+
+class PackagePurchaseDialogs {
+  const PackagePurchaseDialogs._();
+
+  static void showApplePayConfirm(
+    BuildContext context, {
+    required WalletPackage package,
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('checkout.apple_pay'.tr()),
+        content: Text('wallet.confirm_payment'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              onConfirm();
+            },
+            child: Text('wallet.confirm_payment'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void showCvcPrompt(
+    BuildContext context, {
+    required String last4,
+    required WalletPackage package,
+    required VoidCallback onConfirm,
+  }) {
+    final cvcCtrl = TextEditingController();
+    String? cvcError;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(
+            'wallet.confirm_credit_card'.tr(args: [last4]),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppTextField(
+                controller: cvcCtrl,
+                hintText: 'wallet.enter_cvc'.tr(),
+                keyboardType: TextInputType.number,
+                isPassword: true,
+                errorText: cvcError,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('cancel'.tr()),
+            ),
+            FilledButton(
+              onPressed: () {
+                final cvc = cvcCtrl.text.trim();
+                if (cvc.length < 3 || cvc.length > 4 || int.tryParse(cvc) == null) {
+                  setDialogState(() {
+                    cvcError = 'wallet.cvc_required'.tr();
+                  });
+                  return;
+                }
+                Navigator.pop(ctx);
+                onConfirm();
+              },
+              child: Text('wallet.confirm_payment'.tr()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static void showMobileWalletConfirm(
+    BuildContext context, {
+    required String walletPhone,
+    required WalletPackage package,
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('wallet.payment_method'.tr()),
+        content: Text(
+          walletPhone.isNotEmpty
+              ? 'wallet.mobile_wallet_confirm'.tr(args: [walletPhone])
+              : 'Confirm payment with Mobile Wallet?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              onConfirm();
+            },
+            child: Text('wallet.confirm_payment'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void showNoPaymentMethodAlert(
+    BuildContext context, {
+    required ShellCubit shellCubit,
+    required VoidCallback onCloseSheet,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('wallet.no_payment_method'.tr()),
+        content: Text('wallet.no_payment_method_msg'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              onCloseSheet();
+              try {
+                shellCubit.pushSecondary(const PaymentMethodsRoute());
+              } catch (_) {}
+            },
+            child: Text('wallet.go_to_payment_methods'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+}

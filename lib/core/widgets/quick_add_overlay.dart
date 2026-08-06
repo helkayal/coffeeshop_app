@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/checkout/domain/entities/cart_item.dart';
@@ -10,6 +11,7 @@ import '../../features/menu/domain/entities/product.dart';
 import '../../features/orders/domain/entities/order_item.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../features/orders/presentation/cubit/orders_state.dart';
+import 'quick_add_option_card.dart';
 
 class QuickAddOverlay extends StatefulWidget {
   final String productName;
@@ -366,8 +368,9 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
 
   Widget _optionCard(ColorScheme cs, TextTheme tt, OptionValue option) {
     final selected = _selectedOptionIds.contains(option.id);
-
-    return GestureDetector(
+    return QuickAddOptionCard(
+      option: option,
+      isSelected: selected,
       onTap: () {
         setState(() {
           if (selected) {
@@ -377,29 +380,6 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
           }
         });
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? cs.primary.withAlpha(26) : cs.surfaceContainerHigh.withAlpha(128),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: selected ? cs.primary : cs.outlineVariant.withAlpha(77),
-          ),
-        ),
-        child: Row(children: [
-          Icon(selected ? Icons.check_circle : Icons.add_circle_outline,
-              size: 20, color: selected ? cs.primary : cs.onSurfaceVariant),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(option.name,
-                style: tt.bodyMedium?.copyWith(
-                    color: selected ? cs.primary : cs.onSurface)),
-          ),
-          if (option.priceModifier > 0)
-            Text('+\$${option.priceModifier.toStringAsFixed(2)}',
-                style: tt.labelLarge?.copyWith(color: cs.primary)),
-        ]),
-      ),
     );
   }
 }

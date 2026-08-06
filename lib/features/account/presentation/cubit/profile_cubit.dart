@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,7 +25,12 @@ class ProfileCubit extends Cubit<ProfileState> {
         _api = apiService,
         super(const ProfileInitial());
 
-  Future<void> loadProfile() async {
+  Future<void> loadProfile({int? cacheBuster}) async {
+    final currentBuster = state is ProfileLoaded
+        ? (state as ProfileLoaded).avatarCacheBuster
+        : 0;
+    final buster = cacheBuster ?? currentBuster;
+
     emit(const ProfileLoading());
 
     final profileResult = await _getProfile();
@@ -34,7 +40,11 @@ class ProfileCubit extends Cubit<ProfileState> {
       (failure) => emit(ProfileError(failure.message)),
       (profile) => pointsResult.fold(
         (failure) => emit(ProfileError(failure.message)),
-        (points) => emit(ProfileLoaded(profile: profile, loyaltyPoints: points)),
+        (points) => emit(ProfileLoaded(
+          profile: profile,
+          loyaltyPoints: points,
+          avatarCacheBuster: buster,
+        )),
       ),
     );
   }
@@ -43,21 +53,25 @@ class ProfileCubit extends Cubit<ProfileState> {
     final current = state;
     if (current is! ProfileLoaded && current is! ProfileUpdating) return;
 
+    final currentBuster = current is ProfileLoaded
+        ? current.avatarCacheBuster
+        : (current is ProfileUpdating ? current.avatarCacheBuster : 0);
+
     if (current is ProfileLoaded) {
       emit(ProfileUpdating(
         profile: current.profile,
         loyaltyPoints: current.loyaltyPoints,
+        avatarCacheBuster: currentBuster,
       ));
     }
 
     final result = await _updateProfile(updatedProfile);
     result.fold(
-      (_) => loadProfile(),
+      (_) => loadProfile(cacheBuster: currentBuster),
       (profile) => emit(ProfileLoaded(
         profile: profile,
-        loyaltyPoints: current is ProfileLoaded
-            ? current.loyaltyPoints
-            : 0.0,
+        loyaltyPoints: current is ProfileLoaded ? current.loyaltyPoints : 0.0,
+        avatarCacheBuster: currentBuster,
       )),
     );
   }
@@ -70,12 +84,33 @@ class ProfileCubit extends Cubit<ProfileState> {
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(filePath),
       });
-      await _api.post(
+      final res = await _api.post(
         ApiConstants.profileAvatar,
         data: formData,
         options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
-      await loadProfile();
+
+      String? newAvatarUrl;
+      if (res is Map<String, dynamic>) {
+        final data = res['data'] as Map<String, dynamic>?;
+        if (data != null && data['avatar_url'] is String) {
+          newAvatarUrl = data['avatar_url'] as String;
+        }
+      }
+
+      final cacheBuster = DateTime.now().millisecondsSinceEpoch;
+      final baseUrl = ApiConstants.apiBaseUrl.replaceAll('/api/v1', '');
+
+      if (current.profile.avatarUrl != null) {
+        final fullOld = '$baseUrl${current.profile.avatarUrl}';
+        CachedNetworkImage.evictFromCache(fullOld);
+      }
+      if (newAvatarUrl != null) {
+        final fullNew = '$baseUrl$newAvatarUrl';
+        CachedNetworkImage.evictFromCache(fullNew);
+      }
+
+      await loadProfile(cacheBuster: cacheBuster);
     } catch (_) {
       // Non-fatal — user can retry.
     }
@@ -93,15 +128,23 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> refreshLoyalty() async {
+    final currentBuster = state is ProfileLoaded
+        ? (state as ProfileLoaded).avatarCacheBuster
+        : 0;
+
     final result = await _getLoyaltyPoints();
     result.fold(
-      (_) => loadProfile(),
+      (_) => loadProfile(cacheBuster: currentBuster),
       (points) {
         if (state is ProfileLoaded) {
           final current = state as ProfileLoaded;
-          emit(ProfileLoaded(profile: current.profile, loyaltyPoints: points));
+          emit(ProfileLoaded(
+            profile: current.profile,
+            loyaltyPoints: points,
+            avatarCacheBuster: currentBuster,
+          ));
         } else {
-          loadProfile();
+          loadProfile(cacheBuster: currentBuster);
         }
       },
     );

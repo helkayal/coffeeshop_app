@@ -41,8 +41,12 @@ class AccountScreen extends StatelessWidget {
           ProfileLoaded(:final profile) => profile.gender,
           _ => null,
         };
+        final cacheBuster = switch (state) {
+          ProfileLoaded(:final avatarCacheBuster) => avatarCacheBuster,
+          _ => 0,
+        };
         final fullAvatarUrl = avatarUrl != null
-            ? '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}$avatarUrl'
+            ? '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}$avatarUrl${cacheBuster > 0 ? '?t=$cacheBuster' : ''}'
             : null;
 
         return SingleChildScrollView(

@@ -15,8 +15,13 @@ class ProfileLoading extends ProfileState {
 class ProfileLoaded extends ProfileState {
   final UserProfile profile;
   final double loyaltyPoints;
+  final int avatarCacheBuster;
 
-  const ProfileLoaded({required this.profile, required this.loyaltyPoints});
+  const ProfileLoaded({
+    required this.profile,
+    required this.loyaltyPoints,
+    this.avatarCacheBuster = 0,
+  });
 }
 
 class ProfileError extends ProfileState {
@@ -27,6 +32,11 @@ class ProfileError extends ProfileState {
 class ProfileUpdating extends ProfileState {
   final UserProfile profile;
   final double loyaltyPoints;
+  final int avatarCacheBuster;
 
-  const ProfileUpdating({required this.profile, required this.loyaltyPoints});
+  const ProfileUpdating({
+    required this.profile,
+    required this.loyaltyPoints,
+    this.avatarCacheBuster = 0,
+  });
 }

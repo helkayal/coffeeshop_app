@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/widgets/quick_add_overlay.dart';
 import '../../../menu/domain/entities/product.dart';
@@ -24,7 +27,7 @@ class FeaturedItemCard extends StatelessWidget {
     this.menuItemId,
   });
 
-  void _onAddToCart(BuildContext context) {
+  Product _getProduct(BuildContext context) {
     Product? product;
     final menuState = context.read<MenuCubit>().state;
     if (menuState is MenuLoaded && menuItemId != null && menuItemId!.isNotEmpty) {
@@ -38,16 +41,21 @@ class FeaturedItemCard extends StatelessWidget {
 
     final priceClean = price.replaceAll(RegExp(r'[^\d.]'), '');
     final priceNum = double.tryParse(priceClean) ?? 0.0;
-    product ??= Product(
-      id: (menuItemId != null && menuItemId!.isNotEmpty)
-          ? menuItemId!
-          : 'featured_${name.hashCode}',
-      name: name,
-      description: description,
-      imagePath: imagePath,
-      basePrice: priceNum,
-      category: '',
-    );
+    return product ??
+        Product(
+          id: (menuItemId != null && menuItemId!.isNotEmpty)
+              ? menuItemId!
+              : 'featured_${name.hashCode}',
+          name: name,
+          description: description,
+          imagePath: imagePath,
+          basePrice: priceNum,
+          category: '',
+        );
+  }
+
+  void _onAddToCart(BuildContext context) {
+    final product = _getProduct(context);
 
     QuickAddOverlay.show(
       context,
@@ -56,6 +64,13 @@ class FeaturedItemCard extends StatelessWidget {
       productImage: imagePath,
       price: price,
       product: product,
+    );
+  }
+
+  void _onCustomize(BuildContext context) {
+    final product = _getProduct(context);
+    context.read<ShellCubit>().pushSecondary(
+      CustomizationRoute(product: product),
     );
   }
 
@@ -71,29 +86,85 @@ class FeaturedItemCard extends StatelessWidget {
         border: Border.all(color: cs.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _FeatureImage(imagePath: imagePath, color: cs.surfaceContainerHighest),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(name, style: tt.displaySmall?.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: cs.onSurface)),
-              const SizedBox(height: 4),
-              Text(description, maxLines: 2, overflow: TextOverflow.ellipsis, style: tt.bodySmall?.copyWith(height: 1.625)),
-              const Spacer(),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text(price, style: tt.bodyLarge?.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: cs.primary)),
-                ActionButton(
-                  icon: Icons.add_shopping_cart,
-                  isPrimary: true,
-                  onPressed: () => _onAddToCart(context),
-                ),
-              ]),
-              const SizedBox(height: 5),
-            ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _FeatureImage(imagePath: imagePath, color: cs.surfaceContainerHighest),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: tt.displaySmall?.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: cs.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () => _onCustomize(context),
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 4,
+                          ),
+                          child: Text(
+                            'menu_screen.customize'.tr(),
+                            style: tt.labelLarge?.copyWith(
+                              color: cs.primary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: tt.bodySmall?.copyWith(height: 1.625),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        price,
+                        style: tt.bodyLarge?.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: cs.primary,
+                        ),
+                      ),
+                      ActionButton(
+                        icon: Icons.add_shopping_cart,
+                        isPrimary: true,
+                        onPressed: () => _onAddToCart(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
