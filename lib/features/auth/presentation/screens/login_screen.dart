@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -30,6 +31,55 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  String? _emailError;
+  String? _passwordError;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_onEmailChanged);
+    _passwordController.addListener(_onPasswordChanged);
+  }
+
+  void _onEmailChanged() {
+    if (_emailError == null) return;
+    setState(() => _emailError = _validateEmail(_emailController.text.trim()));
+  }
+
+  void _onPasswordChanged() {
+    if (_passwordError == null) return;
+    setState(
+        () => _passwordError = _validatePassword(_passwordController.text));
+  }
+
+  String? _validateEmail(String email) {
+    if (email.isEmpty) return 'validation.email_required'.tr();
+    if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)) {
+      return 'validation.email_invalid'.tr();
+    }
+    return null;
+  }
+
+  // Login only needs presence + length — no common/similarity checks.
+  String? _validatePassword(String password) {
+    if (password.isEmpty) return 'validation.password_required'.tr();
+    if (password.length < 8) return 'validation.password_min_length'.tr();
+    if (RegExp(r'^\d+$').hasMatch(password)) {
+      return PasswordValidator.numericError;
+    }
+    return null;
+  }
+
+  bool _validate() {
+    final emailError = _validateEmail(_emailController.text.trim());
+    final passwordError = _validatePassword(_passwordController.text);
+    setState(() {
+      _emailError = emailError;
+      _passwordError = passwordError;
+    });
+    return emailError == null && passwordError == null;
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -38,19 +88,11 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   }
 
   void _onLoginPressed() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      AppSnackBar.show(
-        context,
-        'auth.please_fill_all_fields'.tr(),
-        type: SnackBarType.error,
-      );
-      return;
-    }
-
-    context.read<AuthCubit>().login(email, password);
+    if (!_validate()) return;
+    context.read<AuthCubit>().login(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
   }
 
   void _onForgotPassword() {
@@ -259,6 +301,8 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
             onLoginPressed: _onLoginPressed,
             onForgotPassword: _onForgotPassword,
             onSocialLogin: _onSocialLogin,
+            emailError: _emailError,
+            passwordError: _passwordError,
           ),
         ),
       ),

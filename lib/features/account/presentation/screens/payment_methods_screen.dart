@@ -9,6 +9,8 @@ import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../../features/checkout/presentation/widgets/payment_option.dart';
 import '../../../../features/checkout/presentation/widgets/wallet_sheet.dart';
 
+import '../../../../core/services/local_storage_service.dart';
+
 class PaymentMethodsScreen extends StatefulWidget {
   const PaymentMethodsScreen({super.key});
 
@@ -18,6 +20,7 @@ class PaymentMethodsScreen extends StatefulWidget {
 
 class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   final _api = sl<ApiService>();
+  final _storage = sl<LocalStorageService>();
   List<Map<String, dynamic>> _cards = [];
   String _selected = '';
   bool _loading = true;
@@ -34,11 +37,16 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       if (mounted) {
         setState(() {
           _cards = List<Map<String, dynamic>>.from(data as List);
-          final defaultCard = _cards.firstWhere(
-            (c) => c['is_default'] == true,
-            orElse: () => <String, dynamic>{},
-          );
-          _selected = defaultCard['id'] as String? ?? '';
+          final savedMethod = _storage.getDefaultPaymentMethod();
+          if (savedMethod != null && savedMethod.isNotEmpty) {
+            _selected = savedMethod;
+          } else {
+            final defaultCard = _cards.firstWhere(
+              (c) => c['is_default'] == true,
+              orElse: () => <String, dynamic>{},
+            );
+            _selected = defaultCard['id'] as String? ?? '';
+          }
           _loading = false;
         });
       }
@@ -70,6 +78,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
 
   Future<void> _deleteCard(String id) async {
     try {
+      if (_selected == id) {
+        await _storage.clearDefaultPaymentMethod();
+        _selected = '';
+      }
       await _api.delete('${ApiConstants.paymentMethods}/$id');
       await _load();
     } catch (_) {}
@@ -77,6 +89,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
 
   Future<void> _setDefault(String id) async {
     try {
+      await _storage.setDefaultPaymentMethod(id);
       await _api.patch('${ApiConstants.paymentMethods}/$id');
       await _load();
     } catch (_) {}
@@ -138,6 +151,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 isDefault: selected,
                 onTap: () {
                   if (selected) {
+                    _storage.clearDefaultPaymentMethod();
                     setState(() => _selected = '');
                   } else {
                     setState(() => _selected = cardId);
@@ -165,7 +179,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             child: OutlinedButton.icon(
               onPressed: () {
                 _deleteCard(_selected);
-                _selected = '';
               },
               icon: const Icon(Icons.delete_outline, size: 18),
               label: const Text('Remove selected card'),
@@ -183,7 +196,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           showDefaultBadge: _selected == 'wallet',
           onTap: () async {
             await WalletSheet.show(context);
-            if (mounted) setState(() => _selected = 'wallet');
+            if (mounted) {
+              await _storage.setDefaultPaymentMethod('wallet');
+              setState(() => _selected = 'wallet');
+            }
           },
         ),
         const SizedBox(height: 12),
@@ -192,7 +208,9 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           label: 'checkout.apple_pay'.tr(),
           isSelected: _selected == 'applepay',
           showDefaultBadge: _selected == 'applepay',
-          onTap: () => setState(() => _selected = 'applepay'),
+          onTap: () async {
+            await _storage.setDefaultPaymentMethod('applepay');
+          },
         ),
       ]),
     ),

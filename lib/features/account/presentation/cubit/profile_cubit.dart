@@ -93,12 +93,17 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> refreshLoyalty() async {
-    if (state is! ProfileLoaded) return;
     final result = await _getLoyaltyPoints();
-    final current = state as ProfileLoaded;
     result.fold(
-      (_) {},
-      (points) => emit(ProfileLoaded(profile: current.profile, loyaltyPoints: points)),
+      (_) => loadProfile(),
+      (points) {
+        if (state is ProfileLoaded) {
+          final current = state as ProfileLoaded;
+          emit(ProfileLoaded(profile: current.profile, loyaltyPoints: points));
+        } else {
+          loadProfile();
+        }
+      },
     );
   }
 }

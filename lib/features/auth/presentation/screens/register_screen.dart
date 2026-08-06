@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/services/service_locator.dart';
@@ -85,13 +86,17 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   }
 
   void _clearPasswordError() {
-    final text = _passwordController.text;
-    if (text.length >= 8) {
-      setState(() => _passwordError = null);
-    }
-    if (_confirmPasswordController.text.isNotEmpty) {
-      _clearConfirmPasswordError();
-    }
+    // Only live-validate after the first submit attempt has shown an error.
+    // This avoids showing errors while the user is still typing from scratch.
+    if (_passwordError == null) return;
+    final error = PasswordValidator.validate(
+      _passwordController.text,
+      email: _emailController.text.trim(),
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+    );
+    setState(() => _passwordError = error);
+    if (_confirmPasswordController.text.isNotEmpty) _clearConfirmPasswordError();
   }
 
   void _clearConfirmPasswordError() {
@@ -218,11 +223,14 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
     }
 
     final password = _passwordController.text;
-    if (password.isEmpty) {
-      _passwordError = 'validation.password_required'.tr();
-      valid = false;
-    } else if (password.length < 8) {
-      _passwordError = 'validation.password_min_length'.tr();
+    final passwordError = PasswordValidator.validate(
+      password,
+      email: _emailController.text.trim(),
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+    );
+    if (passwordError != null) {
+      _passwordError = passwordError;
       valid = false;
     } else {
       _passwordError = null;

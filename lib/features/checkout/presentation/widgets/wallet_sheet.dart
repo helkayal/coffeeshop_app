@@ -47,7 +47,7 @@ class _WalletSheetState extends State<WalletSheet> {
       _storage.setWalletPhone(phone);
       // Also save to backend.
       try {
-        await _api.patch(ApiConstants.wallet, data: {'phone_number': phone});
+        await _api.patch(ApiConstants.wallet, data: {'mobile_wallet_phone': phone});
       } catch (_) {}
     }
     if (mounted) Navigator.pop(context, true);

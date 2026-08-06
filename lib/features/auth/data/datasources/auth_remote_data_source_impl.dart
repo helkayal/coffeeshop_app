@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../models/login_response.dart';
+import '../models/register_response.dart';
 import '../models/user_model.dart';
 import 'auth_remote_data_source.dart';
 
@@ -21,7 +22,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> register({
+  Future<RegisterResponse> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -42,10 +43,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'state': state,
         'city': city,
         if (dateOfBirth != null)
-          'date_of_birth': '${dateOfBirth.year}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}',
+          'date_of_birth':
+              '${dateOfBirth.year}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}',
       },
     );
-    return UserModel.fromJson(data as Map<String, dynamic>);
+    return RegisterResponse.fromJson(data as Map<String, dynamic>);
   }
 
   @override
@@ -63,6 +65,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.profileAvatar,
       data: formData,
       options: Options(headers: {'Content-Type': 'multipart/form-data'}),
+    );
+  }
+
+  /// Uploads avatar using a temporary [accessToken] — bypasses the interceptor
+  /// so the request is authenticated even before the token is stored in storage.
+  @override
+  Future<void> uploadAvatarWithToken(
+      String filePath, String accessToken) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(filePath),
+    });
+    await _apiService.post(
+      ApiConstants.profileAvatar,
+      data: formData,
+      options: Options(headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer $accessToken',
+      }),
     );
   }
 

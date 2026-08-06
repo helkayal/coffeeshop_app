@@ -66,6 +66,13 @@ import '../../features/settings/domain/repositories/settings_repository.dart';
 import '../../features/settings/domain/usecases/settings_usecases.dart';
 import '../../features/settings/presentation/cubit/settings_cubit.dart';
 
+import '../../features/promotions/data/datasources/promotions_remote_data_source.dart';
+import '../../features/promotions/data/datasources/promotions_remote_data_source_impl.dart';
+import '../../features/promotions/data/repositories/promotions_repository_impl.dart';
+import '../../features/promotions/domain/repositories/promotions_repository.dart';
+import '../../features/promotions/domain/usecases/get_home_slider.dart';
+import '../../features/promotions/presentation/cubit/promotions_cubit.dart';
+
 import 'api_service.dart';
 import 'local_storage_service.dart';
 import 'location_service.dart';
@@ -228,4 +235,15 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(
     () => SettingsCubit(getSettings: sl(), updateSettings: sl()),
   );
+
+  // ── Promotions ───────────────────────────────────────────────────────────────
+
+  sl.registerLazySingleton<PromotionsRemoteDataSource>(
+    () => PromotionsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<PromotionsRepository>(
+    () => PromotionsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetHomeSliderUseCase(sl()));
+  sl.registerFactory(() => PromotionsCubit(sl()));
 }

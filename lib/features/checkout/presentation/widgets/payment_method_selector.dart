@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/service_locator.dart';
 import 'credit_card_sheet.dart';
 import 'payment_option.dart';
 import 'wallet_sheet.dart';
@@ -15,10 +17,18 @@ class PaymentMethodSelector extends StatefulWidget {
 }
 
 class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
+  final _storage = sl<LocalStorageService>();
   bool _usePoints = true; // Default: use wallet cash first
   String _paymentMethod = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _paymentMethod = _storage.getDefaultPaymentMethod() ?? '';
+  }
+
   void _setMethod(String method) {
+    _storage.setDefaultPaymentMethod(method);
     setState(() => _paymentMethod = method);
     widget.onChanged?.call(_usePoints, method);
   }

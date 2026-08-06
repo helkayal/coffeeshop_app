@@ -15,6 +15,8 @@ class LoginBody extends StatelessWidget {
   final VoidCallback onLoginPressed;
   final VoidCallback onForgotPassword;
   final void Function(String provider) onSocialLogin;
+  final String? emailError;
+  final String? passwordError;
 
   const LoginBody({
     super.key,
@@ -24,6 +26,8 @@ class LoginBody extends StatelessWidget {
     required this.onLoginPressed,
     required this.onForgotPassword,
     required this.onSocialLogin,
+    this.emailError,
+    this.passwordError,
   });
 
   @override
@@ -45,6 +49,8 @@ class LoginBody extends StatelessWidget {
           LoginForm(
             emailController: emailController,
             passwordController: passwordController,
+            emailError: emailError,
+            passwordError: passwordError,
           ),
           Align(
             alignment: AlignmentDirectional.centerEnd,

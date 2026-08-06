@@ -211,7 +211,20 @@
     "add": "Add Balance",
     "phone_for_wallet": "Wallet Phone Number",
     "phone_number": "Phone Number",
-    "continue": "Continue"
+    "continue": "Continue",
+    "buy_packages": "Buy Wallet Package",
+    "buy_package_title": "Buy Coffee Cash Package",
+    "earn_2x_loyalty": "Earn 2x Loyalty Points on every package purchase!",
+    "no_payment_method": "No Payment Method Saved",
+    "no_payment_method_msg": "You don't have a default payment method saved. Please add a payment method to proceed.",
+    "go_to_payment_methods": "Go to Payment Methods",
+    "confirm_credit_card": "Confirm CVC for card ending in {}",
+    "enter_cvc": "Enter CVC",
+    "cvc_required": "Please enter a valid CVC (3-4 digits)",
+    "mobile_wallet_confirm": "Payment will proceed using your saved Mobile Wallet phone ({})",
+    "buy_package_button": "Buy {} ({} EGP)",
+    "select_package": "Select a Package",
+    "confirm_payment": "Confirm Payment"
   },
   "quick_add": {
     "saved_orders": "Saved Orders",
@@ -247,7 +260,15 @@
     "view_benefits": "View My Benefits",
     "max_tier": "Maximum Tier Reached",
     "points_to": "{} points to {}",
-    "expires_on": "Expires on {}"
+    "expires_on": "Expires on {}",
+    "history_title": "Loyalty History",
+    "no_transactions": "No loyalty transactions yet",
+    "reason_purchase": "Order Purchase",
+    "reason_top_up_package": "Package Purchase (2x Points)",
+    "reason_referral": "Referral Bonus",
+    "reason_review": "Review Bonus",
+    "reason_birthday": "Birthday Bonus",
+    "pts": "pts"
   },
   "benefits": {
     "your_level": "Your Level",
@@ -271,7 +292,14 @@
     "your_code": "Your Referral Code",
     "share_earn": "Share this code with friends and earn",
     "reward": "50 Points per referral!",
-    "history": "Referral History"
+    "history": "Referral History",
+    "apply_title": "Apply a Referral Code",
+    "enter_code": "Enter referral code",
+    "apply": "Apply",
+    "no_history": "No referrals yet",
+    "applied_success": "Referral code applied",
+    "apply_failed": "Failed to apply referral code",
+    "code_copied": "Referral code copied to clipboard!"
   },
   "verification": {
     "title": "Verify Your Email",

@@ -44,7 +44,8 @@ class ApiConstants {
 
   // Wallet
   static const String wallet = '/wallet';
-  static const String walletTopup = '/wallet/topup';
+  static const String walletPackages = '/wallet/packages';
+  static const String walletPackagesBuy = '/wallet/packages/buy';
   static const String walletTransactions = '/wallet/transactions';
 
   // Referral
@@ -61,4 +62,7 @@ class ApiConstants {
   // Locations
   static const String locationsStates = '/locations/states';
   static const String locationsCities = '/locations/cities';
+
+  // Promotions
+  static const String promotions = '/promotions';
 }

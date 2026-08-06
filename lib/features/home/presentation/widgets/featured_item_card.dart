@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/widgets/quick_add_overlay.dart';
+import '../../../menu/domain/entities/product.dart';
+import '../../../menu/presentation/cubit/menu_cubit.dart';
+import '../../../menu/presentation/cubit/menu_state.dart';
 import 'action_button.dart';
 
 class FeaturedItemCard extends StatelessWidget {
@@ -9,6 +13,7 @@ class FeaturedItemCard extends StatelessWidget {
   final String name;
   final String description;
   final String price;
+  final String? menuItemId;
 
   const FeaturedItemCard({
     super.key,
@@ -16,7 +21,43 @@ class FeaturedItemCard extends StatelessWidget {
     required this.name,
     required this.description,
     required this.price,
+    this.menuItemId,
   });
+
+  void _onAddToCart(BuildContext context) {
+    Product? product;
+    final menuState = context.read<MenuCubit>().state;
+    if (menuState is MenuLoaded && menuItemId != null && menuItemId!.isNotEmpty) {
+      for (final p in menuState.products) {
+        if (p.id == menuItemId) {
+          product = p;
+          break;
+        }
+      }
+    }
+
+    final priceClean = price.replaceAll(RegExp(r'[^\d.]'), '');
+    final priceNum = double.tryParse(priceClean) ?? 0.0;
+    product ??= Product(
+      id: (menuItemId != null && menuItemId!.isNotEmpty)
+          ? menuItemId!
+          : 'featured_${name.hashCode}',
+      name: name,
+      description: description,
+      imagePath: imagePath,
+      basePrice: priceNum,
+      category: '',
+    );
+
+    QuickAddOverlay.show(
+      context,
+      productName: name,
+      productDescription: description,
+      productImage: imagePath,
+      price: price,
+      product: product,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +84,9 @@ class FeaturedItemCard extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(price, style: tt.bodyLarge?.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: cs.primary)),
                 ActionButton(
-                  icon: Icons.add_shopping_cart, isPrimary: true,
-                  onPressed: () => QuickAddOverlay.show(context, productName: name, productDescription: description, productImage: imagePath, price: price),
+                  icon: Icons.add_shopping_cart,
+                  isPrimary: true,
+                  onPressed: () => _onAddToCart(context),
                 ),
               ]),
               const SizedBox(height: 5),
@@ -63,15 +105,39 @@ class _FeatureImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isNetwork = imagePath.startsWith('http://') || imagePath.startsWith('https://');
+
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(AppDesignConstants.borderRadius2xl)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Center(
-          child: Image.asset(imagePath, height: MediaQuery.of(context).size.height * .25,
-              fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(color: color)),
+          child: isNetwork
+              ? Image.network(
+                  imagePath,
+                  height: MediaQuery.of(context).size.height * .25,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => _fallbackAsset(),
+                )
+              : (imagePath.isNotEmpty)
+                  ? Image.asset(
+                      imagePath,
+                      height: MediaQuery.of(context).size.height * .25,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => _fallbackAsset(),
+                    )
+                  : _fallbackAsset(),
         ),
       ),
+    );
+  }
+
+  Widget _fallbackAsset() {
+    return Image.asset(
+      'assets/images/cardamom_cose_latte.png',
+      height: 180,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => Container(color: color),
     );
   }
 }

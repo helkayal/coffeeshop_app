@@ -130,6 +130,18 @@ class LocalStorageService {
 
   static const String _cardsKey = 'saved_cards';
   static const String _walletPhoneKey = 'wallet_phone';
+  static const String _defaultPaymentMethodKey = 'default_payment_method';
+
+  String? getDefaultPaymentMethod() =>
+      Hive.box(_boxName).get(_defaultPaymentMethodKey) as String?;
+
+  Future<void> setDefaultPaymentMethod(String method) async {
+    await Hive.box(_boxName).put(_defaultPaymentMethodKey, method);
+  }
+
+  Future<void> clearDefaultPaymentMethod() async {
+    await Hive.box(_boxName).delete(_defaultPaymentMethodKey);
+  }
 
   List<Map<String, dynamic>> getSavedCards() {
     final raw = Hive.box(_boxName).get(_cardsKey);

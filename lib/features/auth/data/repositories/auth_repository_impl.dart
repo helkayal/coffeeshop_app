@@ -62,7 +62,7 @@ class AuthRepositoryImpl implements AuthRepository {
     DateTime? dateOfBirth,
   }) async {
     try {
-      final user = await _remoteDataSource.register(
+      final response = await _remoteDataSource.register(
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -72,20 +72,32 @@ class AuthRepositoryImpl implements AuthRepository {
         city: city,
         dateOfBirth: dateOfBirth,
       );
-      await _localStorage.cacheUser(user.toJson());
 
-      // Upload pending avatar picked during registration (best-effort).
+      // Persist tokens returned by registration so the session is warm.
+      await _localStorage.setAuthToken(response.accessToken);
+      if (response.refreshToken != null) {
+        await _localStorage.setRefreshToken(response.refreshToken!);
+      }
+      await _localStorage.cacheUser(response.user.toJson());
+
+      // Upload avatar immediately using the registration access token.
+      // We pass the token explicitly because the interceptor picks up tokens
+      // from storage only after a full round-trip — using the temp token here
+      // avoids the 401 that was caused by the lag.
       final pendingAvatar = _localStorage.getPendingAvatarPath();
-      if (pendingAvatar != null) {
+      if (pendingAvatar != null && response.accessToken.isNotEmpty) {
         _localStorage.clearPendingAvatarPath();
         try {
-          await _remoteDataSource.uploadAvatar(pendingAvatar);
+          await _remoteDataSource.uploadAvatarWithToken(
+            pendingAvatar,
+            response.accessToken,
+          );
         } catch (_) {
           // Non-fatal — avatar can be set later from profile screen.
         }
       }
 
-      return Success(user);
+      return Success(response.user);
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Registration failed'));
     } on ConnectionException catch (e) {
@@ -94,6 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
+
 
   @override
   Future<Result<void>> logout() async {

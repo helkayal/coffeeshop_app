@@ -35,7 +35,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     try {
       final data = await _api.get(ApiConstants.wallet);
       if (mounted) {
-        final bal = data['balance'];
+        final bal = data['coffee_cash'] ?? data['balance'];
         setState(() {
           _walletBalance =
               bal is double ? bal : double.tryParse(bal?.toString() ?? '0') ?? 0;

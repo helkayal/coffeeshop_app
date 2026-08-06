@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../promotions/presentation/cubit/promotions_cubit.dart';
+import '../../../promotions/presentation/cubit/promotions_state.dart';
 import 'featured_item_card.dart';
 import 'promo_banner.dart';
 
@@ -16,11 +19,11 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
   late final PageController _pageController;
   Timer? _timer;
   int _currentPage = 0;
+  int _itemCount = 0;
 
   static const _autoAdvanceDuration = Duration(seconds: 4);
-  static const _pageCount = 5;
 
-  static const _pages = <Widget>[
+  static const _defaultPages = <Widget>[
     FeaturedItemCard(
       imagePath: 'assets/images/cardamom_cose_latte.png',
       name: 'Cardamom Rose Latte',
@@ -36,7 +39,6 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
           'Robust espresso, steamed oat milk, and house-made cardamom-rose syrup.',
       price: r'$7.25',
     ),
-    PromoBanner(),
     PromoBanner(),
   ];
 
@@ -44,7 +46,6 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    _startAutoAdvance();
   }
 
   @override
@@ -54,11 +55,12 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
     super.dispose();
   }
 
-  void _startAutoAdvance() {
+  void _startAutoAdvance(int totalPages) {
+    if (totalPages <= 0) return;
     _timer?.cancel();
     _timer = Timer.periodic(_autoAdvanceDuration, (_) {
-      if (!mounted) return;
-      final nextPage = (_currentPage + 1) % _pageCount;
+      if (!mounted || totalPages <= 0) return;
+      final nextPage = (_currentPage + 1) % totalPages;
       _pageController.animateToPage(
         nextPage,
         duration: const Duration(milliseconds: 400),
@@ -67,42 +69,97 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
     });
   }
 
-  void _onPageChanged(int page) {
+  void _onPageChanged(int page, int totalPages) {
     setState(() => _currentPage = page);
-    _startAutoAdvance();
+    _startAutoAdvance(totalPages);
+  }
+
+  List<Widget> _buildPagesFromState(PromotionsState state) {
+    if (state is PromotionsLoaded && !state.data.isEmpty) {
+      final pages = <Widget>[];
+      final highlights = state.data.highlightedItems;
+      final promos = state.data.promotions;
+
+      final maxLength = highlights.length > promos.length
+          ? highlights.length
+          : promos.length;
+
+      for (var i = 0; i < maxLength; i++) {
+        if (i < highlights.length) {
+          final h = highlights[i];
+          pages.add(
+            FeaturedItemCard(
+              imagePath: h.imageUrl,
+              name: h.title,
+              description: h.description,
+              price: '\$${h.basePrice}',
+              menuItemId: h.menuItemId,
+            ),
+          );
+        }
+        if (i < promos.length) {
+          final p = promos[i];
+          pages.add(
+            PromoBanner(
+              title: p.title,
+              description: p.description,
+              imageUrl: p.imageUrl,
+              discountPercentage: p.discountPercentage,
+            ),
+          );
+        }
+      }
+
+      if (pages.isNotEmpty) return pages;
+    }
+    return _defaultPages;
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final cardHeight = screenHeight * 0.4;
+    return BlocBuilder<PromotionsCubit, PromotionsState>(
+      builder: (context, state) {
+        final pages = _buildPagesFromState(state);
 
-    return SizedBox(
-      height: cardHeight,
-      child: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            itemCount: _pageCount,
-            itemBuilder: (_, index) => _pages[index],
+        if (_itemCount != pages.length) {
+          _itemCount = pages.length;
+          _currentPage = 0;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _startAutoAdvance(_itemCount);
+          });
+        }
+
+        final screenHeight = MediaQuery.of(context).size.height;
+        final cardHeight = screenHeight * 0.4;
+
+        return SizedBox(
+          height: cardHeight,
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (page) => _onPageChanged(page, pages.length),
+                itemCount: pages.length,
+                itemBuilder: (_, index) => pages[index],
+              ),
+              Positioned(
+                bottom: 8,
+                left: 0,
+                right: 0,
+                child: _buildIndicators(pages.length),
+              ),
+            ],
           ),
-          Positioned(
-            bottom: 8,
-            left: 0,
-            right: 0,
-            child: _buildIndicators(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildIndicators() {
+  Widget _buildIndicators(int count) {
     final cs = Theme.of(context).colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_pageCount, (i) {
+      children: List.generate(count, (i) {
         final isActive = i == _currentPage;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),

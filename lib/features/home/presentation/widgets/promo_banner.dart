@@ -1,11 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
 import 'banner_text_overlay.dart';
 
 class PromoBanner extends StatelessWidget {
-  const PromoBanner({super.key});
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+  final int? discountPercentage;
+  final String? menuItemId;
+  final String? price;
+
+  const PromoBanner({
+    super.key,
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.discountPercentage,
+    this.menuItemId,
+    this.price,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +38,46 @@ class PromoBanner extends StatelessWidget {
   }
 
   Widget _buildImage(ColorScheme cs) {
+    final isNetwork = imageUrl != null &&
+        (imageUrl!.startsWith('http://') || imageUrl!.startsWith('https://'));
+
     return ClipRRect(
       borderRadius: AppDesignConstants.radius2xl,
       child: Container(
         color: cs.surfaceContainerHighest,
-        child: Image.asset(
-          'assets/images/artisanal_coffee_brewing.png',
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: AlignmentDirectional.topStart,
-                end: AlignmentDirectional.bottomEnd,
-                colors: [Color(0xFF8B4513), Color(0xFFD4A574)],
-              ),
-            ),
+        child: isNetwork
+            ? Image.network(
+                imageUrl!,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => _buildFallbackImage(),
+              )
+            : (imageUrl != null && imageUrl!.isNotEmpty)
+                ? Image.asset(
+                    imageUrl!,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => _buildFallbackImage(),
+                  )
+                : _buildFallbackImage(),
+      ),
+    );
+  }
+
+  Widget _buildFallbackImage() {
+    return Image.asset(
+      'assets/images/artisanal_coffee_brewing.png',
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.topStart,
+            end: AlignmentDirectional.bottomEnd,
+            colors: [Color(0xFF8B4513), Color(0xFFD4A574)],
           ),
         ),
       ),
@@ -47,6 +85,10 @@ class PromoBanner extends StatelessWidget {
   }
 
   Widget _buildBadge(ColorScheme cs, TextTheme tt) {
+    final badgeText = discountPercentage != null && discountPercentage! > 0
+        ? '$discountPercentage% OFF'
+        : 'home_screen.promo_badge'.tr();
+
     return Positioned(
       top: 16,
       right: 16,
@@ -59,7 +101,7 @@ class PromoBanner extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
           ),
           child: Text(
-            'home_screen.promo_badge'.tr(),
+            badgeText,
             style: tt.bodyLarge?.copyWith(
               fontWeight: FontWeight.w800,
               fontSize: 18,
@@ -87,11 +129,14 @@ class PromoBanner extends StatelessWidget {
   }
 
   Widget _buildTextContent() {
-    return const Positioned(
+    return Positioned(
       left: 24,
       right: 24,
       bottom: 24,
-      child: BannerTextOverlay(),
+      child: BannerTextOverlay(
+        subtitle: description,
+        title: title,
+      ),
     );
   }
 }

@@ -5,9 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/services/service_locator.dart';
-import '../../../../core/widgets/app_snack_bar.dart';
-import '../../../../core/widgets/app_text_field.dart';
 import '../cubit/profile_cubit.dart';
+import '../widgets/package_selection_sheet.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -34,7 +33,7 @@ class _WalletScreenState extends State<WalletScreen> {
       final txns = await _api.get(ApiConstants.walletTransactions);
       if (mounted) {
         setState(() {
-          final bal = wallet['balance'];
+          final bal = wallet['coffee_cash'] ?? wallet['balance'];
           _balance = bal is double
               ? bal
               : double.tryParse(bal?.toString() ?? '0') ?? 0;
@@ -47,75 +46,14 @@ class _WalletScreenState extends State<WalletScreen> {
     }
   }
 
-  Future<void> _topUp(double amount) async {
-    try {
-      await _api.post(ApiConstants.walletTopup, data: {'amount': amount});
+  Future<void> _showPackageSheet() async {
+    final result = await PackageSelectionSheet.show(context);
+    if (result != null && mounted) {
+      try {
+        context.read<ProfileCubit>().loadProfile();
+      } catch (_) {}
       await _load();
-      if (mounted) {
-        context.read<ProfileCubit>().refreshLoyalty();
-        AppSnackBar.show(context, 'Wallet topped up successfully',
-            type: SnackBarType.success);
-      }
-
-    } catch (_) {
-      if (mounted) {
-        AppSnackBar.show(context, 'Top-up failed', type: SnackBarType.error);
-      }
     }
-  }
-
-  void _showTopUpSheet() {
-    final amountCtrl = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        ),
-        padding: EdgeInsets.fromLTRB(
-            24, 24, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 48, height: 4,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.outlineVariant.withAlpha(128),
-                borderRadius: BorderRadius.circular(2)),
-            ),
-            const SizedBox(height: 24),
-            Text('wallet.top_up'.tr(),
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 20)),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: amountCtrl,
-              label: 'Amount (EGP)',
-              keyboardType: TextInputType.number,
-              prefixIcon: const Icon(Icons.monetization_on_outlined),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  final amount = double.tryParse(amountCtrl.text) ?? 0;
-                  if (amount > 0) {
-                    Navigator.pop(context);
-                    _topUp(amount);
-                  }
-                },
-                child: Text('wallet.add'.tr()),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -155,9 +93,9 @@ class _WalletScreenState extends State<WalletScreen> {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: _showTopUpSheet,
-            icon: const Icon(Icons.add, size: 18),
-            label: Text('wallet.top_up'.tr()),
+            onPressed: _showPackageSheet,
+            icon: const Icon(Icons.stars, size: 18),
+            label: Text('Buy Wallet Package'),
             style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16)),
           ),

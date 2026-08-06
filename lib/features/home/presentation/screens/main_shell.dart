@@ -12,6 +12,7 @@ import '../../../../features/checkout/presentation/cubit/cart_state.dart';
 import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
+import '../../../promotions/presentation/cubit/promotions_cubit.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/screens/account_screen.dart';
 import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
@@ -32,6 +33,7 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => sl<PromotionsCubit>()..loadPromotions()),
         BlocProvider(create: (_) => sl<MenuCubit>()..loadMenu()),
         BlocProvider(create: (_) => sl<CartCubit>()..loadCart()),
         BlocProvider(create: (_) => sl<OrdersCubit>()..loadOrders()),

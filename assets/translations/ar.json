@@ -211,7 +211,20 @@
     "add": "إضافة رصيد",
     "phone_for_wallet": "رقم هاتف المحفظة",
     "phone_number": "رقم الهاتف",
-    "continue": "متابعة"
+    "continue": "متابعة",
+    "buy_packages": "شراء باقة محفظة",
+    "buy_package_title": "شراء باقة كوفي كاش",
+    "earn_2x_loyalty": "احصل على ضعف نقاط الولاء (2x) مع كل باقة!",
+    "no_payment_method": "لا توجد طريقة دفع محفوظة",
+    "no_payment_method_msg": "لا تملك طريقة دفع افتراضية محفوظة. يرجى إضافة طريقة دفع للمتابعة.",
+    "go_to_payment_methods": "الانتقال إلى طرق الدفع",
+    "confirm_credit_card": "تأكيد رمز CVC للبطاقة المنتهية بـ {}",
+    "enter_cvc": "أدخل رمز CVC",
+    "cvc_required": "يرجى إدخال رمز CVC صحيح (3-4 أرقام)",
+    "mobile_wallet_confirm": "سيتم خصم المبلغ باستخدام رقم محفظة الهاتف المحفوظ ({})",
+    "buy_package_button": "شراء {} ({} ج.م)",
+    "select_package": "اختر باقة",
+    "confirm_payment": "تأكيد الدفع"
   },
   "quick_add": {
     "saved_orders": "الطلبات المحفوظة",
@@ -246,8 +259,16 @@
     "platinum": "بلاتيني",
     "view_benefits": "عرض مزاياي",
     "max_tier": "تم الوصول لأعلى فئة",
-    "points_to": "{} نقطة إلى {}",
-    "expires_on": "تنتهي في {}"
+    "points_to": "{} نقطة للوصول إلى {}",
+    "expires_on": "تنتهي في {}",
+    "history_title": "سجل النقاط",
+    "no_transactions": "لا توجد معاملات نقاط بعد",
+    "reason_purchase": "شراء طلب",
+    "reason_top_up_package": "شراء باقة (نقاط مضاعفة)",
+    "reason_referral": "مكافأة الإحالة",
+    "reason_review": "مكافأة تقييم",
+    "reason_birthday": "مكافأة عيد الميلاد",
+    "pts": "نقطة"
   },
   "benefits": {
     "your_level": "مستواك",
@@ -271,7 +292,14 @@
     "your_code": "كود الإحالة الخاص بك",
     "share_earn": "شارك هذا الكود مع أصدقائك واربح",
     "reward": "50 نقطة لكل إحالة!",
-    "history": "سجل الإحالات"
+    "history": "سجل الإحالات",
+    "apply_title": "تطبيق كود إحالة",
+    "enter_code": "أدخل كود الإحالة",
+    "apply": "تطبيق",
+    "no_history": "لا توجد إحالات بعد",
+    "applied_success": "تم تطبيق كود الإحالة بنجاح",
+    "apply_failed": "فشل تطبيق كود الإحالة",
+    "code_copied": "تم نسخ كود الإحالة إلى الحافظة!"
   },
   "verification": {
     "title": "تأكيد البريد الإلكتروني",
