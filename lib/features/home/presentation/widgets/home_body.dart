@@ -137,7 +137,7 @@ class _LastOrderCard extends StatelessWidget {
                       Text('Order #$shortId',
                           style: tt.labelLarge?.copyWith(color: cs.secondary)),
                       const Spacer(),
-                      Text('\$${latestOrder.total.toStringAsFixed(2)}',
+                      Text('${latestOrder.total.toStringAsFixed(2)} EGP',
                           style: tt.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w700, color: cs.primary)),
                     ],
@@ -167,7 +167,7 @@ class _LastOrderCard extends StatelessWidget {
                               Text(item.name,
                                   style: tt.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w600, color: cs.onSurface)),
-                              Text('x${item.quantity}  \$${item.price.toStringAsFixed(2)}',
+                              Text('x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
                                   style: tt.bodySmall),
                             ],
                           ),

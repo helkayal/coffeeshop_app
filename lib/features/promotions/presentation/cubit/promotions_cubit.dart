@@ -1,13 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../domain/usecases/get_home_slider.dart';
 import 'promotions_state.dart';
 
 class PromotionsCubit extends Cubit<PromotionsState> {
   final GetHomeSliderUseCase _getHomeSliderUseCase;
+  final void Function(ConnectionFailure)? onConnectionFailure;
 
-  PromotionsCubit(this._getHomeSliderUseCase) : super(const PromotionsInitial());
+  PromotionsCubit(
+    this._getHomeSliderUseCase, {
+    this.onConnectionFailure,
+  }) : super(const PromotionsInitial());
 
   Future<void> loadPromotions() async {
     emit(const PromotionsLoading());
@@ -16,6 +21,7 @@ class PromotionsCubit extends Cubit<PromotionsState> {
       case Success(:final data):
         emit(PromotionsLoaded(data));
       case Error(:final failure):
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
         emit(PromotionsError(failure.message));
     }
   }

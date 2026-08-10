@@ -261,7 +261,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
                 final isFav = favState is FavoritesLoaded &&
                     favState.isFavorite(product.id);
                 return BottomActionBar(
-                  total: '\$${_total.toStringAsFixed(2)}',
+                  total: '${_total.toStringAsFixed(2)} EGP',
                   isFavorite: isFav,
                   onFavorite: _toggleFavorite,
                   onComplete: _addToCart,

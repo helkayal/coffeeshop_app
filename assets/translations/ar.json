@@ -7,7 +7,12 @@
   "cart": "السلة",
   "cancel": "إلغاء",
   "save": "حفظ",
-  "error_route_not_found": "لا يوجد مسار محدد لـ {}",
+  "error_route_not_found": "لم يتم تعريف مسار لـ {}",
+  "splash_screen": {
+    "no_internet": "لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة والمحاولة مرة أخرى.",
+    "server_error": "تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقاً.",
+    "try_again": "إعادة المحاولة"
+  },
   "onboarding": {
     "back": "رجوع",
     "next": "التالي",
@@ -200,7 +205,10 @@
     "save_card": "حفظ البطاقة",
     "no_saved_cards": "لا توجد بطاقات محفوظة",
     "load_error": "تعذر تحميل البطاقات",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "month": "الشهر",
+    "year": "السنة",
+    "expires_at": "ينتهي في {}"
   },
   "wallet": {
     "current_balance": "الرصيد الحالي",
@@ -338,6 +346,11 @@
   },
   "payment_methods": {
     "saved_cards": "البطاقات المحفوظة",
-    "other_methods": "طرق دفع أخرى"
+    "other_methods": "طرق دفع أخرى",
+    "add_new_card": "إضافة بطاقة جديدة",
+    "coffee_cash_wallet": "محفظة الهاتف",
+    "apple_pay": "Apple Pay",
+    "default": "افتراضي",
+    "no_saved_cards": "لا توجد بطاقات محفوظة"
   }
 }

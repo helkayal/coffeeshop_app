@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/api_service.dart';
+import '../../../../core/services/network_info_service.dart';
 import '../../../../core/services/service_locator.dart';
 import '../cubit/profile_cubit.dart';
 import '../widgets/package_selection_sheet.dart';
@@ -41,6 +44,10 @@ class _WalletScreenState extends State<WalletScreen> {
           _loading = false;
         });
       }
+    } on ConnectionException catch (_) {
+      if (mounted) {
+        sl<ConnectivityCubit>().markOffline(ConnectionStatus.serverUnreachable);
+      }
     } catch (_) {
       if (mounted) setState(() => _loading = false);
     }
@@ -56,6 +63,12 @@ class _WalletScreenState extends State<WalletScreen> {
     }
   }
 
+  void _reloadAfterReconnect() {
+    if (!mounted) return;
+    setState(() => _loading = true);
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -65,7 +78,12 @@ class _WalletScreenState extends State<WalletScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Scaffold(
+    return BlocListener<ConnectivityCubit, ConnectivityState>(
+      bloc: sl<ConnectivityCubit>(),
+      listener: (_, state) {
+        if (state is ConnectivityOnline) _reloadAfterReconnect();
+      },
+      child: Scaffold(
       backgroundColor: cs.surface,
       body: SingleChildScrollView(
         padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
@@ -125,6 +143,7 @@ class _WalletScreenState extends State<WalletScreen> {
             );
           }),
       ]),
+    ),
     ),
   );
   }

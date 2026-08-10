@@ -151,7 +151,7 @@ class _ProductActions extends StatelessWidget {
                   productName: product.name,
                   productDescription: product.description,
                   productImage: product.imagePath ?? '',
-                  price: '\$${product.basePrice.toStringAsFixed(2)}',
+                  price: '${product.basePrice.toStringAsFixed(2)} EGP',
                   product: product,
                 );
               }

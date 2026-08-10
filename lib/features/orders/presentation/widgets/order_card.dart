@@ -41,7 +41,7 @@ class OrderCard extends StatelessWidget {
             ]),
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text('\$${order.total.toStringAsFixed(2)}',
+            Text('${order.total.toStringAsFixed(2)} EGP',
                 style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.w600, color: cs.primary)),
             const SizedBox(height: 4),
             Container(
@@ -92,11 +92,11 @@ class OrderCard extends StatelessWidget {
             ...order.items.map((item) => _receiptLine(
                   context,
                   item.name,
-                  '\$${item.price.toStringAsFixed(2)} x${item.quantity}',
+                  '${item.price.toStringAsFixed(2)} EGP x${item.quantity}',
                 )),
             const Divider(),
             _receiptLine(context, 'Total',
-                '\$${order.total.toStringAsFixed(2)}',
+                '${order.total.toStringAsFixed(2)} EGP',
                 bold: true),
           ],
         ),

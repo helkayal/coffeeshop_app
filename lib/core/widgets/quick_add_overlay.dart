@@ -271,7 +271,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                   onPressed: _addToCart,
                   icon: const Icon(Icons.add_shopping_cart, size: 18),
                   label: Text(
-                    '\$${((widget.product?.basePrice ?? 0) + _selectedUpcharge).toStringAsFixed(2)} - Add to Cart',
+                    '${((widget.product?.basePrice ?? 0) + _selectedUpcharge).toStringAsFixed(2)} EGP - Add to Cart',
                     style: tt.labelLarge?.copyWith(color: cs.onPrimary),
                   ),
                   style: FilledButton.styleFrom(
@@ -322,7 +322,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                 item.selections.map((s) => s['modifier_name'] ?? '').join(', '),
                 maxLines: 2, overflow: TextOverflow.ellipsis, style: tt.bodySmall,
               ),
-            Text('x${item.quantity}  \$${item.price.toStringAsFixed(2)}',
+            Text('x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
                 style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
           ]),
         ),

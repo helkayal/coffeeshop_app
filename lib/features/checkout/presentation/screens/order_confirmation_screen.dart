@@ -58,7 +58,7 @@ class OrderConfirmationScreen extends StatelessWidget {
             Divider(color: cs.outlineVariant.withAlpha(128)),
             const SizedBox(height: 12),
             _receiptRow(tt, cs, 'checkout.total'.tr(),
-                '\$${total.toStringAsFixed(2)}',
+                '${total.toStringAsFixed(2)} EGP',
                 bold: true),
           ]),
         ),
@@ -103,7 +103,7 @@ class OrderConfirmationScreen extends StatelessWidget {
         Text('x${item.quantity}', style: tt.bodySmall),
         const SizedBox(width: 12),
         Text(
-          '\$${item.total.toStringAsFixed(2)}',
+          '${item.total.toStringAsFixed(2)} EGP',
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurface,
             fontWeight: FontWeight.w600,

@@ -17,6 +17,8 @@ class CartRepositoryImpl implements CartRepository {
       return Success(await _remote.getCart());
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to load cart'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
       return const Error(ServerFailure('Unexpected error loading cart'));
     }
@@ -28,6 +30,8 @@ class CartRepositoryImpl implements CartRepository {
       return Success(await _remote.addItem(item));
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to add item'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
       return const Error(ServerFailure('Unexpected error'));
     }
@@ -42,6 +46,8 @@ class CartRepositoryImpl implements CartRepository {
       return Success(await _remote.updateItem(itemId, quantity));
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to update item'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
       return const Error(ServerFailure('Unexpected error'));
     }
@@ -53,6 +59,8 @@ class CartRepositoryImpl implements CartRepository {
       return Success(await _remote.removeItem(itemId));
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to remove item'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
       return const Error(ServerFailure('Unexpected error'));
     }
@@ -65,6 +73,8 @@ class CartRepositoryImpl implements CartRepository {
       return const Success(null);
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to clear cart'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
       return const Error(ServerFailure('Unexpected error'));
     }

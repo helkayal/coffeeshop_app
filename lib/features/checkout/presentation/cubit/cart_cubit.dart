@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/errors/failures.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/usecases/cart_usecases.dart';
@@ -13,6 +14,7 @@ class CartCubit extends Cubit<CartState> {
   final RemoveCartItemUseCase _removeItem;
   final ClearCartUseCase _clearCart;
   final PlaceOrderUseCase _placeOrder;
+  final void Function(ConnectionFailure)? onConnectionFailure;
 
   CartCubit({
     required GetCartUseCase getCart,
@@ -21,6 +23,7 @@ class CartCubit extends Cubit<CartState> {
     required RemoveCartItemUseCase removeItem,
     required ClearCartUseCase clearCart,
     required PlaceOrderUseCase placeOrder,
+    this.onConnectionFailure,
   })  : _getCart = getCart,
         _addToCart = addToCart,
         _updateItem = updateItem,
@@ -33,7 +36,10 @@ class CartCubit extends Cubit<CartState> {
     emit(const CartLoading());
     final result = await _getCart();
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (cart) => emit(CartLoaded(cart)),
     );
   }
@@ -44,7 +50,10 @@ class CartCubit extends Cubit<CartState> {
 
     final result = await _addToCart(item);
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (cart) => emit(CartLoaded(cart)),
     );
   }
@@ -56,7 +65,10 @@ class CartCubit extends Cubit<CartState> {
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity + 1);
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (cart) => emit(CartLoaded(cart)),
     );
   }
@@ -68,7 +80,10 @@ class CartCubit extends Cubit<CartState> {
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity - 1);
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (cart) => emit(CartLoaded(cart)),
     );
   }
@@ -78,7 +93,10 @@ class CartCubit extends Cubit<CartState> {
     if (current != null) emit(CartActionInProgress(current));
     final result = await _removeItem(itemId);
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (cart) => emit(CartLoaded(cart)),
     );
   }
@@ -88,7 +106,10 @@ class CartCubit extends Cubit<CartState> {
     if (current != null) emit(CartActionInProgress(current));
     final result = await _clearCart();
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (_) => emit(CartLoaded(const Cart())),
     );
   }
@@ -101,7 +122,10 @@ class CartCubit extends Cubit<CartState> {
     emit(CartActionInProgress(current));
     final result = await _placeOrder(current, paymentMethod: paymentMethod);
     result.fold(
-      (failure) => emit(CartError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(CartError(failure.message));
+      },
       (orderId) {
         emit(OrderPlaced(orderId: orderId, items: items, total: total));
       },

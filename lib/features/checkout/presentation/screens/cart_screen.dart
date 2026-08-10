@@ -112,9 +112,9 @@ class _CartScreenState extends State<CartScreen> {
           ),
           const SizedBox(height: 8),
           OrderSummaryCard(
-            subtotal: '\$${cart.subtotal.toStringAsFixed(2)}',
+            subtotal: '${cart.subtotal.toStringAsFixed(2)} EGP',
             shipping: 'checkout.calculated_next'.tr(),
-            total: '\$${cart.subtotal.toStringAsFixed(2)}',
+            total: '${cart.subtotal.toStringAsFixed(2)} EGP',
             onCheckout: () =>
                 context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
           ),

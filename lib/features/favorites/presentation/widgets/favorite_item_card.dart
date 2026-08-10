@@ -72,7 +72,7 @@ class FavoriteItemCard extends StatelessWidget {
                 style: tt.bodySmall),
             const SizedBox(height: 12),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('\$${product.basePrice.toStringAsFixed(2)}',
+              Text('${product.basePrice.toStringAsFixed(2)} EGP',
                   style: tt.displaySmall
                       ?.copyWith(fontSize: 18, color: cs.primary)),
               Container(
@@ -87,7 +87,7 @@ class FavoriteItemCard extends StatelessWidget {
                     productName: product.name,
                     productDescription: product.description,
                     productImage: product.imagePath ?? '',
-                    price: '\$${product.basePrice.toStringAsFixed(2)}',
+                    price: '${product.basePrice.toStringAsFixed(2)} EGP',
                   ),
                   icon: Icon(Icons.shopping_cart, color: cs.onSurfaceVariant),
                 ),

@@ -8,6 +8,11 @@
   "cancel": "Cancel",
   "save": "Save",
   "error_route_not_found": "No route defined for {}",
+  "splash_screen": {
+    "no_internet": "No internet connection. Please check your network and try again.",
+    "server_error": "Unable to connect to the server. Please try again later.",
+    "try_again": "Try Again"
+  },
   "onboarding": {
     "back": "Back",
     "next": "Next",
@@ -200,7 +205,10 @@
     "save_card": "Save Card",
     "no_saved_cards": "No saved cards",
     "load_error": "Could not load cards",
-    "retry": "Retry"
+    "retry": "Retry",
+    "month": "Month",
+    "year": "Year",
+    "expires_at": "Expires {}"
   },
   "wallet": {
     "current_balance": "Current Balance",
@@ -338,6 +346,11 @@
   },
   "payment_methods": {
     "saved_cards": "Saved Cards",
-    "other_methods": "Other Payment Methods"
+    "other_methods": "Other Payment Methods",
+    "add_new_card": "Add New Card",
+    "coffee_cash_wallet": "Phone Wallet",
+    "apple_pay": "Apple Pay",
+    "default": "Default",
+    "no_saved_cards": "No saved cards"
   }
 }

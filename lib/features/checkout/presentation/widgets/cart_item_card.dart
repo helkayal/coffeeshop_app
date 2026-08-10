@@ -81,7 +81,7 @@ class CartItemCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(item.variant, style: tt.bodySmall),
           const SizedBox(height: 4),
-          Text('\$${item.unitPrice.toStringAsFixed(2)}',
+          Text('${item.unitPrice.toStringAsFixed(2)} EGP',
               style: tt.bodyLarge?.copyWith(fontSize: 18, color: cs.primary, fontWeight: FontWeight.w500)),
           const SizedBox(height: 12),
           Container(

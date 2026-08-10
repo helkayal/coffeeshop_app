@@ -27,7 +27,7 @@ class OrderItemRow extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(item.name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
             const SizedBox(height: 2),
-            Text('\$${item.price.toStringAsFixed(2)}',
+            Text('${item.price.toStringAsFixed(2)} EGP',
                 style: tt.bodySmall?.copyWith(color: cs.secondary)),
           ]),
         ),

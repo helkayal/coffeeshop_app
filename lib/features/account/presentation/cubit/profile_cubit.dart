@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/services/api_service.dart';
 import '../../domain/entities/user_profile.dart';
 import '../../domain/usecases/profile_usecases.dart';
@@ -13,12 +14,14 @@ class ProfileCubit extends Cubit<ProfileState> {
   final UpdateProfileUseCase _updateProfile;
   final GetLoyaltyPointsUseCase _getLoyaltyPoints;
   final ApiService _api;
+  final void Function(ConnectionFailure)? onConnectionFailure;
 
   ProfileCubit({
     required GetProfileUseCase getProfile,
     required UpdateProfileUseCase updateProfile,
     required GetLoyaltyPointsUseCase getLoyaltyPoints,
     required ApiService apiService,
+    this.onConnectionFailure,
   })  : _getProfile = getProfile,
         _updateProfile = updateProfile,
         _getLoyaltyPoints = getLoyaltyPoints,
@@ -37,9 +40,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     final pointsResult = await _getLoyaltyPoints();
 
     profileResult.fold(
-      (failure) => emit(ProfileError(failure.message)),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(ProfileError(failure.message));
+      },
       (profile) => pointsResult.fold(
-        (failure) => emit(ProfileError(failure.message)),
+        (failure) {
+          if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+          emit(ProfileError(failure.message));
+        },
         (points) => emit(ProfileLoaded(
           profile: profile,
           loyaltyPoints: points,
@@ -67,7 +76,10 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     final result = await _updateProfile(updatedProfile);
     result.fold(
-      (_) => loadProfile(cacheBuster: currentBuster),
+      (failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        loadProfile(cacheBuster: currentBuster);
+      },
       (profile) => emit(ProfileLoaded(
         profile: profile,
         loyaltyPoints: current is ProfileLoaded ? current.loyaltyPoints : 0.0,

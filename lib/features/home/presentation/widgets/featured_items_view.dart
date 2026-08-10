@@ -92,7 +92,7 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
               imagePath: h.imageUrl,
               name: h.title,
               description: h.description,
-              price: '\$${h.basePrice}',
+              price: '${h.basePrice} EGP',
               menuItemId: h.menuItemId,
             ),
           );

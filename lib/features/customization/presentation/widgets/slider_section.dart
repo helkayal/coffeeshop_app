@@ -87,7 +87,7 @@ class _SliderSectionState extends State<SliderSection> {
               final selected = i == _selectedIndex;
               final priceText = values[i].priceModifier == 0.0
                   ? 'Included'
-                  : '+\$${values[i].priceModifier.toStringAsFixed(2)}';
+                  : '+${values[i].priceModifier.toStringAsFixed(2)} EGP';
               return Expanded(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,

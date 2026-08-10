@@ -123,7 +123,7 @@ class _OptionCircle extends StatelessWidget {
           Text(
             option.priceModifier == 0.0
                 ? 'Included'
-                : '+\$${option.priceModifier.toStringAsFixed(2)}',
+                : '+${option.priceModifier.toStringAsFixed(2)} EGP',
             style: tt.bodySmall?.copyWith(
               fontSize: 11,
               color: cs.onSurfaceVariant,

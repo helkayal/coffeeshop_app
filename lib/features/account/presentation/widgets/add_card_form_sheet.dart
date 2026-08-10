@@ -8,7 +8,13 @@ class AddCardFormSheet extends StatefulWidget {
   final TextEditingController monthCtrl;
   final TextEditingController yearCtrl;
   final TextEditingController nameCtrl;
-  final void Function(String last4, String month, String year, String name) onSave;
+  final void Function(
+    String last4,
+    String month,
+    String year,
+    String name,
+    String brand,
+  ) onSave;
 
   const AddCardFormSheet({
     super.key,
@@ -72,8 +78,22 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
     var year = int.parse(widget.yearCtrl.text.trim());
     if (year < 100) year += 2000;
 
-    widget.onSave(last4, widget.monthCtrl.text.trim(), year.toString(),
-        widget.nameCtrl.text.trim());
+    String brand = 'Visa';
+    if (number.startsWith('5') || number.startsWith('2')) {
+      brand = 'Mastercard';
+    } else if (number.startsWith('3')) {
+      brand = 'Amex';
+    } else if (number.startsWith('6')) {
+      brand = 'Discover';
+    }
+
+    widget.onSave(
+      last4,
+      widget.monthCtrl.text.trim(),
+      year.toString(),
+      widget.nameCtrl.text.trim(),
+      brand,
+    );
   }
 
   @override
@@ -113,11 +133,13 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
           Row(children: [
             Expanded(
                 child: AppTextField(
-                    controller: widget.monthCtrl, label: 'Month')),
+                    controller: widget.monthCtrl,
+                    label: 'credit_card.month'.tr())),
             const SizedBox(width: 12),
             Expanded(
                 child: AppTextField(
-                    controller: widget.yearCtrl, label: 'Year')),
+                    controller: widget.yearCtrl,
+                    label: 'credit_card.year'.tr())),
           ]),
           const SizedBox(height: 12),
           AppTextField(

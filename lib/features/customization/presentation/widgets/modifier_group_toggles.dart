@@ -119,7 +119,7 @@ class _ToggleCard extends StatelessWidget {
             Text(
               option.priceModifier == 0.0
                   ? 'Free'
-                  : '+\$${option.priceModifier.toStringAsFixed(2)}',
+                  : '+${option.priceModifier.toStringAsFixed(2)} EGP',
               style: tt.labelLarge?.copyWith(color: cs.primary),
             ),
           ],

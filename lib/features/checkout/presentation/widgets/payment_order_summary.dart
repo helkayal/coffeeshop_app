@@ -35,7 +35,7 @@ class PaymentOrderSummary extends StatelessWidget {
                 imagePath: item.imagePath,
                 name: item.name,
                 desc: item.variant.isNotEmpty ? item.variant : item.name,
-                price: '\$${item.total.toStringAsFixed(2)}',
+                price: '${item.total.toStringAsFixed(2)} EGP',
               ),
             )),
         const SizedBox(height: 8),
@@ -44,7 +44,7 @@ class PaymentOrderSummary extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('checkout.total'.tr(),
               style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          Text('\$${total.toStringAsFixed(2)}',
+          Text('${total.toStringAsFixed(2)} EGP',
               style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.primary)),
         ]),
       ]),

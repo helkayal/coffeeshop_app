@@ -7,6 +7,7 @@ class SavedCardTile extends StatelessWidget {
   final String expiry;
   final bool isDefault;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
 
   const SavedCardTile({
     super.key,
@@ -14,16 +15,19 @@ class SavedCardTile extends StatelessWidget {
     required this.expiry,
     required this.isDefault,
     required this.onTap,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return PaymentOption(
       icon: Icons.credit_card,
-      label: '$mask ($expiry)',
+      label: mask,
+      subtitle: expiry,
       isSelected: isDefault,
       showDefaultBadge: isDefault,
       onTap: onTap,
+      onDelete: onDelete,
     );
   }
 }
