@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:coffeeshop_app/coffeeshop_app.dart';
 import 'package:coffeeshop_app/config/app_config.dart';
+import 'package:coffeeshop_app/core/helpers/password_validator.dart';
 import 'package:coffeeshop_app/core/services/local_storage_service.dart';
 import 'package:coffeeshop_app/core/services/service_locator.dart';
 
@@ -11,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await setupServiceLocator();
+  await PasswordValidator.loadCommonPasswords();
 
   // Ensure Hive is ready (LocalStorageService.init() is called inside
   // setupServiceLocator, so the box is already open at this point).

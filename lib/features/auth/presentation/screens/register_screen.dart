@@ -95,26 +95,17 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
     );
-    setState(() => _passwordError = error);
+    setState(() => _passwordError = error?.tr());
     if (_confirmPasswordController.text.isNotEmpty) _clearConfirmPasswordError();
   }
 
   void _clearConfirmPasswordError() {
     final text = _confirmPasswordController.text;
     if (_confirmPasswordError == null && text.isEmpty) return;
-
-    if (text.isEmpty) {
-      setState(() => _confirmPasswordError =
-          'validation.confirm_password_required'.tr());
-    } else if (text.length < 8) {
-      setState(
-          () => _confirmPasswordError = 'validation.password_min_length'.tr());
-    } else if (text != _passwordController.text) {
-      setState(() => _confirmPasswordError =
-          'validation.passwords_do_not_match'.tr());
-    } else {
-      setState(() => _confirmPasswordError = null);
-    }
+    setState(() => _confirmPasswordError = PasswordValidator.validateConfirm(
+          _passwordController.text,
+          text,
+        )?.tr());
   }
 
   void _clearStateError() {
@@ -230,18 +221,17 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
       lastName: _lastNameController.text.trim(),
     );
     if (passwordError != null) {
-      _passwordError = passwordError;
+      _passwordError = passwordError.tr();
       valid = false;
     } else {
       _passwordError = null;
     }
 
     final confirmPassword = _confirmPasswordController.text;
-    if (confirmPassword.isEmpty) {
-      _confirmPasswordError = 'validation.confirm_password_required'.tr();
-      valid = false;
-    } else if (confirmPassword != password) {
-      _confirmPasswordError = 'validation.passwords_do_not_match'.tr();
+    final confirmError =
+        PasswordValidator.validateConfirm(password, confirmPassword);
+    if (confirmError != null) {
+      _confirmPasswordError = confirmError.tr();
       valid = false;
     } else {
       _confirmPasswordError = null;

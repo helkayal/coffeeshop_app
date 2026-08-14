@@ -52,3 +52,4 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - assets/common_passwords.txt

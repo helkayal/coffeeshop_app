@@ -335,6 +335,7 @@
     "reset_token_label": "رمز إعادة التعيين",
     "new_password": "كلمة مرور جديدة",
     "reset": "إعادة تعيين",
+    "reset_success_message": "تمت إعادة تعيين كلمة المرور بنجاح. يرجى تسجيل الدخول.",
     "product_not_available": "المنتج غير متاح"
   },
   "validation": {
@@ -347,6 +348,9 @@
     "dob_required": "تاريخ الميلاد مطلوب",
     "password_required": "كلمة المرور مطلوبة",
     "password_min_length": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+    "password_numeric": "كلمة المرور لا يمكن أن تكون أرقاماً فقط",
+    "password_similar": "كلمة المرور مشابهة جداً لمعلوماتك الشخصية",
+    "password_common": "كلمة المرور شائعة جداً",
     "confirm_password_required": "يرجى تأكيد كلمة المرور",
     "passwords_do_not_match": "كلمتا المرور غير متطابقتين"
   },

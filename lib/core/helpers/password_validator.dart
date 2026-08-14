@@ -1,23 +1,55 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+
 /// Client-side password validation that mirrors Django's built-in validators:
 ///
 /// 1. MinimumLengthValidator     – at least 8 characters
 /// 2. NumericPasswordValidator   – not entirely numeric
 /// 3. UserAttributeSimilarityValidator – not too similar to email or name
 /// 4. CommonPasswordValidator    – not a commonly known weak password
+///
+/// [validate] and [validateConfirm] return localization keys (validation.*)
+/// — callers must translate them with `.tr()` before showing them.
+///
+/// The common-password check uses Django's full 20 000-entry list, loaded
+/// from `assets/common_passwords.txt` via [loadCommonPasswords] at app
+/// startup, so it matches the backend exactly. Until then (and if loading
+/// fails) a small built-in subset is used as a fallback.
 class PasswordValidator {
   const PasswordValidator._();
 
-  // ── Public error strings (reusable across login + register) ─────────────
-  static const String requiredError = 'Password is required';
-  static const String minLengthError = 'Password must be at least 8 characters';
-  static const String numericError = "Password can't be entirely numeric";
-  static const String similarityError =
-      'Password is too similar to your personal information';
-  static const String commonError = 'Password is too common';
+  /// Loads Django's common-password list into memory.
+  ///
+  /// Called once at app startup. Falls back to the built-in subset if the
+  /// asset cannot be loaded.
+  static Future<void> loadCommonPasswords() async {
+    try {
+      final data =
+          await rootBundle.loadString('assets/common_passwords.txt');
+      final words = data
+          .split('\n')
+          .map((w) => w.trim().toLowerCase())
+          .where((w) => w.isNotEmpty);
+      _commonPasswords = {..._commonPasswords, ...words};
+    } catch (e) {
+      debugPrint('PasswordValidator: failed to load common passwords: $e');
+    }
+  }
+
+  // ── Localization keys (reusable across login + register + reset) ────────
+  static const String requiredErrorKey = 'validation.password_required';
+  static const String minLengthErrorKey = 'validation.password_min_length';
+  static const String numericErrorKey = 'validation.password_numeric';
+  static const String similarityErrorKey = 'validation.password_similar';
+  static const String commonErrorKey = 'validation.password_common';
+  static const String confirmRequiredErrorKey =
+      'validation.confirm_password_required';
+  static const String passwordsDoNotMatchErrorKey =
+      'validation.passwords_do_not_match';
 
   /// Validates [password] against all rules.
   ///
-  /// Returns a human-readable error string on the first failing rule,
+  /// Returns the localization key of the first failing rule,
   /// or `null` if the password passes all checks.
   ///
   /// [email], [firstName], and [lastName] are used for the similarity check.
@@ -27,26 +59,37 @@ class PasswordValidator {
     String firstName = '',
     String lastName = '',
   }) {
-    if (password.isEmpty) return requiredError;
+    if (password.isEmpty) return requiredErrorKey;
 
     // Rule 1 – minimum length
-    if (password.length < 8) return minLengthError;
+    if (password.length < 8) return minLengthErrorKey;
 
     // Rule 2 – not entirely numeric
-    if (RegExp(r'^\d+$').hasMatch(password)) return numericError;
+    if (RegExp(r'^\d+$').hasMatch(password)) return numericErrorKey;
 
     // Rule 3 – not too similar to user attributes
-    final similarityMsg = _checkSimilarity(
+    if (_checkSimilarity(
       password,
       email: email,
       firstName: firstName,
       lastName: lastName,
-    );
-    if (similarityMsg != null) return similarityError;
+    )) {
+      return similarityErrorKey;
+    }
 
     // Rule 4 – not a common password
-    if (_isCommonPassword(password)) return commonError;
+    if (_isCommonPassword(password)) return commonErrorKey;
 
+    return null;
+  }
+
+  /// Validates the confirm field against [password].
+  ///
+  /// Returns the localization key of the failing rule,
+  /// or `null` if the confirmation is valid.
+  static String? validateConfirm(String password, String confirm) {
+    if (confirm.isEmpty) return confirmRequiredErrorKey;
+    if (confirm != password) return passwordsDoNotMatchErrorKey;
     return null;
   }
 
@@ -56,7 +99,7 @@ class PasswordValidator {
   // contiguous substring of the password (case-insensitive), which covers
   // the most common failure cases without a full SequenceMatcher port.
 
-  static String? _checkSimilarity(
+  static bool _checkSimilarity(
     String password, {
     required String email,
     required String firstName,
@@ -74,20 +117,23 @@ class PasswordValidator {
 
     for (final part in parts) {
       if (pw.contains(part.toLowerCase())) {
-        return 'Password is too similar to your personal information';
+        return true;
       }
     }
-    return null;
+    return false;
   }
 
   // ── Common password list ────────────────────────────────────────────────
-  // A representative subset of Django's 20 000-entry common-passwords list.
-  // Covers the most frequently submitted weak passwords.
+  // Starts as a built-in subset (also covering app-specific entries such as
+  // 'coffeeshop' that Django's list doesn't include) and grows with the full
+  // list loaded from the asset at startup.
 
   static bool _isCommonPassword(String password) =>
       _commonPasswords.contains(password.toLowerCase());
 
-  static const _commonPasswords = <String>{
+  static Set<String> _commonPasswords = {..._builtInCommonPasswords};
+
+  static const _builtInCommonPasswords = <String>{
     'password', 'password1', 'password123', '123456', '12345678',
     '123456789', '1234567890', 'qwerty', 'qwerty123', 'abc123',
     'iloveyou', 'admin', 'letmein', 'welcome', 'monkey', '1234567',

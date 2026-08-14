@@ -10,6 +10,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../screens/verify_email_args.dart';
 import '../widgets/login_body.dart';
+import '../widgets/reset_password_dialog.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -65,7 +66,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
     if (password.isEmpty) return 'validation.password_required'.tr();
     if (password.length < 8) return 'validation.password_min_length'.tr();
     if (RegExp(r'^\d+$').hasMatch(password)) {
-      return PasswordValidator.numericError;
+      return PasswordValidator.numericErrorKey.tr();
     }
     return null;
   }
@@ -135,7 +136,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
                     failure.message,
                     type: SnackBarType.error,
                   ),
-                  (data) => _showResetTokenDialog(data),
+                  (data) => _showResetTokenDialog(data, email),
                 );
               }
             },
@@ -146,65 +147,30 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
     );
   }
 
-  void _showResetTokenDialog(Map<String, dynamic> data) {
+  Future<void> _showResetTokenDialog(
+    Map<String, dynamic> data,
+    String email,
+  ) async {
     final token = data['token'] as String? ?? '';
-    final newPwdCtrl = TextEditingController();
+    final cubit = context.read<AuthCubit>();
 
-    showDialog(
+    // The dialog keeps itself open on backend errors, so it only pops with
+    // a password once the reset actually succeeded.
+    final newPassword = await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('verification.reset_password'.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('verification.reset_token_msg'.tr()),
-            const SizedBox(height: 12),
-            AppTextField(
-              label: 'verification.reset_token_label'.tr(),
-              controller: TextEditingController(text: token),
-              prefixIcon: const Icon(Icons.key),
-            ),
-            const SizedBox(height: 12),
-            AppTextField(
-              controller: newPwdCtrl,
-              label: 'verification.new_password'.tr(),
-              isPassword: true,
-              prefixIcon: const Icon(Icons.lock_outlined),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final newPassword = newPwdCtrl.text;
-              if (newPassword.length < 8) return;
-              Navigator.pop(context);
-
-              final cubit = context.read<AuthCubit>();
-              final result = await cubit.resetPassword(token, newPassword);
-              if (context.mounted) {
-                result.fold(
-                  (failure) => AppSnackBar.show(
-                    context,
-                    failure.message,
-                    type: SnackBarType.error,
-                  ),
-                  (_) => AppSnackBar.show(
-                    context,
-                    'Password reset successfully. Please login.',
-                    type: SnackBarType.success,
-                  ),
-                );
-              }
-            },
-            child: Text('verification.reset'.tr()),
-          ),
-        ],
+      builder: (_) => ResetPasswordDialog(
+        token: token,
+        email: email,
+        onSubmit: (password) => cubit.resetPassword(token, password),
       ),
+    );
+    if (newPassword == null) return;
+    if (!mounted) return;
+
+    AppSnackBar.show(
+      context,
+      'verification.reset_success_message'.tr(),
+      type: SnackBarType.success,
     );
   }
 
