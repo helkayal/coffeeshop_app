@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../promotions/domain/entities/home_slider_data.dart';
 import '../../../promotions/presentation/cubit/promotions_cubit.dart';
 import '../../../promotions/presentation/cubit/promotions_state.dart';
 import 'featured_item_card.dart';
@@ -22,25 +23,6 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
   int _itemCount = 0;
 
   static const _autoAdvanceDuration = Duration(seconds: 4);
-
-  static const _defaultPages = <Widget>[
-    FeaturedItemCard(
-      imagePath: 'assets/images/cardamom_cose_latte.png',
-      name: 'Cardamom Rose Latte',
-      description:
-          'Robust espresso, steamed oat milk, and house-made cardamom-rose syrup.',
-      price: r'$7.25',
-    ),
-    PromoBanner(),
-    FeaturedItemCard(
-      imagePath: 'assets/images/cardamom_cose_latte.png',
-      name: 'Cardamom Rose Latte',
-      description:
-          'Robust espresso, steamed oat milk, and house-made cardamom-rose syrup.',
-      price: r'$7.25',
-    ),
-    PromoBanner(),
-  ];
 
   @override
   void initState() {
@@ -74,84 +56,104 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
     _startAutoAdvance(totalPages);
   }
 
-  List<Widget> _buildPagesFromState(PromotionsState state) {
-    if (state is PromotionsLoaded && !state.data.isEmpty) {
-      final pages = <Widget>[];
-      final highlights = state.data.highlightedItems;
-      final promos = state.data.promotions;
+  List<Widget> _buildPages(HomeSliderData data) {
+    final pages = <Widget>[];
+    final highlights = data.highlightedItems;
+    final promos = data.promotions;
 
-      final maxLength = highlights.length > promos.length
-          ? highlights.length
-          : promos.length;
+    final maxLength = highlights.length > promos.length
+        ? highlights.length
+        : promos.length;
 
-      for (var i = 0; i < maxLength; i++) {
-        if (i < highlights.length) {
-          final h = highlights[i];
-          pages.add(
-            FeaturedItemCard(
-              imagePath: h.imageUrl,
-              name: h.title,
-              description: h.description,
-              price: '${h.basePrice} EGP',
-              menuItemId: h.menuItemId,
-            ),
-          );
-        }
-        if (i < promos.length) {
-          final p = promos[i];
-          pages.add(
-            PromoBanner(
-              title: p.title,
-              description: p.description,
-              imageUrl: p.imageUrl,
-              discountPercentage: p.discountPercentage,
-            ),
-          );
-        }
+    for (var i = 0; i < maxLength; i++) {
+      if (i < highlights.length) {
+        final h = highlights[i];
+        pages.add(
+          FeaturedItemCard(
+            imagePath: h.imageUrl,
+            name: h.title,
+            description: h.description,
+            price: '${h.basePrice} EGP',
+            menuItemId: h.menuItemId,
+          ),
+        );
       }
-
-      if (pages.isNotEmpty) return pages;
+      if (i < promos.length) {
+        final p = promos[i];
+        pages.add(
+          PromoBanner(
+            title: p.title,
+            description: p.description,
+            imageUrl: p.imageUrl,
+            discountPercentage: p.discountPercentage,
+          ),
+        );
+      }
     }
-    return _defaultPages;
+
+    return pages;
+  }
+
+  Widget _buildCarousel(List<Widget> pages) {
+    if (_itemCount != pages.length) {
+      _itemCount = pages.length;
+      _currentPage = 0;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _startAutoAdvance(_itemCount);
+      });
+    }
+
+    return Stack(
+      children: [
+        PageView.builder(
+          controller: _pageController,
+          onPageChanged: (page) => _onPageChanged(page, pages.length),
+          itemCount: pages.length,
+          itemBuilder: (_, index) => pages[index],
+        ),
+        Positioned(
+          bottom: 8,
+          left: 0,
+          right: 0,
+          child: _buildIndicators(pages.length),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PromotionsCubit, PromotionsState>(
-      builder: (context, state) {
-        final pages = _buildPagesFromState(state);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final cardHeight = screenHeight * 0.4;
 
-        if (_itemCount != pages.length) {
-          _itemCount = pages.length;
-          _currentPage = 0;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _startAutoAdvance(_itemCount);
-          });
-        }
-
-        final screenHeight = MediaQuery.of(context).size.height;
-        final cardHeight = screenHeight * 0.4;
-
-        return SizedBox(
-          height: cardHeight,
-          child: Stack(
-            children: [
-              PageView.builder(
-                controller: _pageController,
-                onPageChanged: (page) => _onPageChanged(page, pages.length),
-                itemCount: pages.length,
-                itemBuilder: (_, index) => pages[index],
-              ),
-              Positioned(
-                bottom: 8,
-                left: 0,
-                right: 0,
-                child: _buildIndicators(pages.length),
-              ),
-            ],
-          ),
-        );
-      },
+    return SizedBox(
+      height: cardHeight,
+      child: BlocBuilder<PromotionsCubit, PromotionsState>(
+        builder: (context, state) {
+          switch (state) {
+            case PromotionsInitial() || PromotionsLoading():
+              return const Center(child: CircularProgressIndicator());
+            case PromotionsError(:final message):
+              return Center(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              );
+            case PromotionsLoaded(:final data):
+              final pages = _buildPages(data);
+              if (pages.isEmpty) {
+                _timer?.cancel();
+                _itemCount = 0;
+                return const SizedBox.shrink();
+              }
+              return _buildCarousel(pages);
+          }
+        },
+      ),
     );
   }
 
