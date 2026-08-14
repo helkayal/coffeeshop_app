@@ -20,7 +20,8 @@ class PaymentRoute extends SecondaryRoute {
 
 class CustomizationRoute extends SecondaryRoute {
   final Product? product;
-  const CustomizationRoute({this.product});
+  final bool fromFavorites;
+  const CustomizationRoute({this.product, this.fromFavorites = false});
 }
 
 class SettingsRoute extends SecondaryRoute {
@@ -91,22 +92,46 @@ class ShellState {
 class ShellCubit extends Cubit<ShellState> {
   ShellCubit() : super(const ShellState());
 
-  /// Select a bottom-nav tab and clear any open secondary screens.
-  void selectTab(int index) =>
-      emit(state.copyWith(tabIndex: index, secondaryStack: const []));
+  /// Called by screens that need to intercept back navigation.
+  /// Return [true] to allow navigation, [false] to block it.
+  Future<bool> Function()? onWillPopSecondary;
+
+  /// Select a bottom-nav tab. Checks [onWillPopSecondary] first.
+  Future<void> selectTab(int index) async {
+    if (onWillPopSecondary != null) {
+      final allow = await onWillPopSecondary!();
+      if (!allow) return;
+    }
+    onWillPopSecondary = null;
+    emit(state.copyWith(tabIndex: index, secondaryStack: const []));
+  }
 
   void pushSecondary(SecondaryRoute route) =>
       emit(state.copyWith(secondaryStack: [...state.secondaryStack, route]));
 
+  /// Pop the top secondary screen (no interception — caller handles it).
   void popSecondary() {
     if (state.secondaryStack.isEmpty) return;
+    onWillPopSecondary = null;
+    final stack = [...state.secondaryStack]..removeLast();
+    emit(state.copyWith(secondaryStack: stack));
+  }
+
+  /// Pop with interception — used by the AppBar back button.
+  Future<void> popSecondaryWithCheck() async {
+    if (state.secondaryStack.isEmpty) return;
+    if (onWillPopSecondary != null) {
+      final allow = await onWillPopSecondary!();
+      if (!allow) return;
+    }
+    onWillPopSecondary = null;
     final stack = [...state.secondaryStack]..removeLast();
     emit(state.copyWith(secondaryStack: stack));
   }
 
   /// Replace the entire secondary stack with a single route.
-  /// Used for terminal flows like Order Confirmation where going
-  /// back to Payment makes no sense.
-  void clearAndPush(SecondaryRoute route) =>
-      emit(state.copyWith(secondaryStack: [route]));
+  void clearAndPush(SecondaryRoute route) {
+    onWillPopSecondary = null;
+    emit(state.copyWith(secondaryStack: [route]));
+  }
 }

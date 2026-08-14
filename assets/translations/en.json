@@ -165,7 +165,13 @@
     "intensity_single": "Single",
     "intensity_double": "Double",
     "intensity_triple": "Triple",
-    "intensity_quad": "Quad"
+    "intensity_quad": "Quad",
+    "update_favorite_title": "Update Favorite Customization?",
+    "update_favorite_msg": "You have changed the customization for this saved favorite item. Would you like to save your updates before leaving?",
+    "update": "Update Favorite",
+    "keep_original": "Keep Original",
+    "save_updates": "Save Updates",
+    "discard": "Discard"
   },
   "checkout": {
     "your_bag": "Your Bag",

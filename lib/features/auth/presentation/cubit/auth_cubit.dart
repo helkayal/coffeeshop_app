@@ -24,13 +24,13 @@ class AuthCubit extends Cubit<AuthState> {
     required VerifyEmailUseCase verifyEmailUseCase,
     required ResendVerificationUseCase resendVerificationUseCase,
     required AuthRepository authRepository,
-  })  : _loginUseCase = loginUseCase,
-        _registerUseCase = registerUseCase,
-        _refreshSessionUseCase = refreshSessionUseCase,
-        _verifyEmailUseCase = verifyEmailUseCase,
-        _resendVerificationUseCase = resendVerificationUseCase,
-        _authRepository = authRepository,
-        super(const AuthInitial());
+  }) : _loginUseCase = loginUseCase,
+       _registerUseCase = registerUseCase,
+       _refreshSessionUseCase = refreshSessionUseCase,
+       _verifyEmailUseCase = verifyEmailUseCase,
+       _resendVerificationUseCase = resendVerificationUseCase,
+       _authRepository = authRepository,
+       super(const AuthInitial());
 
   /// Called at app startup from [SplashScreen].
   /// Uses the stored refresh token to get a new session.
@@ -52,17 +52,14 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _loginUseCase(email, password);
 
     if (isClosed) return;
-    result.fold(
-      (failure) {
-        final msg = failure.message.toLowerCase();
-        if (msg.contains('not verified') || msg.contains('email not verified')) {
-          emit(AuthEmailNotVerified(email));
-        } else {
-          emit(AuthError(failure.message));
-        }
-      },
-      (user) => emit(AuthAuthenticated(user)),
-    );
+    result.fold((failure) {
+      final msg = failure.message.toLowerCase();
+      if (msg.contains('not verified') || msg.contains('email not verified')) {
+        emit(AuthEmailNotVerified(email));
+      } else {
+        emit(AuthError(failure.message));
+      }
+    }, (user) => emit(AuthAuthenticated(user)));
   }
 
   Future<void> register({

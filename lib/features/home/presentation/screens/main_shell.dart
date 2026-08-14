@@ -67,8 +67,9 @@ class MainShell extends StatelessWidget {
                                       is! OrderConfirmationRoute
                               ? IconButton(
                                   icon: const Icon(Icons.arrow_back),
-                                  onPressed: () =>
-                                      context.read<ShellCubit>().popSecondary(),
+                                  onPressed: () => context
+                                      .read<ShellCubit>()
+                                      .popSecondaryWithCheck(),
                                 )
                               : null,
                           actions: [

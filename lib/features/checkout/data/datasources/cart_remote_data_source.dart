@@ -29,7 +29,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       'quantity': item.quantity,
     };
     if (item.modifierIds.isNotEmpty) {
-      body['modifier_ids'] = item.modifierIds;
+      body['modifier_ids'] = List<String>.from(item.modifierIds)..sort();
     }
     if (item.variant.isNotEmpty) {
       body['customizations'] = {'variant': item.variant};
@@ -74,7 +74,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       // Parse modifier IDs from the backend.
       final modIdsRaw = json['modifier_ids'];
       final modifierIds = modIdsRaw is List
-          ? modIdsRaw.map((e) => e.toString()).toList()
+          ? (modIdsRaw.map((e) => e.toString()).toList()..sort())
           : <String>[];
 
       return CartItem(

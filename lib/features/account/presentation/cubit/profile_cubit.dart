@@ -22,11 +22,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     required GetLoyaltyPointsUseCase getLoyaltyPoints,
     required ApiService apiService,
     this.onConnectionFailure,
-  })  : _getProfile = getProfile,
-        _updateProfile = updateProfile,
-        _getLoyaltyPoints = getLoyaltyPoints,
-        _api = apiService,
-        super(const ProfileInitial());
+  }) : _getProfile = getProfile,
+       _updateProfile = updateProfile,
+       _getLoyaltyPoints = getLoyaltyPoints,
+       _api = apiService,
+       super(const ProfileInitial());
 
   Future<void> loadProfile({int? cacheBuster}) async {
     final currentBuster = state is ProfileLoaded
@@ -49,11 +49,13 @@ class ProfileCubit extends Cubit<ProfileState> {
           if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
           emit(ProfileError(failure.message));
         },
-        (points) => emit(ProfileLoaded(
-          profile: profile,
-          loyaltyPoints: points,
-          avatarCacheBuster: buster,
-        )),
+        (points) => emit(
+          ProfileLoaded(
+            profile: profile,
+            loyaltyPoints: points,
+            avatarCacheBuster: buster,
+          ),
+        ),
       ),
     );
   }
@@ -67,11 +69,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         : (current is ProfileUpdating ? current.avatarCacheBuster : 0);
 
     if (current is ProfileLoaded) {
-      emit(ProfileUpdating(
-        profile: current.profile,
-        loyaltyPoints: current.loyaltyPoints,
-        avatarCacheBuster: currentBuster,
-      ));
+      emit(
+        ProfileUpdating(
+          profile: current.profile,
+          loyaltyPoints: current.loyaltyPoints,
+          avatarCacheBuster: currentBuster,
+        ),
+      );
     }
 
     final result = await _updateProfile(updatedProfile);
@@ -80,11 +84,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
         loadProfile(cacheBuster: currentBuster);
       },
-      (profile) => emit(ProfileLoaded(
-        profile: profile,
-        loyaltyPoints: current is ProfileLoaded ? current.loyaltyPoints : 0.0,
-        avatarCacheBuster: currentBuster,
-      )),
+      (profile) => emit(
+        ProfileLoaded(
+          profile: profile,
+          loyaltyPoints: current is ProfileLoaded ? current.loyaltyPoints : 0.0,
+          avatarCacheBuster: currentBuster,
+        ),
+      ),
     );
   }
 
@@ -145,20 +151,19 @@ class ProfileCubit extends Cubit<ProfileState> {
         : 0;
 
     final result = await _getLoyaltyPoints();
-    result.fold(
-      (_) => loadProfile(cacheBuster: currentBuster),
-      (points) {
-        if (state is ProfileLoaded) {
-          final current = state as ProfileLoaded;
-          emit(ProfileLoaded(
+    result.fold((_) => loadProfile(cacheBuster: currentBuster), (points) {
+      if (state is ProfileLoaded) {
+        final current = state as ProfileLoaded;
+        emit(
+          ProfileLoaded(
             profile: current.profile,
             loyaltyPoints: points,
             avatarCacheBuster: currentBuster,
-          ));
-        } else {
-          loadProfile(cacheBuster: currentBuster);
-        }
-      },
-    );
+          ),
+        );
+      } else {
+        loadProfile(cacheBuster: currentBuster);
+      }
+    });
   }
 }

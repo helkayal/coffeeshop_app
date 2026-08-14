@@ -21,10 +21,18 @@ class ProfileDataSourceImpl implements ProfileDataSource {
       'first_name': profile.firstName,
       'last_name': profile.lastName,
     };
-    if (profile.gender != null) updateData['gender'] = profile.gender;
-    if (profile.state != null) updateData['state'] = profile.state;
-    if (profile.city != null) updateData['city'] = profile.city;
-    if (profile.dateOfBirth != null) updateData['date_of_birth'] = profile.dateOfBirth;
+    if (profile.gender != null) {
+      updateData['gender'] = profile.gender;
+    }
+    if (profile.state != null) {
+      updateData['state'] = profile.state;
+    }
+    if (profile.city != null) {
+      updateData['city'] = profile.city;
+    }
+    if (profile.dateOfBirth != null) {
+      updateData['date_of_birth'] = profile.dateOfBirth;
+    }
 
     final data = await _api.patch(ApiConstants.profileUpdate, data: updateData);
     return UserProfileModel.fromJson(data as Map<String, dynamic>);

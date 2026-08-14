@@ -20,7 +20,13 @@ import '../widgets/slider_section.dart';
 
 class CustomizationScreen extends StatefulWidget {
   final Product? product;
-  const CustomizationScreen({super.key, this.product});
+  final bool fromFavorites;
+
+  const CustomizationScreen({
+    super.key,
+    this.product,
+    this.fromFavorites = false,
+  });
 
   @override
   State<CustomizationScreen> createState() => _CustomizationScreenState();
@@ -29,6 +35,8 @@ class CustomizationScreen extends StatefulWidget {
 class _CustomizationScreenState extends State<CustomizationScreen> {
   final Map<String, OptionValue> _picked = {};
   final Map<String, List<OptionValue>> _toggled = {};
+  final Map<String, String> _savedPickedIds = {};
+  final Map<String, List<String>> _savedToggledIds = {};
   double _total = 0;
 
   Product? get _product => widget.product;
@@ -73,6 +81,94 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
         }
       }
     }
+
+    for (final e in _picked.entries) {
+      _savedPickedIds[e.key] = e.value.id;
+    }
+    for (final e in _toggled.entries) {
+      final ids = e.value.map((v) => v.id).toList()..sort();
+      _savedToggledIds[e.key] = ids;
+    }
+
+    // Register back-navigation guard — only when opened from Favorites.
+    if (widget.fromFavorites) {
+      sl<ShellCubit>().onWillPopSecondary = _handleWillPop;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (sl.isRegistered<ShellCubit>() &&
+        sl<ShellCubit>().onWillPopSecondary == _handleWillPop) {
+      sl<ShellCubit>().onWillPopSecondary = null;
+    }
+    super.dispose();
+  }
+
+  Future<bool> _handleWillPop() async {
+    if (widget.fromFavorites && _hasCustomizationChanged()) {
+      final update = await _showUpdateFavoriteDialog();
+      if (update == null) return false;
+      if (update == true) {
+        _saveFavoriteSelections();
+      }
+    }
+    return true;
+  }
+
+  bool _hasCustomizationChanged() {
+    for (final e in _picked.entries) {
+      if (_savedPickedIds[e.key] != e.value.id) return true;
+    }
+    for (final e in _toggled.entries) {
+      final currentIds = e.value.map((v) => v.id).toList()..sort();
+      final savedIds = _savedToggledIds[e.key] ?? [];
+      if (currentIds.length != savedIds.length) return true;
+      for (int i = 0; i < currentIds.length; i++) {
+        if (currentIds[i] != savedIds[i]) return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool?> _showUpdateFavoriteDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('customization.update_favorite_title'.tr()),
+        content: Text('customization.update_favorite_msg'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('customization.discard'.tr()),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('customization.save_updates'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _saveFavoriteSelections() {
+    final product = _product;
+    if (product == null) return;
+    final picked = <String, String>{};
+    for (final e in _picked.entries) {
+      picked[e.key] = e.value.id;
+      _savedPickedIds[e.key] = e.value.id;
+    }
+    final toggled = <String, List<String>>{};
+    for (final e in _toggled.entries) {
+      final ids = e.value.map((v) => v.id).toList();
+      toggled[e.key] = ids;
+      _savedToggledIds[e.key] = List.from(ids)..sort();
+    }
+    sl<LocalStorageService>().saveFavoriteSelections(product.id, {
+      'picked': picked,
+      'toggled': toggled,
+    });
   }
 
   bool _isMulti(OptionGroup group) {
@@ -118,10 +214,18 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     });
   }
 
-  void _addToCart() {
-    final cartCubit = context.read<CartCubit>();
+  Future<void> _addToCart() async {
     final product = _product;
     if (product == null) return;
+
+    if (widget.fromFavorites && _hasCustomizationChanged()) {
+      final update = await _showUpdateFavoriteDialog();
+      if (update == null) return;
+      if (update == true) _saveFavoriteSelections();
+    }
+
+    if (!mounted) return;
+    final cartCubit = context.read<CartCubit>();
 
     final parts = <String>[];
     for (final g in _sortedGroups(product.optionGroups)) {
@@ -153,39 +257,38 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
 
     cartCubit.addItem(item);
     if (context.mounted) {
+      // Clear guard so popSecondary doesn't re-trigger dialog.
+      sl<ShellCubit>().onWillPopSecondary = null;
       context.read<ShellCubit>().popSecondary();
     }
   }
 
-  void _toggleFavorite() {
+  Future<void> _toggleFavorite() async {
     final product = _product;
     if (product == null) return;
     final cubit = context.read<FavoritesCubit>();
     final storage = sl<LocalStorageService>();
 
-    // Check current favorite state from the cubit.
     final favState = cubit.state;
-    final isFav = favState is FavoritesLoaded && favState.isFavorite(product.id);
-
-    cubit.toggle(product.id);
+    final isFav =
+        favState is FavoritesLoaded && favState.isFavorite(product.id);
 
     if (isFav) {
-      // Unfavoriting — clear saved selections.
-      storage.clearFavoriteSelections(product.id);
+      if (_hasCustomizationChanged()) {
+        final update = await _showUpdateFavoriteDialog();
+        if (update == true) {
+          _saveFavoriteSelections();
+        } else {
+          cubit.toggle(product.id);
+          storage.clearFavoriteSelections(product.id);
+        }
+      } else {
+        cubit.toggle(product.id);
+        storage.clearFavoriteSelections(product.id);
+      }
     } else {
-      // Favoriting — save current selections.
-      final picked = <String, String>{};
-      for (final e in _picked.entries) {
-        picked[e.key] = e.value.id;
-      }
-      final toggled = <String, List<String>>{};
-      for (final e in _toggled.entries) {
-        toggled[e.key] = e.value.map((v) => v.id).toList();
-      }
-      storage.saveFavoriteSelections(product.id, {
-        'picked': picked,
-        'toggled': toggled,
-      });
+      cubit.toggle(product.id);
+      _saveFavoriteSelections();
     }
   }
 
@@ -227,7 +330,6 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
             child: Column(
               children: [
                 _buildHero(cs, tt, product),
-                // Multi-select groups (Extras, Add-Ons) go below the rest.
                 ..._sortedGroups(product.optionGroups).map((group) {
                   if (_isMulti(group)) {
                     return ModifierGroupToggles(

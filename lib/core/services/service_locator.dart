@@ -78,6 +78,7 @@ import 'local_storage_service.dart';
 import 'location_service.dart';
 import 'network_info_service.dart';
 import '../cubit/connectivity_cubit.dart';
+import '../cubit/shell_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -88,15 +89,13 @@ Future<void> setupServiceLocator() async {
   await localStorage.init();
   sl.registerSingleton<LocalStorageService>(localStorage);
 
+  sl.registerLazySingleton<ShellCubit>(() => ShellCubit());
+
   sl.registerLazySingleton<ApiService>(
     () => ApiService(sl<LocalStorageService>()),
   );
-  sl.registerLazySingleton<LocationService>(
-    () => LocationService(sl()),
-  );
-  sl.registerLazySingleton<NetworkInfoService>(
-    () => NetworkInfoServiceImpl(),
-  );
+  sl.registerLazySingleton<LocationService>(() => LocationService(sl()));
+  sl.registerLazySingleton<NetworkInfoService>(() => NetworkInfoServiceImpl());
   sl.registerLazySingleton<ConnectivityCubit>(
     () => ConnectivityCubit(sl<NetworkInfoService>()),
   );
@@ -148,13 +147,15 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton(() => GetMenu(sl()));
 
-  sl.registerFactory(() => MenuCubit(
-    getMenu: sl(),
-    getProducts: sl(),
-    onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
-      ConnectionStatus.serverUnreachable,
+  sl.registerFactory(
+    () => MenuCubit(
+      getMenu: sl(),
+      getProducts: sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
     ),
-  ));
+  );
 
   // ── Onboarding ──────────────────────────────────────────────────────────────
 
@@ -227,12 +228,14 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<OrdersRepository>(() => OrdersRepositoryImpl(sl()));
   sl.registerLazySingleton(() => GetOrdersUseCase(sl()));
   sl.registerLazySingleton(() => GetOrderByIdUseCase(sl()));
-  sl.registerFactory(() => OrdersCubit(
-    sl(),
-    onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
-      ConnectionStatus.serverUnreachable,
+  sl.registerFactory(
+    () => OrdersCubit(
+      sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
     ),
-  ));
+  );
 
   // ── Favorites ───────────────────────────────────────────────────────────────
 
@@ -244,13 +247,15 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton(() => GetFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => ToggleFavoriteUseCase(sl()));
-  sl.registerFactory(() => FavoritesCubit(
-    getFavorites: sl(),
-    toggle: sl(),
-    onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
-      ConnectionStatus.serverUnreachable,
+  sl.registerFactory(
+    () => FavoritesCubit(
+      getFavorites: sl(),
+      toggle: sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
     ),
-  ));
+  );
 
   // ── Settings ─────────────────────────────────────────────────────────────────
 
@@ -276,10 +281,12 @@ Future<void> setupServiceLocator() async {
     () => PromotionsRepositoryImpl(sl()),
   );
   sl.registerLazySingleton(() => GetHomeSliderUseCase(sl()));
-  sl.registerFactory(() => PromotionsCubit(
-    sl(),
-    onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
-      ConnectionStatus.serverUnreachable,
+  sl.registerFactory(
+    () => PromotionsCubit(
+      sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
     ),
-  ));
+  );
 }

@@ -43,15 +43,23 @@ class QuickAddOverlay extends StatefulWidget {
   }) {
     // If no product, show the popup anyway (fallback).
     if (product == null) {
-      _showSheet(context, productName, productDescription, productImage, price, product, []);
+      _showSheet(
+        context,
+        productName,
+        productDescription,
+        productImage,
+        price,
+        product,
+        [],
+      );
       return;
     }
 
     // Check if there's a last order for this product.
     List<OrderItem> lastItems = [];
     final ordersState = context.read<OrdersCubit>().state;
-    final hasLastOrder = ordersState is OrdersLoaded &&
-        ordersState.latestOrder != null;
+    final hasLastOrder =
+        ordersState is OrdersLoaded && ordersState.latestOrder != null;
     if (hasLastOrder) {
       lastItems = ordersState.latestOrder!.items
           .where((i) => i.menuItemId == product.id)
@@ -70,7 +78,15 @@ class QuickAddOverlay extends StatefulWidget {
       return;
     }
 
-    _showSheet(context, productName, productDescription, productImage, price, product, lastItems);
+    _showSheet(
+      context,
+      productName,
+      productDescription,
+      productImage,
+      price,
+      product,
+      lastItems,
+    );
   }
 
   static void _showSheet(
@@ -102,12 +118,14 @@ class QuickAddOverlay extends StatefulWidget {
 
   static void _addToCartDirectly(BuildContext context, Product product) {
     final cartCubit = context.read<CartCubit>();
-    // Build variant from the first (default) option of each group.
+    // Build variant from the first (default) option of each single-select group.
     final variantParts = <String>[];
     final defaultIds = <String>[];
     double upcharge = 0;
     for (final group in product.optionGroups) {
-      if (group.values.isNotEmpty) {
+      final n = group.name.toLowerCase();
+      final isMulti = n.contains('extra') || n.contains('add-on');
+      if (!isMulti && group.values.isNotEmpty) {
         final defaultOpt = group.values.first;
         variantParts.add(defaultOpt.name);
         defaultIds.add(defaultOpt.id);
@@ -167,20 +185,27 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
     if (product == null) return;
 
     final variantParts = <String>[];
+    final modifierIds = <String>[];
     final lastItems = _lastOrderItems;
     if (lastItems != null) {
       for (final item in lastItems) {
         for (final sel in item.selections) {
           final name = sel['modifier_name'] as String? ?? '';
           if (name.isNotEmpty) variantParts.add(name);
+          final id = sel['modifier_id'] as String?;
+          if (id != null) modifierIds.add(id);
         }
       }
     } else {
       // No last order — use default options from non-extra groups.
       for (final group in product.optionGroups) {
         final n = group.name.toLowerCase();
-        if (!n.contains('extra') && !n.contains('add-on') && group.values.isNotEmpty) {
-          variantParts.add(group.values.first.name);
+        if (!n.contains('extra') &&
+            !n.contains('add-on') &&
+            group.values.isNotEmpty) {
+          final defaultOpt = group.values.first;
+          variantParts.add(defaultOpt.name);
+          modifierIds.add(defaultOpt.id);
         }
       }
     }
@@ -190,16 +215,6 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
       }
     }
 
-    // Collect modifier IDs from last order selections + selected extras.
-    final modifierIds = <String>[];
-    if (lastItems != null) {
-      for (final item in lastItems) {
-        for (final sel in item.selections) {
-          final id = sel['modifier_id'] as String?;
-          if (id != null) modifierIds.add(id);
-        }
-      }
-    }
     modifierIds.addAll(_selectedOptionIds);
 
     final variant = variantParts.isNotEmpty
@@ -234,58 +249,86 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         border: Border(top: BorderSide(color: cs.outlineVariant.withAlpha(77))),
       ),
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Center(
-          child: Container(
-            margin: const EdgeInsets.all(16), width: 48, height: 4,
-            decoration: BoxDecoration(color: cs.outlineVariant.withAlpha(128), borderRadius: BorderRadius.circular(2)),
-          ),
-        ),
-        Flexible(
-          child: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 24),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // Last Order section
-              if (lastItems != null) ...[
-                Text('quick_add.last_order'.tr(),
-                    style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
-                const SizedBox(height: 12),
-                ...lastItems.map((item) => _savedOrderCard(cs, tt, item)),
-                const SizedBox(height: 24),
-              ],
-              // Quick Add section
-              if (extras.isNotEmpty) ...[
-                Text('quick_add.quick_add'.tr(),
-                    style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
-                const SizedBox(height: 12),
-                ...extras.map((opt) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _optionCard(cs, tt, opt),
-                )),
-              ],
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _addToCart,
-                  icon: const Icon(Icons.add_shopping_cart, size: 18),
-                  label: Text(
-                    '${((widget.product?.basePrice ?? 0) + _selectedUpcharge).toStringAsFixed(2)} EGP - Add to Cart',
-                    style: tt.labelLarge?.copyWith(color: cs.onPrimary),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: cs.primary, foregroundColor: cs.onPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                  ),
-                ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              width: 48,
+              height: 4,
+              decoration: BoxDecoration(
+                color: cs.outlineVariant.withAlpha(128),
+                borderRadius: BorderRadius.circular(2),
               ),
-              const SizedBox(height: 16),
-            ]),
+            ),
           ),
-        ),
-      ]),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Last Order section
+                  if (lastItems != null) ...[
+                    Text(
+                      'quick_add.last_order'.tr(),
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 20,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...lastItems.map((item) => _savedOrderCard(cs, tt, item)),
+                    const SizedBox(height: 24),
+                  ],
+                  // Quick Add section
+                  if (extras.isNotEmpty) ...[
+                    Text(
+                      'quick_add.quick_add'.tr(),
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 20,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...extras.map(
+                      (opt) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _optionCard(cs, tt, opt),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _addToCart,
+                      icon: const Icon(Icons.add_shopping_cart, size: 18),
+                      label: Text(
+                        '${((widget.product?.basePrice ?? 0) + _selectedUpcharge).toStringAsFixed(2)} EGP - Add to Cart',
+                        style: tt.labelLarge?.copyWith(color: cs.onPrimary),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: cs.primary,
+                        foregroundColor: cs.onPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -298,71 +341,92 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: cs.outlineVariant.withAlpha(51)),
       ),
-      child: Row(children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SizedBox(
-            width: 64, height: 64,
-            child: widget.productImage.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: widget.productImage,
-                    fit: BoxFit.cover,
-                    errorWidget: (_, _, _) => Container(color: cs.surfaceContainerHighest),
-                  )
-                : Container(color: cs.surfaceContainerHighest),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: 64,
+              height: 64,
+              child: widget.productImage.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: widget.productImage,
+                      fit: BoxFit.cover,
+                      errorWidget: (_, _, _) =>
+                          Container(color: cs.surfaceContainerHighest),
+                    )
+                  : Container(color: cs.surfaceContainerHighest),
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(item.name,
-                style: tt.headlineMedium?.copyWith(fontSize: 16, color: cs.primary)),
-            if (item.selections.isNotEmpty)
-              Text(
-                item.selections.map((s) => s['modifier_name'] ?? '').join(', '),
-                maxLines: 2, overflow: TextOverflow.ellipsis, style: tt.bodySmall,
-              ),
-            Text('x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
-                style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
-          ]),
-        ),
-        const SizedBox(width: 8),
-        Container(
-          width: 40, height: 40,
-          decoration: BoxDecoration(
-            color: cs.primary, shape: BoxShape.circle,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: tt.headlineMedium?.copyWith(
+                    fontSize: 16,
+                    color: cs.primary,
+                  ),
+                ),
+                if (item.selections.isNotEmpty)
+                  Text(
+                    item.selections
+                        .map((s) => s['modifier_name'] ?? '')
+                        .join(', '),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: tt.bodySmall,
+                  ),
+                Text(
+                  'x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
+                  style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+              ],
+            ),
           ),
-          child: IconButton(
-            padding: EdgeInsets.zero, iconSize: 20,
-            onPressed: () {
-              final variantParts = item.selections
-                  .map((s) => s['modifier_name'] as String? ?? '')
-                  .where((s) => s.isNotEmpty)
-                  .toList();
-              final ids = item.selections
-                  .map((s) => s['modifier_id'] as String? ?? '')
-                  .where((s) => s.isNotEmpty)
-                  .toList();
-              final variant = variantParts.isNotEmpty
-                  ? variantParts.join(' • ')
-                  : widget.productName;
-              final cartItem = CartItem(
-                id: '${widget.product?.id ?? ''}_${DateTime.now().millisecondsSinceEpoch}',
-                productId: widget.product?.id ?? '',
-                name: widget.productName,
-                imagePath: widget.productImage,
-                variant: variant,
-                unitPrice: item.price,
-                quantity: item.quantity,
-                modifierIds: ids,
-              );
-              widget.onAddToCart(cartItem);
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.replay, color: cs.onPrimary),
+          const SizedBox(width: 8),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: cs.primary,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              iconSize: 20,
+              onPressed: () {
+                final variantParts = item.selections
+                    .map((s) => s['modifier_name'] as String? ?? '')
+                    .where((s) => s.isNotEmpty)
+                    .toList();
+                final ids = item.selections
+                    .map((s) => s['modifier_id'] as String? ?? '')
+                    .where((s) => s.isNotEmpty)
+                    .toList();
+                final variant = variantParts.isNotEmpty
+                    ? variantParts.join(' • ')
+                    : widget.productName;
+                final cartItem = CartItem(
+                  id: '${widget.product?.id ?? ''}_${DateTime.now().millisecondsSinceEpoch}',
+                  productId: widget.product?.id ?? '',
+                  name: widget.productName,
+                  imagePath: widget.productImage,
+                  variant: variant,
+                  unitPrice: item.price,
+                  quantity: item.quantity,
+                  modifierIds: ids,
+                );
+                widget.onAddToCart(cartItem);
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.replay, color: cs.onPrimary),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 

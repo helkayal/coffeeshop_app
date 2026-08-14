@@ -165,7 +165,13 @@
     "intensity_single": "مفرد",
     "intensity_double": "مزدوج",
     "intensity_triple": "ثلاثي",
-    "intensity_quad": "رباعي"
+    "intensity_quad": "رباعي",
+    "update_favorite_title": "تحديث التخصيص المفضل؟",
+    "update_favorite_msg": "لقد قمت بتغيير التخصيص لهذا العنصر المفضل المحفوظ. هل ترغب في حفظ التحديثات قبل المغادرة؟",
+    "update": "تحديث المفضلة",
+    "keep_original": "الإبقاء على الأصلي",
+    "save_updates": "حفظ التحديثات",
+    "discard": "تجاهل"
   },
   "checkout": {
     "your_bag": "حقيبتك",

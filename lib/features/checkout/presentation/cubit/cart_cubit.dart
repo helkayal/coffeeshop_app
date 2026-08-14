@@ -46,7 +46,23 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> addItem(CartItem item) async {
     final current = _currentCart;
-    if (current != null) emit(CartActionInProgress(current));
+    if (current != null) {
+      final sortedNew = List<String>.from(item.modifierIds)..sort();
+      final existing = current.items.where((i) {
+        if (i.productId != item.productId) return false;
+        final sortedExisting = List<String>.from(i.modifierIds)..sort();
+        if (sortedExisting.length != sortedNew.length) return false;
+        for (int j = 0; j < sortedNew.length; j++) {
+          if (sortedNew[j] != sortedExisting[j]) return false;
+        }
+        return true;
+      }).firstOrNull;
+
+      if (existing != null) {
+        return increment(existing.id);
+      }
+      emit(CartActionInProgress(current));
+    }
 
     final result = await _addToCart(item);
     result.fold(

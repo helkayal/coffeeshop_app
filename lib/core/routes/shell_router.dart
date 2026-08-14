@@ -24,7 +24,8 @@ class ShellRouter {
   static Widget build(SecondaryRoute route) => switch (route) {
         CartRoute() => const CartScreen(),
         PaymentRoute() => const PaymentScreen(),
-        CustomizationRoute(:final product) => CustomizationScreen(product: product),
+        CustomizationRoute(:final product, :final fromFavorites) =>
+            CustomizationScreen(product: product, fromFavorites: fromFavorites),
         SettingsRoute() => const SettingsScreen(),
         EditProfileRoute() => const EditProfileScreen(),
         OrdersHistoryRoute() => const OrdersScreen(),

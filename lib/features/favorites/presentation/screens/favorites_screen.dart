@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
-import '../../../menu/presentation/widgets/product_list_item.dart';
+import '../../../menu/domain/entities/option_value.dart';
+import '../../../menu/domain/entities/product.dart';
 import '../cubit/favorites_cubit.dart';
 import '../cubit/favorites_state.dart';
+import '../widgets/favorite_item_card.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -38,30 +41,9 @@ class FavoritesScreen extends StatelessWidget {
                 FavoritesLoaded(:final products) => Column(
                     children: [
                       for (final product in products) ...[
-                        ProductListItem(
+                        FavoriteItemCard(
                           product: product,
-                          onQuickAdd: () {
-                            final cartCubit = context.read<CartCubit>();
-                            final variantParts = <String>[];
-                            double upcharge = 0;
-                            for (final g in product.optionGroups) {
-                              if (g.values.isNotEmpty) {
-                                final opt = g.values.first;
-                                variantParts.add(opt.name);
-                                upcharge += opt.priceModifier;
-                              }
-                            }
-                            final item = CartItem(
-                              id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
-                              productId: product.id,
-                              name: product.name,
-                              imagePath: product.imagePath ?? '',
-                              variant: variantParts.join(' • '),
-                              unitPrice: product.basePrice + upcharge,
-                              quantity: 1,
-                            );
-                            cartCubit.addItem(item);
-                          },
+                          onQuickAdd: () => _quickAddFromFavorites(context, product),
                         ),
                         const SizedBox(height: 16),
                       ],
@@ -74,5 +56,68 @@ class FavoritesScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Adds to cart using saved favorite customization.
+  /// If an identical item (same product + same modifiers) already exists in
+  /// the cart, CartCubit automatically increments its quantity instead of adding a duplicate.
+  void _quickAddFromFavorites(BuildContext context, Product product) {
+    final storage = sl<LocalStorageService>();
+    final saved = storage.getFavoriteSelections(product.id);
+    final cartCubit = context.read<CartCubit>();
+
+    final variantParts = <String>[];
+    final modifierIds = <String>[];
+    double upcharge = 0;
+
+    for (final g in product.optionGroups) {
+      if (g.values.isEmpty) continue;
+
+      final name = g.name.toLowerCase();
+      final isMulti = name.contains('extra') || name.contains('add-on');
+
+      if (isMulti) {
+        final toggledMap = saved?['toggled'];
+        final savedIds = (toggledMap is Map ? toggledMap[g.id] : null);
+        if (savedIds is List) {
+          for (final v in g.values) {
+            if (savedIds.contains(v.id)) {
+              variantParts.add(v.name);
+              modifierIds.add(v.id);
+              upcharge += v.priceModifier;
+            }
+          }
+        }
+      } else {
+        final pickedMap = saved?['picked'];
+        final savedId = (pickedMap is Map ? pickedMap[g.id] : null) as String?;
+        OptionValue? opt;
+        if (savedId != null) {
+          opt = g.values.cast<OptionValue?>().firstWhere(
+            (v) => v?.id == savedId,
+            orElse: () => null,
+          );
+        }
+        opt ??= (g.values.isNotEmpty ? g.values.first : null);
+        if (opt != null) {
+          variantParts.add(opt.name);
+          modifierIds.add(opt.id);
+          upcharge += opt.priceModifier;
+        }
+      }
+    }
+
+    final item = CartItem(
+      id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
+      productId: product.id,
+      name: product.name,
+      imagePath: product.imagePath ?? '',
+      variant: variantParts.join(' • '),
+      unitPrice: product.basePrice + upcharge,
+      quantity: 1,
+      modifierIds: modifierIds,
+    );
+
+    cartCubit.addItem(item);
   }
 }
