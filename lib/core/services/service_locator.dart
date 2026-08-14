@@ -4,11 +4,15 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source_impl.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/usecases/forgot_password_usecase.dart';
 import '../../features/auth/domain/usecases/get_cached_user.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/auth/domain/usecases/logout_usecase.dart';
 import '../../features/auth/domain/usecases/refresh_session_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/domain/usecases/resend_verification_usecase.dart';
+import '../../features/auth/domain/usecases/reset_password_usecase.dart';
+import '../../features/auth/domain/usecases/social_login_usecase.dart';
 import '../../features/auth/domain/usecases/verify_email_usecase.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 
@@ -53,12 +57,30 @@ import '../../features/orders/domain/repositories/orders_repository.dart';
 import '../../features/orders/domain/usecases/orders_usecases.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 
+import '../../features/account/data/datasources/payment_methods_data_source.dart';
+import '../../features/account/data/datasources/payment_methods_data_source_impl.dart';
 import '../../features/account/data/datasources/profile_data_source.dart';
 import '../../features/account/data/datasources/profile_data_source_impl.dart';
+import '../../features/account/data/datasources/referral_data_source.dart';
+import '../../features/account/data/datasources/referral_data_source_impl.dart';
+import '../../features/account/data/datasources/wallet_data_source.dart';
+import '../../features/account/data/datasources/wallet_data_source_impl.dart';
+import '../../features/account/data/repositories/payment_methods_repository_impl.dart';
 import '../../features/account/data/repositories/profile_repository_impl.dart';
+import '../../features/account/data/repositories/referral_repository_impl.dart';
+import '../../features/account/data/repositories/wallet_repository_impl.dart';
+import '../../features/account/domain/repositories/payment_methods_repository.dart';
 import '../../features/account/domain/repositories/profile_repository.dart';
+import '../../features/account/domain/repositories/referral_repository.dart';
+import '../../features/account/domain/repositories/wallet_repository.dart';
+import '../../features/account/domain/usecases/payment_methods_usecases.dart';
 import '../../features/account/domain/usecases/profile_usecases.dart';
+import '../../features/account/domain/usecases/referral_usecases.dart';
+import '../../features/account/domain/usecases/wallet_usecases.dart';
+import '../../features/account/presentation/cubit/payment_methods_cubit.dart';
 import '../../features/account/presentation/cubit/profile_cubit.dart';
+import '../../features/account/presentation/cubit/referral_cubit.dart';
+import '../../features/account/presentation/cubit/wallet_cubit.dart';
 
 import '../../features/settings/data/datasources/settings_local_data_source.dart';
 import '../../features/settings/data/repositories/settings_repository_impl.dart';
@@ -117,6 +139,10 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => RefreshSessionUseCase(sl()));
   sl.registerLazySingleton(() => VerifyEmailUseCase(sl()));
   sl.registerLazySingleton(() => ResendVerificationUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
+  sl.registerLazySingleton(() => ForgotPasswordUseCase(sl()));
+  sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
+  sl.registerLazySingleton(() => SocialLoginUseCase(sl()));
   sl.registerFactory(
     () => AuthCubit(
       loginUseCase: sl(),
@@ -124,7 +150,10 @@ Future<void> setupServiceLocator() async {
       refreshSessionUseCase: sl(),
       verifyEmailUseCase: sl(),
       resendVerificationUseCase: sl(),
-      authRepository: sl(),
+      logoutUseCase: sl(),
+      forgotPasswordUseCase: sl(),
+      resetPasswordUseCase: sl(),
+      socialLoginUseCase: sl(),
     ),
   );
 
@@ -180,12 +209,84 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
   sl.registerLazySingleton(() => GetLoyaltyPointsUseCase(sl()));
+  sl.registerLazySingleton(() => GetLoyaltyHistoryUseCase(sl()));
+  sl.registerLazySingleton(() => UploadAvatarUseCase(sl()));
+  sl.registerLazySingleton(() => ChangeEmailUseCase(sl()));
   sl.registerFactory(
     () => ProfileCubit(
       getProfile: sl(),
       updateProfile: sl(),
       getLoyaltyPoints: sl(),
-      apiService: sl(),
+      uploadAvatar: sl(),
+      changeEmail: sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
+    ),
+  );
+
+  // ── Wallet ──────────────────────────────────────────────────────────────────
+
+  sl.registerLazySingleton<WalletDataSource>(
+    () => WalletDataSourceImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<WalletRepository>(
+    () => WalletRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetWalletBalanceUseCase(sl()));
+  sl.registerLazySingleton(() => GetWalletTransactionsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateWalletPhoneUseCase(sl()));
+  sl.registerLazySingleton(() => GetWalletPackagesUseCase(sl()));
+  sl.registerLazySingleton(() => BuyWalletPackageUseCase(sl()));
+  sl.registerFactory(
+    () => WalletCubit(
+      getBalance: sl(),
+      getTransactions: sl(),
+      updatePhone: sl(),
+      getPackages: sl(),
+      buyPackage: sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
+    ),
+  );
+
+  // ── Payment Methods ─────────────────────────────────────────────────────────
+
+  sl.registerLazySingleton<PaymentMethodsDataSource>(
+    () => PaymentMethodsDataSourceImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<PaymentMethodsRepository>(
+    () => PaymentMethodsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetPaymentMethodsUseCase(sl()));
+  sl.registerLazySingleton(() => AddCardUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteCardUseCase(sl()));
+  sl.registerFactory(
+    () => PaymentMethodsCubit(
+      getMethods: sl(),
+      addCard: sl(),
+      deleteCard: sl(),
+      onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
+        ConnectionStatus.serverUnreachable,
+      ),
+    ),
+  );
+
+  // ── Referral ─────────────────────────────────────────────────────────────────
+
+  sl.registerLazySingleton<ReferralDataSource>(
+    () => ReferralDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<ReferralRepository>(
+    () => ReferralRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetReferralUseCase(sl()));
+  sl.registerLazySingleton(() => ApplyReferralUseCase(sl()));
+  sl.registerFactory(
+    () => ReferralCubit(
+      getReferral: sl(),
+      applyReferral: sl(),
       onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
         ConnectionStatus.serverUnreachable,
       ),

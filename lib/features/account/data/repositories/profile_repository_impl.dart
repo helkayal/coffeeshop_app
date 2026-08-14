@@ -48,4 +48,42 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return const Error(ServerFailure('An unexpected error occurred'));
     }
   }
+
+  @override
+  Future<Result<List<Map<String, dynamic>>>> getLoyaltyHistory() async {
+    try {
+      return Success(await _dataSource.getLoyaltyHistory());
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
+    } catch (_) {
+      return const Error(ServerFailure('Failed to load loyalty history'));
+    }
+  }
+
+  @override
+  Future<Result<String?>> uploadAvatar(String filePath) async {
+    try {
+      return Success(await _dataSource.uploadAvatar(filePath));
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Failed to upload avatar'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
+    } catch (_) {
+      return const Error(ServerFailure('An unexpected error occurred'));
+    }
+  }
+
+  @override
+  Future<Result<void>> changeEmail(String newEmail, String password) async {
+    try {
+      await _dataSource.changeEmail(newEmail, password);
+      return const Success(null);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'Failed to change email'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
+    } catch (e) {
+      return Error(ServerFailure(e.toString()));
+    }
+  }
 }

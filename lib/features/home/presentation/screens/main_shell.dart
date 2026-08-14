@@ -15,7 +15,10 @@ import '../../../../features/checkout/presentation/cubit/cart_state.dart';
 import '../../../../features/favorites/presentation/cubit/favorites_cubit.dart';
 import '../../../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../../../features/orders/presentation/cubit/orders_cubit.dart';
+import '../../../account/presentation/cubit/payment_methods_cubit.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
+import '../../../account/presentation/cubit/referral_cubit.dart';
+import '../../../account/presentation/cubit/wallet_cubit.dart';
 import '../../../account/presentation/screens/account_screen.dart';
 import '../../../promotions/presentation/cubit/promotions_cubit.dart';
 import '../../../../features/favorites/presentation/screens/favorites_screen.dart';
@@ -45,6 +48,9 @@ class MainShell extends StatelessWidget {
         BlocProvider(create: (_) => sl<OrdersCubit>()..loadOrders()),
         BlocProvider(create: (_) => sl<FavoritesCubit>()..loadFavorites()),
         BlocProvider(create: (_) => sl<ProfileCubit>()..loadProfile()),
+        BlocProvider(create: (_) => sl<WalletCubit>()),
+        BlocProvider(create: (_) => sl<PaymentMethodsCubit>()),
+        BlocProvider(create: (_) => sl<ReferralCubit>()),
       ],
       child: BlocListener<ConnectivityCubit, ConnectivityState>(
         listener: (context, state) {

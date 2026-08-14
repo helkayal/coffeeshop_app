@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/api_constants.dart';
-import '../../../../core/services/api_service.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../account/domain/usecases/wallet_usecases.dart';
 import '../../../account/presentation/widgets/package_selection_sheet.dart';
 
 class TopUpSheet {
@@ -24,16 +23,9 @@ class TopUpSheet {
       return result;
     }
     if (result == true) {
-      try {
-        final api = sl<ApiService>();
-        final data = await api.get(ApiConstants.wallet);
-        final rawBal = data['coffee_cash'] ?? data['balance'];
-        if (rawBal != null) {
-          return rawBal is num
-              ? rawBal.toDouble()
-              : double.tryParse(rawBal.toString());
-        }
-      } catch (_) {}
+      final getBalance = sl<GetWalletBalanceUseCase>();
+      final balanceResult = await getBalance();
+      return balanceResult.fold((_) => null, (bal) => bal);
     }
     return null;
   }

@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/services/api_service.dart';
 import '../../domain/entities/user_profile.dart';
 import '../../domain/usecases/profile_usecases.dart';
 import 'profile_state.dart';
@@ -13,20 +11,23 @@ class ProfileCubit extends Cubit<ProfileState> {
   final GetProfileUseCase _getProfile;
   final UpdateProfileUseCase _updateProfile;
   final GetLoyaltyPointsUseCase _getLoyaltyPoints;
-  final ApiService _api;
+  final UploadAvatarUseCase _uploadAvatar;
+  final ChangeEmailUseCase _changeEmail;
   final void Function(ConnectionFailure)? onConnectionFailure;
 
   ProfileCubit({
     required GetProfileUseCase getProfile,
     required UpdateProfileUseCase updateProfile,
     required GetLoyaltyPointsUseCase getLoyaltyPoints,
-    required ApiService apiService,
+    required UploadAvatarUseCase uploadAvatar,
+    required ChangeEmailUseCase changeEmail,
     this.onConnectionFailure,
-  }) : _getProfile = getProfile,
-       _updateProfile = updateProfile,
-       _getLoyaltyPoints = getLoyaltyPoints,
-       _api = apiService,
-       super(const ProfileInitial());
+  })  : _getProfile = getProfile,
+        _updateProfile = updateProfile,
+        _getLoyaltyPoints = getLoyaltyPoints,
+        _uploadAvatar = uploadAvatar,
+        _changeEmail = changeEmail,
+        super(const ProfileInitial());
 
   Future<void> loadProfile({int? cacheBuster}) async {
     final currentBuster = state is ProfileLoaded
@@ -98,51 +99,32 @@ class ProfileCubit extends Cubit<ProfileState> {
     final current = state;
     if (current is! ProfileLoaded) return;
 
-    try {
-      final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(filePath),
-      });
-      final res = await _api.post(
-        ApiConstants.profileAvatar,
-        data: formData,
-        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
-      );
+    final result = await _uploadAvatar(filePath);
+    result.fold(
+      (_) {/* Non-fatal — user can retry */},
+      (newAvatarUrl) async {
+        final cacheBuster = DateTime.now().millisecondsSinceEpoch;
+        final baseUrl = ApiConstants.apiBaseUrl.replaceAll('/api/v1', '');
 
-      String? newAvatarUrl;
-      if (res is Map<String, dynamic>) {
-        final data = res['data'] as Map<String, dynamic>?;
-        if (data != null && data['avatar_url'] is String) {
-          newAvatarUrl = data['avatar_url'] as String;
+        if (current.profile.avatarUrl != null) {
+          final fullOld = '$baseUrl${current.profile.avatarUrl}';
+          CachedNetworkImage.evictFromCache(fullOld);
         }
-      }
-
-      final cacheBuster = DateTime.now().millisecondsSinceEpoch;
-      final baseUrl = ApiConstants.apiBaseUrl.replaceAll('/api/v1', '');
-
-      if (current.profile.avatarUrl != null) {
-        final fullOld = '$baseUrl${current.profile.avatarUrl}';
-        CachedNetworkImage.evictFromCache(fullOld);
-      }
-      if (newAvatarUrl != null) {
-        final fullNew = '$baseUrl$newAvatarUrl';
-        CachedNetworkImage.evictFromCache(fullNew);
-      }
-
-      await loadProfile(cacheBuster: cacheBuster);
-    } catch (_) {
-      // Non-fatal — user can retry.
-    }
+        if (newAvatarUrl != null) {
+          final fullNew = '$baseUrl$newAvatarUrl';
+          CachedNetworkImage.evictFromCache(fullNew);
+        }
+        await loadProfile(cacheBuster: cacheBuster);
+      },
+    );
   }
 
   Future<void> changeEmail(String newEmail, String password) async {
-    try {
-      await _api.post(
-        ApiConstants.profileChangeEmail,
-        data: {'new_email': newEmail, 'password': password},
-      );
-    } catch (_) {
-      rethrow;
-    }
+    final result = await _changeEmail(newEmail, password);
+    result.fold(
+      (failure) => throw Exception(failure.message),
+      (_) {},
+    );
   }
 
   Future<void> refreshLoyalty() async {

@@ -2,12 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/api_constants.dart';
 import '../../../../core/cubit/shell_cubit.dart';
-import '../../../../core/services/api_service.dart';
 import '../../../../core/services/service_locator.dart';
-import '../../../orders/presentation/cubit/orders_cubit.dart';
+import '../../../account/domain/usecases/wallet_usecases.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
+import '../../../orders/presentation/cubit/orders_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import '../widgets/payment_order_summary.dart';
@@ -21,7 +20,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final _api = sl<ApiService>();
+  final _getWalletBalance = sl<GetWalletBalanceUseCase>();
   double _walletBalance = 0;
   bool _walletLoaded = false;
 
@@ -32,19 +31,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> _loadWallet() async {
-    try {
-      final data = await _api.get(ApiConstants.wallet);
-      if (mounted) {
-        final bal = data['coffee_cash'] ?? data['balance'];
-        setState(() {
-          _walletBalance =
-              bal is double ? bal : double.tryParse(bal?.toString() ?? '0') ?? 0;
-          _walletLoaded = true;
-        });
-      }
-    } catch (_) {
-      if (mounted) setState(() => _walletLoaded = true);
-    }
+    final result = await _getWalletBalance();
+    if (!mounted) return;
+    result.fold(
+      (_) => setState(() => _walletLoaded = true),
+      (bal) => setState(() {
+        _walletBalance = bal;
+        _walletLoaded = true;
+      }),
+    );
   }
 
   Future<void> _showTopUp(double needed) async {
@@ -84,8 +79,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
           if (cart == null || cart.isEmpty) {
             return Center(
-              child: Text('checkout.empty_bag'.tr(),
-                  style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+              child: Text(
+                'checkout.empty_bag'.tr(),
+                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              ),
             );
           }
 
@@ -99,9 +96,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 140),
               child: Column(children: [
                 const SizedBox(height: 16),
-                Text('checkout.complete_order'.tr(),
-                    style: tt.headlineMedium?.copyWith(
-                        fontSize: 36, color: cs.onSurface)),
+                Text(
+                  'checkout.complete_order'.tr(),
+                  style: tt.headlineMedium?.copyWith(
+                    fontSize: 36,
+                    color: cs.onSurface,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Text('checkout.secure_checkout'.tr(), style: tt.bodySmall),
                 const SizedBox(height: 40),
@@ -139,7 +140,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           icon: const Icon(Icons.check_circle, size: 20),
                           label: Text('checkout.confirm_order'.tr()),
                           style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16)),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
                         )
                       : FilledButton.icon(
                           onPressed: isLoading
@@ -147,7 +149,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               : () => _showTopUp(total - _walletBalance),
                           icon: const Icon(Icons.add_circle, size: 20),
                           label: Text(
-                              'Top Up ${(total - _walletBalance).toStringAsFixed(0)} EGP'),
+                            'Top Up ${(total - _walletBalance).toStringAsFixed(0)} EGP',
+                          ),
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             backgroundColor: cs.error,
@@ -164,7 +167,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildWalletBanner(
-      ColorScheme cs, TextTheme tt, double total, bool canCover) {
+    ColorScheme cs,
+    TextTheme tt,
+    double total,
+    bool canCover,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

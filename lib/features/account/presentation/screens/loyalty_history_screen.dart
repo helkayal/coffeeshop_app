@@ -2,12 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/api_constants.dart';
 import '../../../../core/cubit/connectivity_cubit.dart';
-import '../../../../core/errors/exceptions.dart';
-import '../../../../core/services/api_service.dart';
-import '../../../../core/services/network_info_service.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../domain/usecases/profile_usecases.dart';
 
 class LoyaltyHistoryScreen extends StatefulWidget {
   const LoyaltyHistoryScreen({super.key});
@@ -17,7 +14,7 @@ class LoyaltyHistoryScreen extends StatefulWidget {
 }
 
 class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
-  final _api = sl<ApiService>();
+  final _getLoyaltyHistory = sl<GetLoyaltyHistoryUseCase>();
   List<Map<String, dynamic>> _history = [];
   bool _loading = true;
 
@@ -28,21 +25,19 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
   }
 
   Future<void> _load() async {
-    try {
-      final data = await _api.get(ApiConstants.loyaltyHistory);
-      if (mounted) {
+    final result = await _getLoyaltyHistory();
+    if (!mounted) return;
+    result.fold(
+      (failure) {
+        setState(() => _loading = false);
+      },
+      (history) {
         setState(() {
-          _history = List<Map<String, dynamic>>.from(data as List);
+          _history = history;
           _loading = false;
         });
-      }
-    } on ConnectionException catch (_) {
-      if (mounted) {
-        sl<ConnectivityCubit>().markOffline(ConnectionStatus.serverUnreachable);
-      }
-    } catch (_) {
-      if (mounted) setState(() => _loading = false);
-    }
+      },
+    );
   }
 
   void _reloadAfterReconnect() {

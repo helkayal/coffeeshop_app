@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +11,7 @@ import '../../features/orders/domain/entities/order_item.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../features/orders/presentation/cubit/orders_state.dart';
 import 'quick_add_option_card.dart';
+import 'saved_order_card.dart';
 
 class QuickAddOverlay extends StatefulWidget {
   final String productName;
@@ -282,7 +282,15 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...lastItems.map((item) => _savedOrderCard(cs, tt, item)),
+                    ...lastItems.map(
+                      (item) => SavedOrderCard(
+                        item: item,
+                        product: widget.product,
+                        productName: widget.productName,
+                        productImage: widget.productImage,
+                        onAddToCart: widget.onAddToCart,
+                      ),
+                    ),
                     const SizedBox(height: 24),
                   ],
                   // Quick Add section
@@ -325,104 +333,6 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                   const SizedBox(height: 16),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _savedOrderCard(ColorScheme cs, TextTheme tt, OrderItem item) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: cs.outlineVariant.withAlpha(51)),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: SizedBox(
-              width: 64,
-              height: 64,
-              child: widget.productImage.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: widget.productImage,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, _, _) =>
-                          Container(color: cs.surfaceContainerHighest),
-                    )
-                  : Container(color: cs.surfaceContainerHighest),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: tt.headlineMedium?.copyWith(
-                    fontSize: 16,
-                    color: cs.primary,
-                  ),
-                ),
-                if (item.selections.isNotEmpty)
-                  Text(
-                    item.selections
-                        .map((s) => s['modifier_name'] ?? '')
-                        .join(', '),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: tt.bodySmall,
-                  ),
-                Text(
-                  'x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
-                  style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: cs.primary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              iconSize: 20,
-              onPressed: () {
-                final variantParts = item.selections
-                    .map((s) => s['modifier_name'] as String? ?? '')
-                    .where((s) => s.isNotEmpty)
-                    .toList();
-                final ids = item.selections
-                    .map((s) => s['modifier_id'] as String? ?? '')
-                    .where((s) => s.isNotEmpty)
-                    .toList();
-                final variant = variantParts.isNotEmpty
-                    ? variantParts.join(' • ')
-                    : widget.productName;
-                final cartItem = CartItem(
-                  id: '${widget.product?.id ?? ''}_${DateTime.now().millisecondsSinceEpoch}',
-                  productId: widget.product?.id ?? '',
-                  name: widget.productName,
-                  imagePath: widget.productImage,
-                  variant: variant,
-                  unitPrice: item.price,
-                  quantity: item.quantity,
-                  modifierIds: ids,
-                );
-                widget.onAddToCart(cartItem);
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.replay, color: cs.onPrimary),
             ),
           ),
         ],

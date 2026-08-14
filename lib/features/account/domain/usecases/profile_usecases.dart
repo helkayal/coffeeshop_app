@@ -20,3 +20,24 @@ class GetLoyaltyPointsUseCase {
   const GetLoyaltyPointsUseCase(this._repository);
   Future<Result<double>> call() => _repository.getLoyaltyPoints();
 }
+
+class GetLoyaltyHistoryUseCase {
+  final ProfileRepository _repository;
+  const GetLoyaltyHistoryUseCase(this._repository);
+  Future<Result<List<Map<String, dynamic>>>> call() =>
+      _repository.getLoyaltyHistory();
+}
+
+class UploadAvatarUseCase {
+  final ProfileRepository _repository;
+  const UploadAvatarUseCase(this._repository);
+  Future<Result<String?>> call(String filePath) =>
+      _repository.uploadAvatar(filePath);
+}
+
+class ChangeEmailUseCase {
+  final ProfileRepository _repository;
+  const ChangeEmailUseCase(this._repository);
+  Future<Result<void>> call(String newEmail, String password) =>
+      _repository.changeEmail(newEmail, password);
+}
