@@ -39,10 +39,7 @@ class ConnectionErrorView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: tt.bodyLarge?.copyWith(
-                color: cs.onSurface,
-                height: 1.5,
-              ),
+              style: tt.bodyLarge?.copyWith(color: cs.onSurface, height: 1.5),
             ),
             const SizedBox(height: 32),
             SizedBox(

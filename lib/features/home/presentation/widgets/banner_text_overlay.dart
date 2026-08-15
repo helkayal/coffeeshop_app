@@ -1,15 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class BannerTextOverlay extends StatelessWidget {
   final String? subtitle;
   final String? title;
 
-  const BannerTextOverlay({
-    super.key,
-    this.subtitle,
-    this.title,
-  });
+  const BannerTextOverlay({super.key, this.subtitle, this.title});
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/widgets/app_text_field.dart';
-import '../../data/models/wallet_package_model.dart';
+import '../../domain/entities/wallet_package.dart';
 
 class PackagePurchaseDialogs {
   const PackagePurchaseDialogs._();
@@ -35,16 +35,16 @@ class PackagePurchaseDialogs {
     );
   }
 
-  static void showCvcPrompt(
+  static Future<void> showCvcPrompt(
     BuildContext context, {
     required String last4,
     required WalletPackage package,
     required VoidCallback onConfirm,
-  }) {
+  }) async {
     final cvcCtrl = TextEditingController();
     String? cvcError;
 
-    showDialog(
+    await showDialog<void>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
@@ -72,7 +72,9 @@ class PackagePurchaseDialogs {
             FilledButton(
               onPressed: () {
                 final cvc = cvcCtrl.text.trim();
-                if (cvc.length < 3 || cvc.length > 4 || int.tryParse(cvc) == null) {
+                if (cvc.length < 3 ||
+                    cvc.length > 4 ||
+                    int.tryParse(cvc) == null) {
                   setDialogState(() {
                     cvcError = 'wallet.cvc_required'.tr();
                   });
@@ -87,6 +89,7 @@ class PackagePurchaseDialogs {
         ),
       ),
     );
+    cvcCtrl.dispose();
   }
 
   static void showMobileWalletConfirm(
@@ -102,7 +105,7 @@ class PackagePurchaseDialogs {
         content: Text(
           walletPhone.isNotEmpty
               ? 'wallet.mobile_wallet_confirm'.tr(args: [walletPhone])
-              : 'Confirm payment with Mobile Wallet?',
+              : 'wallet.mobile_wallet_generic'.tr(),
         ),
         actions: [
           TextButton(
@@ -140,9 +143,7 @@ class PackagePurchaseDialogs {
             onPressed: () {
               Navigator.pop(ctx);
               onCloseSheet();
-              try {
-                shellCubit.pushSecondary(const PaymentMethodsRoute());
-              } catch (_) {}
+              shellCubit.pushSecondary(const PaymentMethodsRoute());
             },
             child: Text('wallet.go_to_payment_methods'.tr()),
           ),

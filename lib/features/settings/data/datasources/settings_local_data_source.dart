@@ -19,7 +19,12 @@ class SettingsLocalDataSource {
     final isDark = AppConfig.defaultThemeMode.toString() == 'ThemeMode.dark';
     return AppSettings(
       isDarkMode: box.get(_isDarkModeKey, defaultValue: isDark) as bool,
-      locale: box.get(_localeKey, defaultValue: AppConfig.defaultLocale.languageCode) as String,
+      locale:
+          box.get(
+                _localeKey,
+                defaultValue: AppConfig.defaultLocale.languageCode,
+              )
+              as String,
     );
   }
 

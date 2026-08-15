@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
@@ -30,7 +29,8 @@ class FeaturedItemCard extends StatelessWidget {
   Product _getProduct(BuildContext context) {
     Product? product;
     final menuState = context.read<MenuCubit>().state;
-    if (menuState is MenuLoaded && menuItemId != null && menuItemId!.isNotEmpty) {
+    final id = menuItemId;
+    if (menuState is MenuLoaded && id != null && id.isNotEmpty) {
       for (final p in menuState.products) {
         if (p.id == menuItemId) {
           product = p;
@@ -43,9 +43,7 @@ class FeaturedItemCard extends StatelessWidget {
     final priceNum = double.tryParse(priceClean) ?? 0.0;
     return product ??
         Product(
-          id: (menuItemId != null && menuItemId!.isNotEmpty)
-              ? menuItemId!
-              : 'featured_${name.hashCode}',
+          id: id != null && id.isNotEmpty ? id : 'featured_${name.hashCode}',
           name: name,
           description: description,
           imagePath: imagePath,
@@ -89,7 +87,10 @@ class FeaturedItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _FeatureImage(imagePath: imagePath, color: cs.surfaceContainerHighest),
+          _FeatureImage(
+            imagePath: imagePath,
+            color: cs.surfaceContainerHighest,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -176,10 +177,13 @@ class _FeatureImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isNetwork = imagePath.startsWith('http://') || imagePath.startsWith('https://');
+    final isNetwork =
+        imagePath.startsWith('http://') || imagePath.startsWith('https://');
 
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(AppDesignConstants.borderRadius2xl)),
+      borderRadius: BorderRadius.all(
+        Radius.circular(AppDesignConstants.borderRadius2xl),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Center(
@@ -191,13 +195,13 @@ class _FeatureImage extends StatelessWidget {
                   errorBuilder: (_, _, _) => _fallbackAsset(),
                 )
               : (imagePath.isNotEmpty)
-                  ? Image.asset(
-                      imagePath,
-                      height: MediaQuery.of(context).size.height * .25,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _fallbackAsset(),
-                    )
-                  : _fallbackAsset(),
+              ? Image.asset(
+                  imagePath,
+                  height: MediaQuery.of(context).size.height * .25,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => _fallbackAsset(),
+                )
+              : _fallbackAsset(),
         ),
       ),
     );

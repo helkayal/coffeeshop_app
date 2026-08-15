@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
+import '../../../../core/security/credential_storage.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -12,19 +11,22 @@ import '../models/user_model.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final LocalStorageService _localStorage;
+  final CredentialStorage _credentials;
 
   AuthRepositoryImpl({
     required AuthRemoteDataSource remoteDataSource,
     required LocalStorageService localStorage,
-  })  : _remoteDataSource = remoteDataSource,
-        _localStorage = localStorage;
+    required CredentialStorage credentials,
+  }) : _remoteDataSource = remoteDataSource,
+       _localStorage = localStorage,
+       _credentials = credentials;
 
   @override
   Future<Result<User>> login(String email, String password) async {
     try {
       final response = await _remoteDataSource.login(email, password);
-      await _localStorage.setAuthToken(response.accessToken);
-      await _localStorage.setRefreshToken(response.refreshToken);
+      await _credentials.writeAccessToken(response.accessToken);
+      await _credentials.writeRefreshToken(response.refreshToken);
 
       final user = await _remoteDataSource.getProfile();
       await _localStorage.cacheUser(user.toJson());
@@ -74,9 +76,9 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       // Persist tokens returned by registration so the session is warm.
-      await _localStorage.setAuthToken(response.accessToken);
-      if (response.refreshToken != null) {
-        await _localStorage.setRefreshToken(response.refreshToken!);
+      await _credentials.writeAccessToken(response.accessToken);
+      if (response.refreshToken case final refreshToken?) {
+        await _credentials.writeRefreshToken(refreshToken);
       }
       await _localStorage.cacheUser(response.user.toJson());
 
@@ -107,12 +109,11 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-
   @override
   Future<Result<void>> logout() async {
     try {
-      await _localStorage.clearSession();
-      if (kDebugMode) debugPrint('[Auth] Session cleared');
+      await _credentials.clear();
+      await _localStorage.clearCachedUser();
       return const Success(null);
     } catch (e) {
       return const Error(CacheFailure('Failed to clear session'));
@@ -168,8 +169,8 @@ class AuthRepositoryImpl implements AuthRepository {
         firstName: firstName,
         lastName: lastName,
       );
-      await _localStorage.setAuthToken(response.accessToken);
-      await _localStorage.setRefreshToken(response.refreshToken);
+      await _credentials.writeAccessToken(response.accessToken);
+      await _credentials.writeRefreshToken(response.refreshToken);
       final user = await _remoteDataSource.getProfile();
       await _localStorage.cacheUser(user.toJson());
       return Success(user);
@@ -185,24 +186,26 @@ class AuthRepositoryImpl implements AuthRepository {
   /// failure when the refresh token is missing or rejected by the server.
   @override
   Future<Result<User>> refreshSession() async {
-    final storedRefresh = _localStorage.getRefreshToken();
+    final storedRefresh = await _credentials.readRefreshToken();
     if (storedRefresh == null) {
       return const Error(ServerFailure('No refresh token'));
     }
     try {
       final response = await _remoteDataSource.refreshToken(storedRefresh);
-      await _localStorage.setAuthToken(response.accessToken);
-      await _localStorage.setRefreshToken(response.refreshToken);
+      await _credentials.writeAccessToken(response.accessToken);
+      await _credentials.writeRefreshToken(response.refreshToken);
       final user = await _remoteDataSource.getProfile();
       await _localStorage.cacheUser(user.toJson());
       return Success(user);
     } on ServerException catch (e) {
-      await _localStorage.clearSession();
+      await _credentials.clear();
+      await _localStorage.clearCachedUser();
       return Error(ServerFailure(e.message ?? 'Session expired'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      await _localStorage.clearSession();
+      await _credentials.clear();
+      await _localStorage.clearCachedUser();
       return const Error(ServerFailure('Session expired'));
     }
   }
@@ -228,6 +231,16 @@ class AuthRepositoryImpl implements AuthRepository {
       return Error(ServerFailure(e.message ?? 'Failed to resend verification'));
     } catch (_) {
       return const Error(ServerFailure('An unexpected error occurred'));
+    }
+  }
+
+  @override
+  Future<Result<void>> savePendingAvatar(String path) async {
+    try {
+      await _localStorage.setPendingAvatarPath(path);
+      return const Success(null);
+    } catch (_) {
+      return const Error(CacheFailure('avatar_save_failed'));
     }
   }
 }

@@ -24,8 +24,7 @@ class PasswordValidator {
   /// asset cannot be loaded.
   static Future<void> loadCommonPasswords() async {
     try {
-      final data =
-          await rootBundle.loadString('assets/common_passwords.txt');
+      final data = await rootBundle.loadString('assets/common_passwords.txt');
       final words = data
           .split('\n')
           .map((w) => w.trim().toLowerCase())
@@ -134,13 +133,49 @@ class PasswordValidator {
   static Set<String> _commonPasswords = {..._builtInCommonPasswords};
 
   static const _builtInCommonPasswords = <String>{
-    'password', 'password1', 'password123', '123456', '12345678',
-    '123456789', '1234567890', 'qwerty', 'qwerty123', 'abc123',
-    'iloveyou', 'admin', 'letmein', 'welcome', 'monkey', '1234567',
-    'dragon', 'master', 'sunshine', 'princess', 'football', 'shadow',
-    'superman', 'michael', 'baseball', 'solo', 'trustno1', 'hello',
-    'charlie', 'donald', 'password2', 'qwertyuiop', 'starwars',
-    'login', 'hello123', 'pass', 'test', 'test123', 'mypassword',
-    'computer', 'coffee', 'coffeeshop', 'qazwsx', 'asd123',
+    'password',
+    'password1',
+    'password123',
+    '123456',
+    '12345678',
+    '123456789',
+    '1234567890',
+    'qwerty',
+    'qwerty123',
+    'abc123',
+    'iloveyou',
+    'admin',
+    'letmein',
+    'welcome',
+    'monkey',
+    '1234567',
+    'dragon',
+    'master',
+    'sunshine',
+    'princess',
+    'football',
+    'shadow',
+    'superman',
+    'michael',
+    'baseball',
+    'solo',
+    'trustno1',
+    'hello',
+    'charlie',
+    'donald',
+    'password2',
+    'qwertyuiop',
+    'starwars',
+    'login',
+    'hello123',
+    'pass',
+    'test',
+    'test123',
+    'mypassword',
+    'computer',
+    'coffee',
+    'coffeeshop',
+    'qazwsx',
+    'asd123',
   };
 }

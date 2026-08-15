@@ -10,7 +10,11 @@ abstract class CheckoutRemoteDataSource {
     required List<Map<String, dynamic>> items,
     String? specialInstructions,
   });
-  Future<void> checkoutOrder(String orderId, {String? paymentMethod, String? cardNumber});
+  Future<void> checkoutOrder(
+    String orderId, {
+    String? paymentMethod,
+    String? cardNumber,
+  });
 }
 
 class CheckoutRemoteDataSourceImpl implements CheckoutRemoteDataSource {
@@ -30,17 +34,17 @@ class CheckoutRemoteDataSourceImpl implements CheckoutRemoteDataSource {
         if (specialInstructions != null && specialInstructions.isNotEmpty)
           'special_instructions': specialInstructions,
       },
-      options: Options(
-        headers: {
-          'X-Idempotency-Key': _uuidV4(),
-        },
-      ),
+      options: Options(headers: {'X-Idempotency-Key': _uuidV4()}),
     );
     return (data as Map<String, dynamic>)['id'] as String;
   }
 
   @override
-  Future<void> checkoutOrder(String orderId, {String? paymentMethod, String? cardNumber}) async {
+  Future<void> checkoutOrder(
+    String orderId, {
+    String? paymentMethod,
+    String? cardNumber,
+  }) async {
     final body = <String, dynamic>{
       'payment_method': paymentMethod ?? 'wallet',
       'card_number': cardNumber ?? '4111111111111111',
@@ -49,9 +53,7 @@ class CheckoutRemoteDataSourceImpl implements CheckoutRemoteDataSource {
     await _api.post(
       '${ApiConstants.orders}/$orderId/checkout',
       data: body,
-      options: Options(
-        headers: {'X-Idempotency-Key': _uuidV4()},
-      ),
+      options: Options(headers: {'X-Idempotency-Key': _uuidV4()}),
     );
   }
 }

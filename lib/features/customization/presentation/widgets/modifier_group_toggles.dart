@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../menu/domain/entities/option_group.dart';
@@ -38,8 +39,13 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
             children: [
               Icon(groupIcon, size: 18, color: cs.primary),
               const SizedBox(width: 8),
-              Text(widget.group.name,
-                  style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
+              Text(
+                widget.group.name,
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 18,
+                  color: cs.onSurface,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -60,7 +66,9 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
                     }
                   });
                   widget.onChanged(
-                    _selectedIndices.map((idx) => widget.group.values[idx]).toList(),
+                    _selectedIndices
+                        .map((idx) => widget.group.values[idx])
+                        .toList(),
                   );
                 },
               ),
@@ -94,7 +102,9 @@ class _ToggleCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected ? cs.surfaceContainerHighest : cs.surfaceContainerLow.withAlpha(128),
+          color: isSelected
+              ? cs.surfaceContainerHighest
+              : cs.surfaceContainerLow.withAlpha(128),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? cs.primary : cs.outlineVariant.withAlpha(102),
@@ -113,13 +123,19 @@ class _ToggleCard extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(option.name,
-                  style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+              child: Text(
+                option.name,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+              ),
             ),
             Text(
               option.priceModifier == 0.0
                   ? 'Free'
-                  : '+${option.priceModifier.toStringAsFixed(2)} EGP',
+                  : 'common.price'.tr(
+                      namedArgs: {
+                        'amount': '+${option.priceModifier.toStringAsFixed(2)}',
+                      },
+                    ),
               style: tt.labelLarge?.copyWith(color: cs.primary),
             ),
           ],

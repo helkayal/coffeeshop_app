@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,7 +74,7 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
             imagePath: h.imageUrl,
             name: h.title,
             description: h.description,
-            price: '${h.basePrice} EGP',
+            price: 'common.price'.tr(namedArgs: {'amount': h.basePrice}),
             menuItemId: h.menuItemId,
           ),
         );

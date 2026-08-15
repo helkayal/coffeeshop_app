@@ -1,3 +1,5 @@
+import '../../domain/entities/referral_history_entry.dart';
+
 sealed class ReferralState {
   const ReferralState();
 }
@@ -12,7 +14,7 @@ final class ReferralLoading extends ReferralState {
 
 final class ReferralLoaded extends ReferralState {
   final String code;
-  final List<Map<String, dynamic>> history;
+  final List<ReferralHistoryEntry> history;
   final bool isApplying;
 
   const ReferralLoaded({
@@ -23,7 +25,7 @@ final class ReferralLoaded extends ReferralState {
 
   ReferralLoaded copyWith({
     String? code,
-    List<Map<String, dynamic>>? history,
+    List<ReferralHistoryEntry>? history,
     bool? isApplying,
   }) {
     return ReferralLoaded(

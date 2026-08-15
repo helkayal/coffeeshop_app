@@ -28,14 +28,14 @@ class UserProfileModel extends UserProfile {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'first_name': firstName,
-        'last_name': lastName,
-        'email': email,
-        if (gender != null) 'gender': gender,
-        if (state != null) 'state': state,
-        if (city != null) 'city': city,
-        if (avatarUrl != null) 'avatar_url': avatarUrl,
-        if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
-      };
+    'id': id,
+    'first_name': firstName,
+    'last_name': lastName,
+    'email': email,
+    if (gender != null) 'gender': gender,
+    if (state != null) 'state': state,
+    if (city != null) 'city': city,
+    if (avatarUrl != null) 'avatar_url': avatarUrl,
+    if (dateOfBirth != null) 'date_of_birth': dateOfBirth,
+  };
 }

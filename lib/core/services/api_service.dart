@@ -1,165 +1,150 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../constants/api_constants.dart';
 import '../errors/exceptions.dart';
-import 'local_storage_service.dart';
+import '../security/credential_storage.dart';
 
 class ApiService {
-  final LocalStorageService _storage;
+  static const _retryKey = 'authentication_retry';
+
+  final CredentialStorage _credentials;
   late final Dio _dio;
-  bool _isRefreshing = false;
+  late final Dio _refreshDio;
+  Completer<String?>? _refreshCompleter;
 
-  ApiService(this._storage) {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: ApiConstants.apiBaseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ),
+  ApiService(this._credentials, {Dio? dio, Dio? refreshDio}) {
+    final options = BaseOptions(
+      baseUrl: ApiConstants.apiBaseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: const {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
     );
-
+    _dio = dio ?? Dio(options);
+    _refreshDio = refreshDio ?? Dio(options);
     _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          final token = _storage.getAuthToken();
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-        onError: (error, handler) async {
-          if (error.response?.statusCode == 401 && !_isRefreshing) {
-            // Don't try to refresh for the refresh endpoint itself.
-            if (error.requestOptions.path == ApiConstants.tokenRefresh) {
-              await _storage.clearAuthToken();
-              await _storage.clearRefreshToken();
-              await _storage.clearCachedUser();
-              return handler.next(error);
-            }
-
-            final refreshToken = _storage.getRefreshToken();
-            if (refreshToken != null) {
-              _isRefreshing = true;
-              try {
-                // Call /auth/refresh — must NOT include old Authorization header.
-                final refreshResponse = await _dio.post(
-                  ApiConstants.tokenRefresh,
-                  data: {'refresh': refreshToken},
-                  options: Options(headers: {'Authorization': null}),
-                );
-                final body = refreshResponse.data as Map<String, dynamic>;
-                final newAccess = body['access'] as String;
-                await _storage.setAuthToken(newAccess);
-
-                if (body.containsKey('refresh')) {
-                  await _storage.setRefreshToken(body['refresh'] as String);
-                }
-
-                // Retry the original request with the new token.
-                error.requestOptions.headers['Authorization'] =
-                    'Bearer $newAccess';
-                _isRefreshing = false;
-                final retry = await _dio.fetch(error.requestOptions);
-                return handler.resolve(retry);
-              } catch (_) {
-                _isRefreshing = false;
-                await _storage.clearAuthToken();
-                await _storage.clearRefreshToken();
-                await _storage.clearCachedUser();
-              }
-            } else {
-              await _storage.clearAuthToken();
-              await _storage.clearCachedUser();
-            }
-          }
-          handler.next(error);
-        },
-      ),
+      InterceptorsWrapper(onRequest: _authorize, onError: _recoverUnauthorized),
     );
+  }
 
-    if (kDebugMode) {
-      _dio.interceptors.add(
-        LogInterceptor(requestBody: true, responseBody: true),
-      );
+  Future<void> _authorize(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = await _credentials.readAccessToken();
+    if (token != null && token.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    handler.next(options);
+  }
+
+  Future<void> _recoverUnauthorized(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final request = error.requestOptions;
+    final shouldRefresh =
+        error.response?.statusCode == 401 &&
+        request.path != ApiConstants.tokenRefresh &&
+        request.extra[_retryKey] != true;
+    if (!shouldRefresh) return handler.next(error);
+
+    final accessToken = await _refreshAccessToken();
+    if (accessToken == null) return handler.next(error);
+
+    request.extra[_retryKey] = true;
+    request.headers['Authorization'] = 'Bearer $accessToken';
+    try {
+      handler.resolve(await _dio.fetch(request));
+    } on DioException catch (retryError) {
+      handler.next(retryError);
     }
   }
 
-  /// Executes a request and unwraps the backend's {success, data, error_code}
-  /// envelope. Maps Dio network errors to [ConnectionException] and server
-  /// errors to [ServerException].
-  Future<dynamic> _request(Future<Response> Function() request) async {
+  Future<String?> _refreshAccessToken() async {
+    final activeRefresh = _refreshCompleter;
+    if (activeRefresh != null) return activeRefresh.future;
+
+    final completer = Completer<String?>();
+    _refreshCompleter = completer;
     try {
-      final response = await request();
-      return _unwrap(response);
+      final refreshToken = await _credentials.readRefreshToken();
+      if (refreshToken == null || refreshToken.isEmpty) {
+        await _credentials.clear();
+        completer.complete(null);
+        return null;
+      }
+
+      final response = await _refreshDio.post<Map<String, dynamic>>(
+        ApiConstants.tokenRefresh,
+        data: {'refresh': refreshToken},
+      );
+      final body = response.data;
+      final data = body?['data'] is Map<String, dynamic>
+          ? body!['data'] as Map<String, dynamic>
+          : body;
+      final accessToken = data?['access'];
+      if (accessToken is! String || accessToken.isEmpty) {
+        throw const FormatException('Missing refreshed access token');
+      }
+      await _credentials.writeAccessToken(accessToken);
+      if (data?['refresh'] case final String rotatedRefresh) {
+        await _credentials.writeRefreshToken(rotatedRefresh);
+      }
+      completer.complete(accessToken);
+      return accessToken;
+    } catch (_) {
+      await _credentials.clear();
+      completer.complete(null);
+      return null;
+    } finally {
+      _refreshCompleter = null;
+    }
+  }
+
+  Future<dynamic> _request(Future<Response<dynamic>> Function() request) async {
+    try {
+      return _unwrap(await request());
     } on ServerException {
       rethrow;
     } on ConnectionException {
       rethrow;
-    } on DioException catch (e) {
-      // Network-level errors — backend unreachable.
-      if (e.type == DioExceptionType.connectionError ||
-          e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout ||
-          e.type == DioExceptionType.sendTimeout ||
-          e.type == DioExceptionType.badResponse && e.response == null) {
-        throw const ConnectionException(
-          'Unable to connect to server. Please check your connection.',
-        );
+    } on DioException catch (error) {
+      if (error.type == DioExceptionType.connectionError ||
+          error.type == DioExceptionType.connectionTimeout ||
+          error.type == DioExceptionType.receiveTimeout ||
+          error.type == DioExceptionType.sendTimeout ||
+          error.type == DioExceptionType.badResponse &&
+              error.response == null) {
+        throw const ConnectionException('connection_unavailable');
       }
-      // Server responded with an error status.
-      if (e.response != null) {
-        final code = e.response!.statusCode;
-        if (code != null && code >= 500) {
-          throw const ServerException('Server error. Please try again later.');
+      if (error.response case final response?) {
+        if ((response.statusCode ?? 0) >= 500) {
+          throw const ServerException('server_unavailable');
         }
-        return _unwrap(e.response!);
+        return _unwrap(response);
       }
-      throw const ConnectionException('Network error. Please try again.');
+      throw const ConnectionException('network_error');
     }
   }
 
-  /// Extracts the data payload from the backend's {success, data, error_code}
-  /// envelope. Throws [ServerException] when success=false, with the best
-  /// available error message.
-  dynamic _unwrap(Response response) {
+  dynamic _unwrap(Response<dynamic> response) {
     final body = response.data;
     if (body is Map<String, dynamic>) {
-      final success = body['success'] as bool? ?? true;
-      if (!success) {
-        // Prefer a single 'message' or 'error_code' from the backend.
-        final message = body['message'] as String?;
-        final errorCode = body['error_code'] as String?;
-        if (message != null && message.isNotEmpty) {
-          throw ServerException(message);
-        }
-        if (errorCode != null && errorCode.isNotEmpty) {
-          throw ServerException(errorCode);
-        }
-        // Fall back to the first field-level validation error
-        // (e.g. {"email": ["Enter a valid email address."]}).
-        for (final key in body.keys) {
-          if (key == 'success' || key == 'error_code' || key == 'message') {
-            continue;
-          }
-          final errors = body[key];
-          if (errors is List && errors.isNotEmpty) {
-            throw ServerException(errors.first.toString());
-          }
-        }
-        throw const ServerException('An error occurred');
+      if (body['success'] == false) {
+        final code = body['error_code'];
+        throw ServerException(
+          code is String && code.isNotEmpty ? code : 'request_failed',
+        );
       }
       if (body.containsKey('data')) return body['data'];
     }
-    // If the response is not structured JSON (e.g., HTML error page),
-    // throw a generic server error.
-    final code = response.statusCode;
-    if (code != null && code >= 500) {
-      throw const ServerException('Server error. Please try again later.');
+    if ((response.statusCode ?? 0) >= 500) {
+      throw const ServerException('server_unavailable');
     }
     return body;
   }
@@ -168,20 +153,23 @@ class ApiService {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) =>
-      _request(
-        () => _dio.get(path, queryParameters: queryParameters, options: options),
-      );
+  }) => _request(
+    () => _dio.get(path, queryParameters: queryParameters, options: options),
+  );
 
   Future<dynamic> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) =>
-      _request(
-        () => _dio.post(path, data: data, queryParameters: queryParameters, options: options),
-      );
+  }) => _request(
+    () => _dio.post(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+    ),
+  );
 
   Future<dynamic> put(String path, {dynamic data, Options? options}) =>
       _request(() => _dio.put(path, data: data, options: options));

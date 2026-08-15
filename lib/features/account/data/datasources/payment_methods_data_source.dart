@@ -1,5 +1,7 @@
+import '../models/payment_method_model.dart';
+
 abstract class PaymentMethodsDataSource {
-  Future<List<Map<String, dynamic>>> getPaymentMethods();
+  Future<List<PaymentMethodModel>> getPaymentMethods();
   Future<void> addCard({
     required String number,
     required String expiry,

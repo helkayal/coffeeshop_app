@@ -22,12 +22,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     required UploadAvatarUseCase uploadAvatar,
     required ChangeEmailUseCase changeEmail,
     this.onConnectionFailure,
-  })  : _getProfile = getProfile,
-        _updateProfile = updateProfile,
-        _getLoyaltyPoints = getLoyaltyPoints,
-        _uploadAvatar = uploadAvatar,
-        _changeEmail = changeEmail,
-        super(const ProfileInitial());
+  }) : _getProfile = getProfile,
+       _updateProfile = updateProfile,
+       _getLoyaltyPoints = getLoyaltyPoints,
+       _uploadAvatar = uploadAvatar,
+       _changeEmail = changeEmail,
+       super(const ProfileInitial());
 
   Future<void> loadProfile({int? cacheBuster}) async {
     final currentBuster = state is ProfileLoaded
@@ -101,7 +101,9 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     final result = await _uploadAvatar(filePath);
     result.fold(
-      (_) {/* Non-fatal — user can retry */},
+      (_) {
+        /* Non-fatal — user can retry */
+      },
       (newAvatarUrl) async {
         final cacheBuster = DateTime.now().millisecondsSinceEpoch;
         final baseUrl = ApiConstants.apiBaseUrl.replaceAll('/api/v1', '');
@@ -122,8 +124,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> changeEmail(String newEmail, String password) async {
     final result = await _changeEmail(newEmail, password);
     result.fold(
-      (failure) => throw Exception(failure.message),
-      (_) {},
+      (failure) => emit(ProfileError(failure.message)),
+      (_) => loadProfile(),
     );
   }
 

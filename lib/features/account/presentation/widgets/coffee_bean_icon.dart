@@ -31,7 +31,10 @@ class _CoffeeBeanPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final rrect = RRect.fromRectAndRadius(rect, Radius.elliptical(size.width / 2, size.height / 2));
+    final rrect = RRect.fromRectAndRadius(
+      rect,
+      Radius.elliptical(size.width / 2, size.height / 2),
+    );
     canvas.drawRRect(rrect, paint);
 
     final linePaint = Paint()
@@ -43,13 +46,17 @@ class _CoffeeBeanPainter extends CustomPainter {
     final groovePath = Path();
     groovePath.moveTo(size.width * 0.5, size.height * 0.1);
     groovePath.cubicTo(
-      size.width * 0.25, size.height * 0.35,
-      size.width * 0.75, size.height * 0.65,
-      size.width * 0.5, size.height * 0.9,
+      size.width * 0.25,
+      size.height * 0.35,
+      size.width * 0.75,
+      size.height * 0.65,
+      size.width * 0.5,
+      size.height * 0.9,
     );
     canvas.drawPath(groovePath, linePaint);
   }
 
   @override
-  bool shouldRepaint(covariant _CoffeeBeanPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(covariant _CoffeeBeanPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

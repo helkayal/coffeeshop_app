@@ -26,20 +26,34 @@ class SettingsRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: cs.outlineVariant.withAlpha(77))),
-        ),
-        child: Row(children: [
-          Icon(icon, size: 22, color: cs.onSurfaceVariant),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: tt.bodyMedium?.copyWith(color: cs.onSurface, fontWeight: FontWeight.w500)),
-              const SizedBox(height: 2),
-              Text(subtitle, style: tt.bodySmall),
-            ]),
+          border: Border(
+            bottom: BorderSide(color: cs.outlineVariant.withAlpha(77)),
           ),
-          trailing ?? Icon(Icons.chevron_right, color: cs.outlineVariant, size: 20),
-        ]),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: cs.onSurfaceVariant),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: tt.bodyMedium?.copyWith(
+                      color: cs.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(subtitle, style: tt.bodySmall),
+                ],
+              ),
+            ),
+            trailing ??
+                Icon(Icons.chevron_right, color: cs.outlineVariant, size: 20),
+          ],
+        ),
       ),
     );
   }

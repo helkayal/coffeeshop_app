@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../../domain/entities/user_profile.dart';
+import '../models/loyalty_history_model.dart';
 import '../models/user_profile_model.dart';
 import 'profile_data_source.dart';
 
@@ -47,9 +48,15 @@ class ProfileDataSourceImpl implements ProfileDataSource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getLoyaltyHistory() async {
+  Future<List<LoyaltyHistoryModel>> getLoyaltyHistory() async {
     final data = await _api.get(ApiConstants.loyaltyHistory);
-    return List<Map<String, dynamic>>.from(data as List);
+    return (data as List<dynamic>)
+        .map(
+          (item) => LoyaltyHistoryModel.fromJson(
+            Map<String, dynamic>.from(item as Map),
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override

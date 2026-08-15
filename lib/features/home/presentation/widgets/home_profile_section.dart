@@ -17,12 +17,13 @@ class HomeProfileSection extends StatelessWidget {
         final name = switch (state) {
           ProfileLoaded(:final profile) =>
             '${profile.firstName} ${profile.lastName}',
-          _ => '...',
+          _ => 'common.not_available'.tr(),
         };
         final points = switch (state) {
-          ProfileLoaded(:final loyaltyPoints) =>
-            loyaltyPoints.toStringAsFixed(0),
-          _ => '...',
+          ProfileLoaded(:final loyaltyPoints) => loyaltyPoints.toStringAsFixed(
+            0,
+          ),
+          _ => 'common.not_available'.tr(),
         };
         final avatarUrl = switch (state) {
           ProfileLoaded(:final profile) => profile.avatarUrl,
@@ -58,6 +59,7 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final fullUrl = _fullUrl;
     return Container(
       width: 48,
       height: 48,
@@ -66,9 +68,9 @@ class _Avatar extends StatelessWidget {
         color: cs.surfaceContainerHighest,
       ),
       clipBehavior: Clip.antiAlias,
-      child: _fullUrl != null
+      child: fullUrl != null
           ? CachedNetworkImage(
-              imageUrl: _fullUrl!,
+              imageUrl: fullUrl,
               fit: BoxFit.cover,
               errorWidget: (_, _, _) => _placeholder(cs),
             )
@@ -80,7 +82,8 @@ class _Avatar extends StatelessWidget {
     final asset = gender == 'female'
         ? 'assets/images/female_placeholder.png'
         : 'assets/images/male_placeholder.png';
-    return Image.asset(asset,
+    return Image.asset(
+      asset,
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => Icon(Icons.person, color: cs.onSurfaceVariant),
     );
@@ -99,12 +102,19 @@ class _NameSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('home_screen.welcome'.tr(),
-              style: tt.bodySmall?.copyWith(fontSize: 12)),
+          Text(
+            'home_screen.welcome'.tr(),
+            style: tt.bodySmall?.copyWith(fontSize: 12),
+          ),
           const SizedBox(height: 2),
-          Text(name,
-              style: tt.headlineMedium?.copyWith(
-                  fontSize: 18, fontWeight: FontWeight.w700, color: cs.onSurface)),
+          Text(
+            name,
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: cs.onSurface,
+            ),
+          ),
         ],
       ),
     );
@@ -122,11 +132,17 @@ class _PointsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(points,
-            style: tt.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w700, color: cs.primary)),
-        Text('home_screen.points'.tr(),
-            style: tt.labelLarge?.copyWith(letterSpacing: 2)),
+        Text(
+          points,
+          style: tt.bodyLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: cs.primary,
+          ),
+        ),
+        Text(
+          'home_screen.points'.tr(),
+          style: tt.labelLarge?.copyWith(letterSpacing: 2),
+        ),
       ],
     );
   }

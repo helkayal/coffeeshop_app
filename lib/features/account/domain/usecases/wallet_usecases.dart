@@ -1,5 +1,6 @@
 import '../../../../core/helpers/result.dart';
-import '../../../account/data/models/wallet_package_model.dart';
+import '../entities/wallet_package.dart';
+import '../entities/wallet_transaction.dart';
 import '../repositories/wallet_repository.dart';
 
 class GetWalletBalanceUseCase {
@@ -11,7 +12,7 @@ class GetWalletBalanceUseCase {
 class GetWalletTransactionsUseCase {
   final WalletRepository _repository;
   const GetWalletTransactionsUseCase(this._repository);
-  Future<Result<List<Map<String, dynamic>>>> call() =>
+  Future<Result<List<WalletTransaction>>> call() =>
       _repository.getTransactions();
 }
 

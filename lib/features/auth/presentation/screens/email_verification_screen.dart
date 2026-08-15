@@ -41,8 +41,7 @@ class _EmailVerificationContent extends StatefulWidget {
       _EmailVerificationContentState();
 }
 
-class _EmailVerificationContentState
-    extends State<_EmailVerificationContent> {
+class _EmailVerificationContentState extends State<_EmailVerificationContent> {
   final _tokenController = TextEditingController();
   bool _manualResendTriggered = false;
 
@@ -89,10 +88,7 @@ class _EmailVerificationContentState
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('verification.title'.tr()),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text('verification.title'.tr()), centerTitle: true),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthVerifyEmailSuccess) {

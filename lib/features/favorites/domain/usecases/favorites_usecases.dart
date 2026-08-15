@@ -16,16 +16,12 @@ class ToggleFavoriteUseCase {
   /// Returns the new isFavorite value.
   Future<Result<bool>> call(String productId) async {
     final check = await _r.isFavorite(productId);
-    return check.fold(
-      (failure) async => Error(failure),
-      (isFav) async {
-        final op = isFav ? _r.removeFavorite(productId) : _r.addFavorite(productId);
-        final result = await op;
-        return result.fold(
-          (failure) => Error(failure),
-          (_) => Success(!isFav),
-        );
-      },
-    );
+    return check.fold((failure) async => Error(failure), (isFav) async {
+      final op = isFav
+          ? _r.removeFavorite(productId)
+          : _r.addFavorite(productId);
+      final result = await op;
+      return result.fold((failure) => Error(failure), (_) => Success(!isFav));
+    });
   }
 }

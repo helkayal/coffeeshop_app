@@ -75,10 +75,7 @@ class ShellState {
   SecondaryRoute? get currentSecondary =>
       hasSecondary ? secondaryStack.last : null;
 
-  ShellState copyWith({
-    int? tabIndex,
-    List<SecondaryRoute>? secondaryStack,
-  }) =>
+  ShellState copyWith({int? tabIndex, List<SecondaryRoute>? secondaryStack}) =>
       ShellState(
         tabIndex: tabIndex ?? this.tabIndex,
         secondaryStack: secondaryStack ?? this.secondaryStack,

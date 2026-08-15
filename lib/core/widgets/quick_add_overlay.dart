@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/checkout/domain/entities/cart_item.dart';
@@ -58,12 +57,8 @@ class QuickAddOverlay extends StatefulWidget {
     // Check if there's a last order for this product.
     List<OrderItem> lastItems = [];
     final ordersState = context.read<OrdersCubit>().state;
-    final hasLastOrder =
-        ordersState is OrdersLoaded && ordersState.latestOrder != null;
-    if (hasLastOrder) {
-      lastItems = ordersState.latestOrder!.items
-          .where((i) => i.menuItemId == product.id)
-          .toList();
+    if (ordersState case OrdersLoaded(latestOrder: final order?)) {
+      lastItems = order.items.where((i) => i.menuItemId == product.id).toList();
     }
 
     // Check if there are extras/addons.
@@ -317,7 +312,18 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                       onPressed: _addToCart,
                       icon: const Icon(Icons.add_shopping_cart, size: 18),
                       label: Text(
-                        '${((widget.product?.basePrice ?? 0) + _selectedUpcharge).toStringAsFixed(2)} EGP - Add to Cart',
+                        'common.add_to_cart_price'.tr(
+                          namedArgs: {
+                            'price': 'common.price'.tr(
+                              namedArgs: {
+                                'amount':
+                                    ((widget.product?.basePrice ?? 0) +
+                                            _selectedUpcharge)
+                                        .toStringAsFixed(2),
+                              },
+                            ),
+                          },
+                        ),
                         style: tt.labelLarge?.copyWith(color: cs.onPrimary),
                       ),
                       style: FilledButton.styleFrom(

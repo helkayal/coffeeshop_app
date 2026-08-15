@@ -16,53 +16,79 @@ class OrderConfirmationScreen extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     final state = context.read<CartCubit>().state;
-    final items = state is OrderPlaced ? state.items : <CartItem>[];
-    final total = state is OrderPlaced ? state.total : 0.0;
+    final items = state is OrderResultState ? state.items : <CartItem>[];
+    final total = state is OrderResultState ? state.total : 0.0;
 
     return Scaffold(
       backgroundColor: cs.surface,
       body: SingleChildScrollView(
         padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
-        child: Column(children: [
-        Icon(Icons.check_circle, size: 72, color: cs.primary),
-        const SizedBox(height: 24),
-        Text('checkout.order_complete'.tr(),
-            style: tt.headlineMedium?.copyWith(
-                fontSize: 28, fontWeight: FontWeight.w700, color: cs.onSurface)),
-        const SizedBox(height: 8),
-        Text('checkout.order_complete_sub'.tr(), style: tt.bodySmall),
-        const SizedBox(height: 40),
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: cs.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cs.outlineVariant.withAlpha(128)),
-          ),
-          child: Column(children: [
-            Text('checkout.receipt'.tr(),
-                style: tt.headlineMedium?.copyWith(
-                    fontSize: 20, color: cs.onSurface)),
-            const SizedBox(height: 20),
-            _receiptBlock(tt, cs, 'checkout.order_number'.tr(), orderId),
-            const SizedBox(height: 12),
-            _receiptBlock(tt, cs, 'checkout.date'.tr(), _formatDate(DateTime.now())),
-            const SizedBox(height: 12),
-            Divider(color: cs.outlineVariant.withAlpha(128)),
-            const SizedBox(height: 12),
-            ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _receiptItem(tt, cs, item),
-            )),
-            const SizedBox(height: 12),
-            Divider(color: cs.outlineVariant.withAlpha(128)),
-            const SizedBox(height: 12),
-            _receiptRow(tt, cs, 'checkout.total'.tr(),
-                '${total.toStringAsFixed(2)} EGP',
-                bold: true),
-          ]),
+        child: Column(
+          children: [
+            Icon(Icons.check_circle, size: 72, color: cs.primary),
+            const SizedBox(height: 24),
+            Text(
+              'checkout.order_complete'.tr(),
+              style: tt.headlineMedium?.copyWith(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: cs.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text('checkout.order_complete_sub'.tr(), style: tt.bodySmall),
+            const SizedBox(height: 40),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cs.outlineVariant.withAlpha(128)),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'checkout.receipt'.tr(),
+                    style: tt.headlineMedium?.copyWith(
+                      fontSize: 20,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _receiptBlock(tt, cs, 'checkout.order_number'.tr(), orderId),
+                  const SizedBox(height: 12),
+                  _receiptBlock(
+                    tt,
+                    cs,
+                    'checkout.date'.tr(),
+                    _formatDate(DateTime.now()),
+                  ),
+                  const SizedBox(height: 12),
+                  Divider(color: cs.outlineVariant.withAlpha(128)),
+                  const SizedBox(height: 12),
+                  ...items.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _receiptItem(tt, cs, item),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Divider(color: cs.outlineVariant.withAlpha(128)),
+                  const SizedBox(height: 12),
+                  _receiptRow(
+                    tt,
+                    cs,
+                    'checkout.total'.tr(),
+                    'common.price'.tr(
+                      namedArgs: {'amount': total.toStringAsFixed(2)},
+                    ),
+                    bold: true,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ]),
       ),
     );
   }
@@ -94,16 +120,26 @@ class OrderConfirmationScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(item.name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+              Text(
+                item.name,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+              ),
               if (item.variant.isNotEmpty)
                 Text(item.variant, style: tt.bodySmall),
             ],
           ),
         ),
-        Text('x${item.quantity}', style: tt.bodySmall),
+        Text(
+          'common.quantity'.tr(
+            namedArgs: {'quantity': item.quantity.toString()},
+          ),
+          style: tt.bodySmall,
+        ),
         const SizedBox(width: 12),
         Text(
-          '${item.total.toStringAsFixed(2)} EGP',
+          'common.price'.tr(
+            namedArgs: {'amount': item.total.toStringAsFixed(2)},
+          ),
           style: tt.bodyMedium?.copyWith(
             color: cs.onSurface,
             fontWeight: FontWeight.w600,
@@ -113,28 +149,48 @@ class OrderConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _receiptBlock(TextTheme tt, ColorScheme cs, String label, String value) {
+  Widget _receiptBlock(
+    TextTheme tt,
+    ColorScheme cs,
+    String label,
+    String value,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: tt.bodySmall),
         const SizedBox(height: 4),
-        Text(value,
-            style: tt.bodyMedium?.copyWith(
-                color: cs.onSurface, fontWeight: FontWeight.w500)),
+        Text(
+          value,
+          style: tt.bodyMedium?.copyWith(
+            color: cs.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _receiptRow(TextTheme tt, ColorScheme cs, String label, String value,
-      {bool bold = false}) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(label, style: tt.bodySmall),
-      Text(value,
+  Widget _receiptRow(
+    TextTheme tt,
+    ColorScheme cs,
+    String label,
+    String value, {
+    bool bold = false,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: tt.bodySmall),
+        Text(
+          value,
           style: (bold ? tt.bodyLarge : tt.bodyMedium)?.copyWith(
-              color: cs.onSurface,
-              fontWeight: bold ? FontWeight.w700 : FontWeight.w500)),
-    ]);
+            color: cs.onSurface,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 
   String _formatDate(DateTime d) {

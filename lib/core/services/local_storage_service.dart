@@ -1,6 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-class LocalStorageService {
+import '../security/credential_storage.dart';
+
+class LocalStorageService implements LegacyCredentialSource {
   static const String _boxName = 'app_preferences';
   static const String _isFirstRunKey = 'is_first_run';
   static const String _authTokenKey = 'auth_token';
@@ -24,32 +26,18 @@ class LocalStorageService {
     await box.put(_isFirstRunKey, false);
   }
 
-  // --- Auth tokens ---
-
-  bool hasAuthToken() => getAuthToken() != null;
-
-  Future<void> setAuthToken(String token) async {
-    await Hive.box(_boxName).put(_authTokenKey, token);
+  @override
+  ({String? accessToken, String? refreshToken}) readLegacyCredentials() {
+    final box = Hive.box(_boxName);
+    return (
+      accessToken: box.get(_authTokenKey) as String?,
+      refreshToken: box.get(_refreshTokenKey) as String?,
+    );
   }
 
-  String? getAuthToken() =>
-      Hive.box(_boxName).get(_authTokenKey) as String?;
-
-  Future<void> clearAuthToken() async {
-    await Hive.box(_boxName).delete(_authTokenKey);
-  }
-
-  // --- Refresh token ---
-
-  Future<void> setRefreshToken(String token) async {
-    await Hive.box(_boxName).put(_refreshTokenKey, token);
-  }
-
-  String? getRefreshToken() =>
-      Hive.box(_boxName).get(_refreshTokenKey) as String?;
-
-  Future<void> clearRefreshToken() async {
-    await Hive.box(_boxName).delete(_refreshTokenKey);
+  @override
+  Future<void> deleteLegacyCredentials() async {
+    await Hive.box(_boxName).deleteAll([_authTokenKey, _refreshTokenKey]);
   }
 
   // --- Cached user ---
@@ -174,12 +162,5 @@ class LocalStorageService {
 
   Future<void> setWalletPhone(String phone) async {
     await Hive.box(_boxName).put(_walletPhoneKey, phone);
-  }
-
-  /// Clears all auth-related data (tokens + cached user).
-  Future<void> clearSession() async {
-    await clearAuthToken();
-    await clearRefreshToken();
-    await clearCachedUser();
   }
 }

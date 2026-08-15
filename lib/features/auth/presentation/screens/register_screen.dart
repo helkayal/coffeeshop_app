@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
-import '../../../../core/widgets/app_snack_bar.dart' show AppSnackBar, SnackBarType;
+import '../../../../core/widgets/app_snack_bar.dart'
+    show AppSnackBar, SnackBarType;
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/register_form.dart';
@@ -68,7 +66,8 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   }
 
   void _clearFirstNameError() {
-    if (_firstNameError != null && _firstNameController.text.trim().isNotEmpty) {
+    if (_firstNameError != null &&
+        _firstNameController.text.trim().isNotEmpty) {
       setState(() => _firstNameError = null);
     }
   }
@@ -96,16 +95,20 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
       lastName: _lastNameController.text.trim(),
     );
     setState(() => _passwordError = error?.tr());
-    if (_confirmPasswordController.text.isNotEmpty) _clearConfirmPasswordError();
+    if (_confirmPasswordController.text.isNotEmpty) {
+      _clearConfirmPasswordError();
+    }
   }
 
   void _clearConfirmPasswordError() {
     final text = _confirmPasswordController.text;
     if (_confirmPasswordError == null && text.isEmpty) return;
-    setState(() => _confirmPasswordError = PasswordValidator.validateConfirm(
-          _passwordController.text,
-          text,
-        )?.tr());
+    setState(
+      () => _confirmPasswordError = PasswordValidator.validateConfirm(
+        _passwordController.text,
+        text,
+      )?.tr(),
+    );
   }
 
   void _clearStateError() {
@@ -137,9 +140,9 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
+    if (picked != null && mounted) {
       setState(() => _selectedImagePath = picked.path);
-      sl<LocalStorageService>().setPendingAvatarPath(picked.path);
+      await context.read<AuthCubit>().savePendingAvatar(picked.path);
     }
   }
 
@@ -228,8 +231,10 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
     }
 
     final confirmPassword = _confirmPasswordController.text;
-    final confirmError =
-        PasswordValidator.validateConfirm(password, confirmPassword);
+    final confirmError = PasswordValidator.validateConfirm(
+      password,
+      confirmPassword,
+    );
     if (confirmError != null) {
       _confirmPasswordError = confirmError.tr();
       valid = false;
@@ -247,17 +252,19 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
 
   void _onRegisterPressed() {
     if (!_validate()) return;
+    final gender = _genderNotifier.value;
+    if (gender == null) return;
 
     context.read<AuthCubit>().register(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-          gender: _genderNotifier.value!,
-          state: _stateNotifier.value,
-          city: _cityNotifier.value,
-          dateOfBirth: _dateOfBirth,
-        );
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      gender: gender,
+      state: _stateNotifier.value,
+      city: _cityNotifier.value,
+      dateOfBirth: _dateOfBirth,
+    );
   }
 
   @override
@@ -267,7 +274,11 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthError) {
-              AppSnackBar.show(context, state.message, type: SnackBarType.error);
+              AppSnackBar.show(
+                context,
+                state.message,
+                type: SnackBarType.error,
+              );
             } else if (state is AuthRegisterSuccess) {
               // Navigate to the verification screen carrying the registered email.
               Navigator.pushNamedAndRemoveUntil(

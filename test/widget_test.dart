@@ -1,7 +1,6 @@
+import 'package:coffeeshop_app/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:coffeeshop_app/core/widgets/app_button.dart';
 
 void main() {
   testWidgets('AppButton renders text and responds to tap', (tester) async {
@@ -10,10 +9,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: AppButton(
-            text: 'Tap me',
-            onPressed: () => tapped = true,
-          ),
+          body: AppButton(text: 'Tap me', onPressed: () => tapped = true),
         ),
       ),
     );
@@ -29,11 +25,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: AppButton(
-            text: 'Loading',
-            onPressed: () {},
-            isLoading: true,
-          ),
+          body: AppButton(text: 'Loading', onPressed: () {}, isLoading: true),
         ),
       ),
     );

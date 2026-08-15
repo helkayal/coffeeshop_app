@@ -9,10 +9,8 @@ class PromotionsCubit extends Cubit<PromotionsState> {
   final GetHomeSliderUseCase _getHomeSliderUseCase;
   final void Function(ConnectionFailure)? onConnectionFailure;
 
-  PromotionsCubit(
-    this._getHomeSliderUseCase, {
-    this.onConnectionFailure,
-  }) : super(const PromotionsInitial());
+  PromotionsCubit(this._getHomeSliderUseCase, {this.onConnectionFailure})
+    : super(const PromotionsInitial());
 
   Future<void> loadPromotions() async {
     emit(const PromotionsLoading());

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/services/service_locator.dart';
-import '../../../account/domain/usecases/wallet_usecases.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../account/presentation/cubit/wallet_cubit.dart';
+import '../../../account/presentation/cubit/wallet_state.dart';
 import '../../../account/presentation/widgets/package_selection_sheet.dart';
 
 class TopUpSheet {
@@ -14,6 +16,7 @@ class TopUpSheet {
     required double requiredAmount,
     required VoidCallback onAddPaymentMethod,
   }) async {
+    final walletCubit = context.read<WalletCubit>();
     final result = await PackageSelectionSheet.show(
       context,
       requiredAmount: requiredAmount,
@@ -23,9 +26,11 @@ class TopUpSheet {
       return result;
     }
     if (result == true) {
-      final getBalance = sl<GetWalletBalanceUseCase>();
-      final balanceResult = await getBalance();
-      return balanceResult.fold((_) => null, (bal) => bal);
+      await walletCubit.loadBalance();
+      return switch (walletCubit.state) {
+        WalletBalanceLoaded(:final balance) => balance,
+        _ => null,
+      };
     }
     return null;
   }

@@ -31,13 +31,13 @@ class CartItemModel extends CartItem {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'product_id': productId,
-        'name': name,
-        'image_path': imagePath,
-        'variant': variant,
-        'unit_price': unitPrice,
-        'quantity': quantity,
-        'modifier_ids': modifierIds,
-      };
+    'id': id,
+    'product_id': productId,
+    'name': name,
+    'image_path': imagePath,
+    'variant': variant,
+    'unit_price': unitPrice,
+    'quantity': quantity,
+    'modifier_ids': modifierIds,
+  };
 }

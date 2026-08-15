@@ -30,48 +30,88 @@ class OrderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: cs.outlineVariant.withAlpha(128)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(dateStr, style: tt.labelLarge?.copyWith(color: cs.secondary)),
-              const SizedBox(height: 4),
-              Text(shortId,
-                  style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
-            ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dateStr,
+                      style: tt.labelLarge?.copyWith(color: cs.secondary),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      shortId,
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 20,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'common.price'.tr(
+                      namedArgs: {'amount': order.total.toStringAsFixed(2)},
+                    ),
+                    style: tt.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cs.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      order.status,
+                      style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text('${order.total.toStringAsFixed(2)} EGP',
-                style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.w600, color: cs.primary)),
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                  color: cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(4)),
-              child: Text(order.status,
-                  style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
-            ),
-          ]),
-        ]),
-        const SizedBox(height: 16),
-        ...order.items.map((item) => OrderItemRow(item: item)),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          TextButton.icon(
-            onPressed: () => _showReceipt(context),
-            icon: Icon(Icons.receipt, size: 16, color: cs.primary),
-            label: Text('orders_screen.receipt'.tr(),
-                style: tt.labelLarge?.copyWith(color: cs.primary)),
+          const SizedBox(height: 16),
+          ...order.items.map((item) => OrderItemRow(item: item)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () => _showReceipt(context),
+                icon: Icon(Icons.receipt, size: 16, color: cs.primary),
+                label: Text(
+                  'orders_screen.receipt'.tr(),
+                  style: tt.labelLarge?.copyWith(color: cs.primary),
+                ),
+              ),
+              const SizedBox(width: 12),
+              TextButton.icon(
+                onPressed: () => _reorder(context),
+                icon: Icon(Icons.replay, size: 16, color: cs.primary),
+                label: Text(
+                  'orders_screen.reorder'.tr(),
+                  style: tt.labelLarge?.copyWith(color: cs.primary),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          TextButton.icon(
-            onPressed: () => _reorder(context),
-            icon: Icon(Icons.replay, size: 16, color: cs.primary),
-            label: Text('orders_screen.reorder'.tr(),
-                style: tt.labelLarge?.copyWith(color: cs.primary)),
-          ),
-        ]),
-      ]),
+        ],
+      ),
     );
   }
 
@@ -84,47 +124,79 @@ class OrderCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _receiptLine(context, 'Order', order.id.substring(0, 8).toUpperCase()),
+            _receiptLine(
+              context,
+              'Order',
+              order.id.substring(0, 8).toUpperCase(),
+            ),
             const SizedBox(height: 4),
-            _receiptLine(context, 'Date',
-                '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}'),
+            _receiptLine(
+              context,
+              'Date',
+              '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}',
+            ),
             const Divider(),
-            ...order.items.map((item) => _receiptLine(
-                  context,
-                  item.name,
-                  '${item.price.toStringAsFixed(2)} EGP x${item.quantity}',
-                )),
+            ...order.items.map(
+              (item) => _receiptLine(
+                context,
+                item.name,
+                'common.price_quantity'.tr(
+                  namedArgs: {
+                    'price': 'common.price'.tr(
+                      namedArgs: {'amount': item.price.toStringAsFixed(2)},
+                    ),
+                    'quantity': item.quantity.toString(),
+                  },
+                ),
+              ),
+            ),
             const Divider(),
-            _receiptLine(context, 'Total',
-                '${order.total.toStringAsFixed(2)} EGP',
-                bold: true),
+            _receiptLine(
+              context,
+              'Total',
+              'common.price'.tr(
+                namedArgs: {'amount': order.total.toStringAsFixed(2)},
+              ),
+              bold: true,
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text('common.close'.tr()),
           ),
         ],
       ),
     );
   }
 
-  Widget _receiptLine(BuildContext context, String label, String value, {bool bold = false}) {
+  Widget _receiptLine(
+    BuildContext context,
+    String label,
+    String value, {
+    bool bold = false,
+  }) {
     final tt = Theme.of(context).textTheme;
     final cs = Theme.of(context).colorScheme;
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Flexible(child: Text(label, style: tt.bodySmall)),
-      const SizedBox(width: 12),
-      Flexible(
-        child: Text(value,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(child: Text(label, style: tt.bodySmall)),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(
+            value,
             textAlign: TextAlign.end,
             overflow: TextOverflow.ellipsis,
             style: (bold ? tt.bodyLarge : tt.bodyMedium)?.copyWith(
-                color: cs.onSurface,
-                fontWeight: bold ? FontWeight.w700 : FontWeight.w500)),
-      ),
-    ]);
+              color: cs.onSurface,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void _reorder(BuildContext context) {
@@ -157,7 +229,18 @@ class OrderCard extends StatelessWidget {
   }
 
   String _month(int m) => const [
-        '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-      ][m];
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][m];
 }

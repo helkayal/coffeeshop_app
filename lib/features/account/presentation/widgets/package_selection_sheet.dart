@@ -1,25 +1,24 @@
-import 'package:coffeeshop_app/features/account/presentation/widgets/package_purchase_dialogs.dart';
-import 'package:coffeeshop_app/features/account/presentation/widgets/wallet_package_tile.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
-import '../../data/models/wallet_package_model.dart';
-import '../../domain/usecases/payment_methods_usecases.dart';
-import '../../domain/usecases/wallet_usecases.dart';
+import '../../domain/entities/payment_method.dart';
+import '../../domain/entities/wallet_package.dart';
+import '../cubit/payment_methods_cubit.dart';
+import '../cubit/payment_preferences_cubit.dart';
+import '../cubit/payment_preferences_state.dart';
 import '../cubit/profile_cubit.dart';
+import '../cubit/wallet_cubit.dart';
+import '../cubit/wallet_state.dart';
+import 'package_purchase_dialogs.dart';
+import 'wallet_package_tile.dart';
 
 class PackageSelectionSheet extends StatefulWidget {
   final double? requiredAmount;
 
-  const PackageSelectionSheet({
-    super.key,
-    this.requiredAmount,
-  });
+  const PackageSelectionSheet({super.key, this.requiredAmount});
 
   static Future<dynamic> show(
     BuildContext context, {
@@ -38,11 +37,6 @@ class PackageSelectionSheet extends StatefulWidget {
 }
 
 class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
-  final _getPackages = sl<GetWalletPackagesUseCase>();
-  final _buyPackage = sl<BuyWalletPackageUseCase>();
-  final _getPaymentMethods = sl<GetPaymentMethodsUseCase>();
-  final _storage = sl<LocalStorageService>();
-
   List<WalletPackage> _packages = [];
   WalletPackage? _selectedPackage;
   bool _loading = true;
@@ -52,36 +46,31 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
   @override
   void initState() {
     super.initState();
-    _loadPackages();
+    context.read<WalletCubit>().loadPackages();
   }
 
-  Future<void> _loadPackages() async {
-    final result = await _getPackages();
-    if (!mounted) return;
-    result.fold(
-      (failure) {
-        setState(() {
-          _loading = false;
-          _error = failure.message;
-        });
-      },
-      (list) {
-        setState(() {
-          _packages = list;
-          if (list.isNotEmpty) {
-            if (widget.requiredAmount != null && widget.requiredAmount! > 0) {
-              _selectedPackage = list.firstWhere(
-                (p) => p.amount >= widget.requiredAmount!,
-                orElse: () => list.first,
-              );
-            } else {
-              _selectedPackage = list.first;
-            }
-          }
-          _loading = false;
-        });
-      },
-    );
+  void _onWalletState(WalletState state) {
+    if (state is PackagesLoaded) {
+      final requiredAmount = widget.requiredAmount;
+      setState(() {
+        _packages = state.packages;
+        _selectedPackage = state.packages.isEmpty
+            ? null
+            : requiredAmount != null && requiredAmount > 0
+            ? state.packages.firstWhere(
+                (package) => package.amount >= requiredAmount,
+                orElse: () => state.packages.first,
+              )
+            : state.packages.first;
+        _loading = false;
+      });
+    } else if (state is PackagesError) {
+      setState(() {
+        _loading = false;
+        _purchasing = false;
+        _error = state.message;
+      });
+    }
   }
 
   Future<void> _onBuyPressed() async {
@@ -93,18 +82,25 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
       _error = null;
     });
 
-    List<Map<String, dynamic>> cards = [];
-    final pmResult = await _getPaymentMethods();
-    pmResult.fold((_) => cards = [], (list) => cards = list);
-
-    final walletPhone = _storage.getWalletPhone();
+    final paymentCubit = context.read<PaymentMethodsCubit>();
+    final preferenceCubit = context.read<PaymentPreferencesCubit>();
+    await paymentCubit.loadPaymentMethods();
+    final List<PaymentMethod> cards = paymentCubit.currentCards;
+    final preferenceState = preferenceCubit.state;
+    final preferences = preferenceState is PaymentPreferencesLoaded
+        ? preferenceState.preferences
+        : null;
+    final walletPhone = preferences?.walletPhone;
 
     if (!mounted) return;
     setState(() => _purchasing = false);
 
-    final defaultMethod = _storage.getDefaultPaymentMethod();
+    final defaultMethod = preferences?.defaultMethod;
 
-    if (defaultMethod == 'wallet' || (cards.isEmpty && walletPhone != null && walletPhone.trim().isNotEmpty)) {
+    if (defaultMethod == 'wallet' ||
+        (cards.isEmpty &&
+            walletPhone != null &&
+            walletPhone.trim().isNotEmpty)) {
       PackagePurchaseDialogs.showMobileWalletConfirm(
         context,
         walletPhone: walletPhone?.trim() ?? '',
@@ -119,10 +115,10 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
       );
     } else if (cards.isNotEmpty) {
       final defaultCard = cards.firstWhere(
-        (c) => c['id'] == defaultMethod || c['is_default'] == true,
+        (card) => card.id == defaultMethod || card.isDefault,
         orElse: () => cards.first,
       );
-      final last4 = defaultCard['card_last4'] as String? ?? '••••';
+      final last4 = defaultCard.lastFour;
       PackagePurchaseDialogs.showCvcPrompt(
         context,
         last4: last4,
@@ -151,29 +147,26 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
       _error = null;
     });
 
-    final result = await _buyPackage(pkg.id);
+    final walletCubit = context.read<WalletCubit>();
+    await walletCubit.buyPackage(pkg.id);
     if (!mounted) return;
-
-    result.fold(
-      (failure) {
-        setState(() {
-          _purchasing = false;
-          _error = failure.message;
-        });
-      },
-      (newBalance) {
-        try {
-          context.read<ProfileCubit>().loadProfile();
-        } catch (_) {}
-
-        AppSnackBar.show(
-          context,
-          'Package purchased successfully!',
-          type: SnackBarType.success,
-        );
-        Navigator.pop(context, newBalance ?? true);
-      },
-    );
+    final state = walletCubit.state;
+    if (state is PackagesError) {
+      setState(() {
+        _purchasing = false;
+        _error = state.message;
+      });
+      return;
+    }
+    if (state is PackagePurchased) {
+      context.read<ProfileCubit>().loadProfile();
+      AppSnackBar.show(
+        context,
+        'wallet.package_purchase_success'.tr(),
+        type: SnackBarType.success,
+      );
+      Navigator.pop(context, state.newBalance ?? true);
+    }
   }
 
   @override
@@ -181,116 +174,119 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      padding: EdgeInsets.fromLTRB(
-        24,
-        24,
-        24,
-        24 + MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 48,
-              height: 4,
-              decoration: BoxDecoration(
-                color: cs.outlineVariant.withAlpha(128),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'wallet.select_package'.tr(),
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: cs.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'wallet.package_subtitle'.tr(),
-            style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-          ),
-          const SizedBox(height: 24),
-          if (_loading)
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: CircularProgressIndicator(),
-              ),
-            )
-          else if (_error != null && _packages.isEmpty)
+    return BlocListener<WalletCubit, WalletState>(
+      listener: (_, state) => _onWalletState(state),
+      child: Container(
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerLow,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        padding: EdgeInsets.fromLTRB(
+          24,
+          24,
+          24,
+          24 + MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(_error!, style: TextStyle(color: cs.error)),
-              ),
-            )
-          else ...[
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.4,
-              ),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: _packages.length,
-                separatorBuilder: (_, index) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final pkg = _packages[index];
-                  final isSelected = _selectedPackage?.id == pkg.id;
-                  return WalletPackageTile(
-                    package: pkg,
-                    isSelected: isSelected,
-                    onTap: () => setState(() => _selectedPackage = pkg),
-                  );
-                },
-              ),
-            ),
-            if (_error != null) ...[
-              const SizedBox(height: 12),
-              Text(_error!, style: TextStyle(color: cs.error, fontSize: 13)),
-            ],
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _purchasing ? null : _onBuyPressed,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              child: Container(
+                width: 48,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: cs.outlineVariant.withAlpha(128),
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                child: _purchasing
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        'wallet.buy_package'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
               ),
             ),
+            const SizedBox(height: 24),
+            Text(
+              'wallet.select_package'.tr(),
+              style: tt.headlineMedium?.copyWith(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: cs.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'wallet.package_subtitle'.tr(),
+              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+            ),
+            const SizedBox(height: 24),
+            if (_loading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32),
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else if (_error case final error? when _packages.isEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(error, style: TextStyle(color: cs.error)),
+                ),
+              )
+            else ...[
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.4,
+                ),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: _packages.length,
+                  separatorBuilder: (_, index) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final pkg = _packages[index];
+                    final isSelected = _selectedPackage?.id == pkg.id;
+                    return WalletPackageTile(
+                      package: pkg,
+                      isSelected: isSelected,
+                      onTap: () => setState(() => _selectedPackage = pkg),
+                    );
+                  },
+                ),
+              ),
+              if (_error case final error?) ...[
+                const SizedBox(height: 12),
+                Text(error, style: TextStyle(color: cs.error, fontSize: 13)),
+              ],
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _purchasing ? null : _onBuyPressed,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _purchasing
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'wallet.buy_package'.tr(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
           ],
-          const SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }

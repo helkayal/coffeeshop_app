@@ -4,10 +4,7 @@ class OnboardingOption extends Equatable {
   final String id;
   final String text;
 
-  const OnboardingOption({
-    required this.id,
-    required this.text,
-  });
+  const OnboardingOption({required this.id, required this.text});
 
   @override
   List<Object?> get props => [id, text];

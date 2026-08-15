@@ -9,16 +9,16 @@ class LocationService {
   LocationService(this._api);
 
   Future<List<String>> getStates() async {
-    if (_cachedStates != null) return _cachedStates!;
+    if (_cachedStates case final states?) return states;
     final data = await _api.get(ApiConstants.locationsStates);
     _cachedStates = (data as List<dynamic>)
         .map((s) => (s as Map<String, dynamic>)['name'] as String)
         .toList();
-    return _cachedStates!;
+    return _cachedStates ?? const [];
   }
 
   Future<List<String>> getCities(String state) async {
-    if (_cityCache.containsKey(state)) return _cityCache[state]!;
+    if (_cityCache[state] case final cities?) return cities;
     final data = await _api.get(
       ApiConstants.locationsCities,
       queryParameters: {'state': state},

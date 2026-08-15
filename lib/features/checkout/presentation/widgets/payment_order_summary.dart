@@ -25,29 +25,53 @@ class PaymentOrderSummary extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: cs.outlineVariant.withAlpha(128)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('checkout.order_summary'.tr(),
-            style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
-        const SizedBox(height: 16),
-        ...items.map((item) => Padding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'checkout.order_summary'.tr(),
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 24,
+              color: cs.onSurface,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ...items.map(
+            (item) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: _OrderLine(
                 imagePath: item.imagePath,
                 name: item.name,
                 desc: item.variant.isNotEmpty ? item.variant : item.name,
-                price: '${item.total.toStringAsFixed(2)} EGP',
+                price: 'common.price'.tr(
+                  namedArgs: {'amount': item.total.toStringAsFixed(2)},
+                ),
               ),
-            )),
-        const SizedBox(height: 8),
-        Divider(color: cs.outlineVariant.withAlpha(128)),
-        const SizedBox(height: 16),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('checkout.total'.tr(),
-              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          Text('${total.toStringAsFixed(2)} EGP',
-              style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.primary)),
-        ]),
-      ]),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Divider(color: cs.outlineVariant.withAlpha(128)),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'checkout.total'.tr(),
+                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              ),
+              Text(
+                'common.price'.tr(
+                  namedArgs: {'amount': total.toStringAsFixed(2)},
+                ),
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 24,
+                  color: cs.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -70,34 +94,41 @@ class _OrderLine extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Row(children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Image.network(
-          imagePath,
-          width: 48,
-          height: 48,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => Container(
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image.network(
+            imagePath,
             width: 48,
             height: 48,
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(6),
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(Icons.coffee, color: cs.primary, size: 24),
             ),
-            child: Icon(Icons.coffee, color: cs.primary, size: 24),
           ),
         ),
-      ),
-      const SizedBox(width: 16),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
-          if (desc.isNotEmpty) Text(desc, style: tt.bodySmall),
-        ]),
-      ),
-      Text(price,
-          style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
-    ]);
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+              if (desc.isNotEmpty) Text(desc, style: tt.bodySmall),
+            ],
+          ),
+        ),
+        Text(
+          price,
+          style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface),
+        ),
+      ],
+    );
   }
 }

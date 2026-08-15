@@ -1,44 +1,73 @@
 import 'package:flutter/material.dart';
 
-/// Returns a Material icon appropriate for the modifier group name.
 IconData modifierGroupIcon(String groupName) {
-  final lower = groupName.toLowerCase();
-  if (lower.contains('milk')) return Icons.water_drop_outlined;
-  if (lower.contains('size')) return Icons.straighten_outlined;
-  if (lower.contains('temperature')) return Icons.thermostat_outlined;
-  if (lower.contains('espresso') || lower.contains('shot')) return Icons.coffee_outlined;
-  if (lower.contains('sweet')) return Icons.emoji_nature_outlined;
-  if (lower.contains('bread')) return Icons.bakery_dining_outlined;
-  if (lower.contains('egg')) return Icons.egg_outlined;
-  if (lower.contains('toast')) return Icons.breakfast_dining_outlined;
-  if (lower.contains('add-on') || lower.contains('extra')) return Icons.add_circle_outline;
-  return Icons.tune;
+  final name = groupName.toLowerCase();
+  return switch (name) {
+    _ when name.contains('milk') => Icons.water_drop_outlined,
+    _ when name.contains('size') => Icons.straighten_outlined,
+    _ when name.contains('temperature') => Icons.thermostat_outlined,
+    _ when name.contains('espresso') || name.contains('shot') =>
+      Icons.coffee_outlined,
+    _ when name.contains('sweet') => Icons.emoji_nature_outlined,
+    _ when name.contains('bread') => Icons.bakery_dining_outlined,
+    _ when name.contains('egg') => Icons.egg_outlined,
+    _ when name.contains('toast') => Icons.breakfast_dining_outlined,
+    _ when name.contains('add-on') || name.contains('extra') =>
+      Icons.add_circle_outline,
+    _ => Icons.tune,
+  };
 }
 
-/// Returns a Material icon for an individual option name.
 IconData modifierOptionIcon(String optionName) {
-  final lower = optionName.toLowerCase();
-  if (lower.contains('oat')) return Icons.eco_outlined;
-  if (lower.contains('almond')) return Icons.spa_outlined;
-  if (lower.contains('whole') || lower.contains('milk')) return Icons.water_drop_outlined;
-  if (lower.contains('decaf')) return Icons.nights_stay_outlined;
-  if (lower.contains('double') || lower.contains('triple')) return Icons.flash_on_outlined;
-  if (lower.contains('single')) return Icons.coffee_outlined;
-  if (lower.contains('large') || lower.contains('medium')) return Icons.height;
-  if (lower.contains('small') || lower.contains('regular')) return Icons.straighten_outlined;
-  if (lower.contains('hot')) return Icons.local_fire_department_outlined;
-  if (lower.contains('iced') || lower.contains('cold')) return Icons.ac_unit_outlined;
-  if (lower.contains('sourdough') || lower.contains('gluten')) return Icons.bakery_dining_outlined;
-  if (lower.contains('poached') || lower.contains('scrambled')) return Icons.egg_outlined;
-  if (lower.contains('plain')) return Icons.breakfast_dining_outlined;
-  if (lower.contains('warmed')) return Icons.whatshot_outlined;
-  if (lower.contains('honey') || lower.contains('agave')) return Icons.emoji_nature_outlined;
-  if (lower.contains('vanilla') || lower.contains('syrup')) return Icons.local_cafe_outlined;
-  if (lower.contains('caramel')) return Icons.emoji_nature_outlined;
-  if (lower.contains('cinnamon') || lower.contains('pumpkin')) return Icons.scatter_plot_outlined;
-  if (lower.contains('lavender') || lower.contains('rose') || lower.contains('mint')) return Icons.local_florist_outlined;
-  if (lower.contains('avocado') || lower.contains('salmon') || lower.contains('extra')) return Icons.add_outlined;
-  if (lower.contains('sugar') || lower.contains('salt') || lower.contains('cream')) return Icons.grain_outlined;
-  if (lower.contains('coconut') || lower.contains('lemonade') || lower.contains('orange')) return Icons.local_drink_outlined;
-  return Icons.tune;
+  final name = optionName.toLowerCase();
+  return switch (name) {
+    _ when name.contains('oat') => Icons.eco_outlined,
+    _ when name.contains('almond') => Icons.spa_outlined,
+    _ when name.contains('whole') || name.contains('milk') =>
+      Icons.water_drop_outlined,
+    _ when name.contains('decaf') => Icons.nights_stay_outlined,
+    _ when name.contains('double') || name.contains('triple') =>
+      Icons.flash_on_outlined,
+    _ when name.contains('single') => Icons.coffee_outlined,
+    _ when name.contains('large') || name.contains('medium') => Icons.height,
+    _ when name.contains('small') || name.contains('regular') =>
+      Icons.straighten_outlined,
+    _ when name.contains('hot') => Icons.local_fire_department_outlined,
+    _ when name.contains('iced') || name.contains('cold') =>
+      Icons.ac_unit_outlined,
+    _ when name.contains('sourdough') || name.contains('gluten') =>
+      Icons.bakery_dining_outlined,
+    _ when name.contains('poached') || name.contains('scrambled') =>
+      Icons.egg_outlined,
+    _ when name.contains('plain') => Icons.breakfast_dining_outlined,
+    _ when name.contains('warmed') => Icons.whatshot_outlined,
+    _ when name.contains('honey') || name.contains('agave') =>
+      Icons.emoji_nature_outlined,
+    _ when name.contains('vanilla') || name.contains('syrup') =>
+      Icons.local_cafe_outlined,
+    _ when name.contains('caramel') => Icons.emoji_nature_outlined,
+    _ when name.contains('cinnamon') || name.contains('pumpkin') =>
+      Icons.scatter_plot_outlined,
+    _
+        when name.contains('lavender') ||
+            name.contains('rose') ||
+            name.contains('mint') =>
+      Icons.local_florist_outlined,
+    _
+        when name.contains('avocado') ||
+            name.contains('salmon') ||
+            name.contains('extra') =>
+      Icons.add_outlined,
+    _
+        when name.contains('sugar') ||
+            name.contains('salt') ||
+            name.contains('cream') =>
+      Icons.grain_outlined,
+    _
+        when name.contains('coconut') ||
+            name.contains('lemonade') ||
+            name.contains('orange') =>
+      Icons.local_drink_outlined,
+    _ => Icons.tune,
+  };
 }

@@ -1,6 +1,7 @@
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
+import '../../domain/entities/loyalty_history_entry.dart';
 import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../datasources/profile_data_source.dart';
@@ -50,7 +51,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<List<Map<String, dynamic>>>> getLoyaltyHistory() async {
+  Future<Result<List<LoyaltyHistoryEntry>>> getLoyaltyHistory() async {
     try {
       return Success(await _dataSource.getLoyaltyHistory());
     } on ConnectionException catch (e) {

@@ -14,26 +14,30 @@ class AppSnackBar {
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final (Color background, Color foreground, Color accent, IconData icon) =
-        switch (type) {
+    final (
+      Color background,
+      Color foreground,
+      Color accent,
+      IconData icon,
+    ) = switch (type) {
       SnackBarType.error => (
-          colors.error.withAlpha(230),
-          colors.onError,
-          colors.error,
-          Icons.error_outline,
-        ),
+        colors.error.withAlpha(230),
+        colors.onError,
+        colors.error,
+        Icons.error_outline,
+      ),
       SnackBarType.success => (
-          const Color(0xE6245C3B),
-          const Color(0xFFE8F5E9),
-          const Color(0xFF4CAF50),
-          Icons.check_circle_outline,
-        ),
+        const Color(0xE6245C3B),
+        const Color(0xFFE8F5E9),
+        const Color(0xFF4CAF50),
+        Icons.check_circle_outline,
+      ),
       SnackBarType.info => (
-          colors.primary.withAlpha(230),
-          colors.onPrimary,
-          colors.primary,
-          Icons.info_outline,
-        ),
+        colors.primary.withAlpha(230),
+        colors.onPrimary,
+        colors.primary,
+        Icons.info_outline,
+      ),
     };
 
     ScaffoldMessenger.of(context)

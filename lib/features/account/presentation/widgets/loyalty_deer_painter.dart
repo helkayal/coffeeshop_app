@@ -7,7 +7,9 @@ class LoyaltyDeerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color..style = PaintingStyle.fill;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
     final path = Path();
     path.moveTo(size.width * 0.4, size.height * 0.5);
     path.lineTo(size.width * 0.25, size.height * 0.45);
@@ -18,16 +20,29 @@ class LoyaltyDeerPainter extends CustomPainter {
     path.close();
     canvas.drawPath(path, paint);
     final linePaint = Paint()
-      ..color = color..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8..strokeCap = StrokeCap.round;
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8
+      ..strokeCap = StrokeCap.round;
     final antlerPath = Path();
     antlerPath.moveTo(size.width * 0.48, size.height * 0.45);
-    antlerPath.quadraticBezierTo(size.width * 0.35, size.height * 0.25, size.width * 0.25, size.height * 0.2);
+    antlerPath.quadraticBezierTo(
+      size.width * 0.35,
+      size.height * 0.25,
+      size.width * 0.25,
+      size.height * 0.2,
+    );
     antlerPath.moveTo(size.width * 0.52, size.height * 0.45);
-    antlerPath.quadraticBezierTo(size.width * 0.65, size.height * 0.25, size.width * 0.75, size.height * 0.2);
+    antlerPath.quadraticBezierTo(
+      size.width * 0.65,
+      size.height * 0.25,
+      size.width * 0.75,
+      size.height * 0.2,
+    );
     canvas.drawPath(antlerPath, linePaint);
   }
 
   @override
-  bool shouldRepaint(covariant LoyaltyDeerPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(covariant LoyaltyDeerPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

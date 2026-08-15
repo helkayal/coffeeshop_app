@@ -50,7 +50,8 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   void _onPasswordChanged() {
     if (_passwordError == null) return;
     setState(
-        () => _passwordError = _validatePassword(_passwordController.text));
+      () => _passwordError = _validatePassword(_passwordController.text),
+    );
   }
 
   String? _validateEmail(String email) {
@@ -91,15 +92,15 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   void _onLoginPressed() {
     if (!_validate()) return;
     context.read<AuthCubit>().login(
-          _emailController.text.trim(),
-          _passwordController.text,
-        );
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
   }
 
-  void _onForgotPassword() {
+  Future<void> _onForgotPassword() async {
     final emailCtrl = TextEditingController();
 
-    showDialog(
+    await showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text('verification.forgot_password'.tr()),
@@ -145,6 +146,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
         ],
       ),
     );
+    emailCtrl.dispose();
   }
 
   Future<void> _showResetTokenDialog(
@@ -174,14 +176,16 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
     );
   }
 
-  void _onSocialLogin(String provider) {
+  Future<void> _onSocialLogin(String provider) async {
     final emailCtrl = TextEditingController();
     final nameCtrl = TextEditingController();
 
-    showDialog(
+    await showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Sign in with $provider'),
+        title: Text(
+          'auth.social_sign_in'.tr(namedArgs: {'provider': provider}),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -194,7 +198,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
             const SizedBox(height: 12),
             AppTextField(
               controller: nameCtrl,
-              hintText: 'Full Name (optional)',
+              hintText: 'auth.full_name_optional'.tr(),
               prefixIcon: const Icon(Icons.person_outline),
             ),
           ],
@@ -215,15 +219,18 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
                 provider: provider,
                 email: email,
                 firstName: names.isNotEmpty ? names.first : null,
-                lastName:
-                    names.length > 1 ? names.sublist(1).join(' ') : null,
+                lastName: names.length > 1 ? names.sublist(1).join(' ') : null,
               );
             },
-            child: Text('Sign in with $provider'),
+            child: Text(
+              'auth.social_sign_in'.tr(namedArgs: {'provider': provider}),
+            ),
           ),
         ],
       ),
     );
+    emailCtrl.dispose();
+    nameCtrl.dispose();
   }
 
   @override

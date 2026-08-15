@@ -32,13 +32,14 @@ class ProfileAvatar extends StatelessWidget {
             border: Border.all(color: cs.primary.withAlpha(51), width: 4),
           ),
           clipBehavior: Clip.antiAlias,
-          child: avatarUrl != null
-              ? CachedNetworkImage(
-                  imageUrl: avatarUrl!,
-                  fit: BoxFit.cover,
-                  errorWidget: (_, _, _) => _placeholder(cs),
-                )
-              : _placeholder(cs),
+          child: switch (avatarUrl) {
+            final url? => CachedNetworkImage(
+              imageUrl: url,
+              fit: BoxFit.cover,
+              errorWidget: (_, _, _) => _placeholder(cs),
+            ),
+            null => _placeholder(cs),
+          },
         ),
         if (showEditButton)
           Positioned(
@@ -65,7 +66,8 @@ class ProfileAvatar extends StatelessWidget {
     final asset = gender == 'female'
         ? 'assets/images/female_placeholder.png'
         : 'assets/images/male_placeholder.png';
-    return Image.asset(asset,
+    return Image.asset(
+      asset,
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest),
     );

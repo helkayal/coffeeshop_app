@@ -14,7 +14,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   /// All other methods delegate to this to avoid duplicate HTTP requests.
   @override
   Future<({List<CategoryModel> categories, List<ProductModel> products})>
-      getMenu() async {
+  getMenu() async {
     final rawCategories = await _api.get(ApiConstants.menu) as List<dynamic>;
 
     final categories = <CategoryModel>[];
@@ -25,10 +25,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final catId = catJson['id'] as String;
       final catName = catJson['name'] as String? ?? '';
 
-      categories.add(CategoryModel.fromJson({
-        'id': catId,
-        'name': catName,
-      }));
+      categories.add(CategoryModel.fromJson({'id': catId, 'name': catName}));
 
       final items = catJson['items'] as List<dynamic>? ?? [];
       for (final item in items) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../cubit/shell_cubit.dart';
 import '../../features/account/presentation/screens/edit_profile_screen.dart';
 import '../../features/account/presentation/screens/loyalty_history_screen.dart';
 import '../../features/account/presentation/screens/payment_methods_screen.dart';
@@ -13,6 +12,7 @@ import '../../features/checkout/presentation/screens/payment_screen.dart';
 import '../../features/customization/presentation/screens/customization_screen.dart';
 import '../../features/orders/presentation/screens/orders_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../cubit/shell_cubit.dart';
 
 /// Maps every [SecondaryRoute] to its Widget.
 ///
@@ -22,19 +22,20 @@ class ShellRouter {
   const ShellRouter._();
 
   static Widget build(SecondaryRoute route) => switch (route) {
-        CartRoute() => const CartScreen(),
-        PaymentRoute() => const PaymentScreen(),
-        CustomizationRoute(:final product, :final fromFavorites) =>
-            CustomizationScreen(product: product, fromFavorites: fromFavorites),
-        SettingsRoute() => const SettingsScreen(),
-        EditProfileRoute() => const EditProfileScreen(),
-        OrdersHistoryRoute() => const OrdersScreen(),
-        OrderConfirmationRoute(:final orderId) =>
-            OrderConfirmationScreen(orderId: orderId),
-        ViewBenefitsRoute() => const ViewBenefitsScreen(),
-        LoyaltyHistoryRoute() => const LoyaltyHistoryScreen(),
-        WalletRoute() => const WalletScreen(),
-        ReferralRoute() => const ReferralScreen(),
-        PaymentMethodsRoute() => const PaymentMethodsScreen(),
-      };
+    CartRoute() => const CartScreen(),
+    PaymentRoute() => const PaymentScreen(),
+    CustomizationRoute(:final product, :final fromFavorites) =>
+      CustomizationScreen(product: product, fromFavorites: fromFavorites),
+    SettingsRoute() => const SettingsScreen(),
+    EditProfileRoute() => const EditProfileScreen(),
+    OrdersHistoryRoute() => const OrdersScreen(),
+    OrderConfirmationRoute(:final orderId) => OrderConfirmationScreen(
+      orderId: orderId,
+    ),
+    ViewBenefitsRoute() => const ViewBenefitsScreen(),
+    LoyaltyHistoryRoute() => const LoyaltyHistoryScreen(),
+    WalletRoute() => const WalletScreen(),
+    ReferralRoute() => const ReferralScreen(),
+    PaymentMethodsRoute() => const PaymentMethodsScreen(),
+  };
 }

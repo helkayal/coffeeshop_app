@@ -38,8 +38,10 @@ class PromoBanner extends StatelessWidget {
   }
 
   Widget _buildImage(ColorScheme cs) {
-    final isNetwork = imageUrl != null &&
-        (imageUrl!.startsWith('http://') || imageUrl!.startsWith('https://'));
+    final url = imageUrl;
+    final isNetwork =
+        url != null &&
+        (url.startsWith('http://') || url.startsWith('https://'));
 
     return ClipRRect(
       borderRadius: AppDesignConstants.radius2xl,
@@ -47,21 +49,21 @@ class PromoBanner extends StatelessWidget {
         color: cs.surfaceContainerHighest,
         child: isNetwork
             ? Image.network(
-                imageUrl!,
+                url,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (_, _, _) => _buildFallbackImage(),
               )
-            : (imageUrl != null && imageUrl!.isNotEmpty)
-                ? Image.asset(
-                    imageUrl!,
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => _buildFallbackImage(),
-                  )
-                : _buildFallbackImage(),
+            : (url != null && url.isNotEmpty)
+            ? Image.asset(
+                url,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => _buildFallbackImage(),
+              )
+            : _buildFallbackImage(),
       ),
     );
   }
@@ -133,10 +135,7 @@ class PromoBanner extends StatelessWidget {
       left: 24,
       right: 24,
       bottom: 24,
-      child: BannerTextOverlay(
-        subtitle: description,
-        title: title,
-      ),
+      child: BannerTextOverlay(subtitle: description, title: title),
     );
   }
 }

@@ -22,13 +22,13 @@ class CartItem {
   double get total => unitPrice * quantity;
 
   CartItem copyWith({int? quantity}) => CartItem(
-        id: id,
-        productId: productId,
-        name: name,
-        imagePath: imagePath,
-        variant: variant,
-        unitPrice: unitPrice,
-        quantity: quantity ?? this.quantity,
-        modifierIds: modifierIds,
-      );
+    id: id,
+    productId: productId,
+    name: name,
+    imagePath: imagePath,
+    variant: variant,
+    unitPrice: unitPrice,
+    quantity: quantity ?? this.quantity,
+    modifierIds: modifierIds,
+  );
 }

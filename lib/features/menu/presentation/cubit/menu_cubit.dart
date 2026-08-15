@@ -14,9 +14,9 @@ class MenuCubit extends Cubit<MenuState> {
     required GetMenu getMenu,
     required GetProducts getProducts,
     this.onConnectionFailure,
-  })  : _getMenu = getMenu,
-        _getProducts = getProducts,
-        super(const MenuInitial());
+  }) : _getMenu = getMenu,
+       _getProducts = getProducts,
+       super(const MenuInitial());
 
   Future<void> loadMenu() async {
     if (state is MenuLoading || state is MenuLoaded) return;
@@ -30,10 +30,7 @@ class MenuCubit extends Cubit<MenuState> {
         emit(MenuError(failure.message));
       },
       (menu) => emit(
-        MenuLoaded(
-          categories: menu.categories,
-          products: menu.products,
-        ),
+        MenuLoaded(categories: menu.categories, products: menu.products),
       ),
     );
   }

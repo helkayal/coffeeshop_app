@@ -13,20 +13,17 @@ class ReferralCubit extends Cubit<ReferralState> {
     required GetReferralUseCase getReferral,
     required ApplyReferralUseCase applyReferral,
     this.onConnectionFailure,
-  })  : _getReferral = getReferral,
-        _applyReferral = applyReferral,
-        super(const ReferralInitial());
+  }) : _getReferral = getReferral,
+       _applyReferral = applyReferral,
+       super(const ReferralInitial());
 
   Future<void> loadReferral() async {
     emit(const ReferralLoading());
     final result = await _getReferral();
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(ReferralError(failure.message));
-      },
-      (data) => emit(ReferralLoaded(code: data.code, history: data.history)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(ReferralError(failure.message));
+    }, (data) => emit(ReferralLoaded(code: data.code, history: data.history)));
   }
 
   Future<void> applyReferral(String code) async {
@@ -35,12 +32,9 @@ class ReferralCubit extends Cubit<ReferralState> {
       emit(current.copyWith(isApplying: true));
     }
     final result = await _applyReferral(code);
-    result.fold(
-      (failure) => emit(ReferralApplyError(failure.message)),
-      (_) {
-        emit(const ReferralApplySuccess());
-        loadReferral();
-      },
-    );
+    result.fold((failure) => emit(ReferralApplyError(failure.message)), (_) {
+      emit(const ReferralApplySuccess());
+      loadReferral();
+    });
   }
 }

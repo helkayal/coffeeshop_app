@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
+import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../../features/checkout/presentation/widgets/payment_option.dart';
 import '../../../../features/checkout/presentation/widgets/wallet_sheet.dart';
 import '../cubit/payment_methods_cubit.dart';
 import '../cubit/payment_methods_state.dart';
+import '../cubit/payment_preferences_cubit.dart';
+import '../cubit/payment_preferences_state.dart';
 import '../widgets/add_card_form_sheet.dart';
-import '../../../../core/widgets/saved_card_tile.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   const PaymentMethodsScreen({super.key});
@@ -21,20 +21,14 @@ class PaymentMethodsScreen extends StatefulWidget {
 }
 
 class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
-  final _storage = sl<LocalStorageService>();
   final _last4Ctrl = TextEditingController();
   final _monthCtrl = TextEditingController();
   final _yearCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
 
-  String _selected = '';
-  String? _walletPhone;
-
   @override
   void initState() {
     super.initState();
-    _walletPhone = _storage.getWalletPhone();
-    _selected = _storage.getDefaultPaymentMethod() ?? '';
     context.read<PaymentMethodsCubit>().loadPaymentMethods();
   }
 
@@ -47,10 +41,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     super.dispose();
   }
 
-  Future<void> _selectMethod(String method) async {
-    setState(() => _selected = method);
-    await _storage.setDefaultPaymentMethod(method);
-  }
+  Future<void> _selectMethod(String method) =>
+      context.read<PaymentPreferencesCubit>().selectMethod(method);
 
   Future<void> _showAddCardSheet() async {
     _last4Ctrl.clear();
@@ -69,11 +61,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
         nameCtrl: _nameCtrl,
         onSave: (last4, month, year, name, brand) {
           context.read<PaymentMethodsCubit>().addCard(
-                number: last4,
-                expiry: '$month/$year',
-                cvv: '123',
-                name: name,
-              );
+            number: last4,
+            expiry: '$month/$year',
+            cvv: '123',
+            name: name,
+          );
           Navigator.pop(context);
         },
       ),
@@ -83,10 +75,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   Future<void> _showWalletSheet() async {
     final result = await WalletSheet.show(context);
     if (result && mounted) {
-      setState(() {
-        _walletPhone = _storage.getWalletPhone();
-      });
-      _selectMethod('wallet');
+      await _selectMethod('wallet');
     }
   }
 
@@ -94,6 +83,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final preferenceState = context.watch<PaymentPreferencesCubit>().state;
+    final preferences = preferenceState is PaymentPreferencesLoaded
+        ? preferenceState.preferences
+        : null;
+    final selected = preferences?.defaultMethod ?? '';
+    final walletPhone = preferences?.walletPhone;
 
     return BlocConsumer<PaymentMethodsCubit, PaymentMethodsState>(
       listener: (context, state) {
@@ -133,11 +128,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                   const SizedBox(height: 24),
                   PaymentOption(
                     label: 'payment.mobile_wallet'.tr(),
-                    subtitle: _walletPhone != null && _walletPhone!.isNotEmpty
-                        ? _walletPhone!
+                    subtitle: walletPhone != null && walletPhone.isNotEmpty
+                        ? walletPhone
                         : 'payment.tap_to_set_phone'.tr(),
                     icon: Icons.account_balance_wallet_outlined,
-                    isSelected: _selected == 'wallet',
+                    isSelected: selected == 'wallet',
                     onTap: _showWalletSheet,
                   ),
                   const SizedBox(height: 12),
@@ -145,7 +140,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     label: 'payment.apple_pay'.tr(),
                     subtitle: 'payment.apple_pay_subtitle'.tr(),
                     icon: Icons.apple,
-                    isSelected: _selected == 'applepay',
+                    isSelected: selected == 'applepay',
                     onTap: () => _selectMethod('applepay'),
                   ),
                   const SizedBox(height: 32),
@@ -173,21 +168,16 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       style: tt.bodySmall,
                     )
                   else
-                    ...cards.map((c) {
-                      final cardId = c['id'] as String? ?? '';
-                      final last4 = c['card_last4'] as String? ?? '••••';
-                      final month = c['expiry_month']?.toString() ?? '';
-                      final year = c['expiry_year']?.toString() ?? '';
-                      final isDef = c['is_default'] == true || _selected == cardId;
-
+                    ...cards.map((card) {
+                      final isDefault = card.isDefault || selected == card.id;
                       return SavedCardTile(
-                        mask: '•••• $last4',
-                        expiry: '$month/$year',
-                        isDefault: isDef,
-                        onTap: () => _selectMethod(cardId),
+                        mask: '•••• ${card.lastFour}',
+                        expiry: '${card.expiryMonth}/${card.expiryYear}',
+                        isDefault: isDefault,
+                        onTap: () => _selectMethod(card.id),
                         onDelete: () => context
                             .read<PaymentMethodsCubit>()
-                            .deleteCard(cardId),
+                            .deleteCard(card.id),
                       );
                     }),
                 ],

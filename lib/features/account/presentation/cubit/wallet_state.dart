@@ -1,4 +1,5 @@
-import '../../../account/data/models/wallet_package_model.dart';
+import '../../domain/entities/wallet_package.dart';
+import '../../domain/entities/wallet_transaction.dart';
 
 sealed class WalletState {
   const WalletState();
@@ -14,9 +15,15 @@ final class WalletLoading extends WalletState {
 
 final class WalletLoaded extends WalletState {
   final double balance;
-  final List<Map<String, dynamic>> transactions;
+  final List<WalletTransaction> transactions;
 
   const WalletLoaded({required this.balance, required this.transactions});
+}
+
+final class WalletBalanceLoaded extends WalletState {
+  final double balance;
+
+  const WalletBalanceLoaded(this.balance);
 }
 
 final class WalletError extends WalletState {

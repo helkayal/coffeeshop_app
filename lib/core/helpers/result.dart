@@ -2,7 +2,7 @@ import '../errors/failures.dart';
 
 sealed class Result<S> {
   const Result();
-  
+
   T fold<T>(T Function(Failure failure) onError, T Function(S data) onSuccess) {
     if (this is Success<S>) {
       return onSuccess((this as Success<S>).data);

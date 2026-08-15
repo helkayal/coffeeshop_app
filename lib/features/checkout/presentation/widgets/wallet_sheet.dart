@@ -2,10 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_text_field.dart';
-import '../../../account/presentation/cubit/wallet_cubit.dart';
+import '../../../account/presentation/cubit/payment_preferences_cubit.dart';
+import '../../../account/presentation/cubit/payment_preferences_state.dart';
 
 class WalletSheet extends StatefulWidget {
   const WalletSheet({super.key});
@@ -25,13 +24,15 @@ class WalletSheet extends StatefulWidget {
 }
 
 class _WalletSheetState extends State<WalletSheet> {
-  final _storage = sl<LocalStorageService>();
   final _phoneCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _phoneCtrl.text = _storage.getWalletPhone() ?? '';
+    final state = context.read<PaymentPreferencesCubit>().state;
+    if (state is PaymentPreferencesLoaded) {
+      _phoneCtrl.text = state.preferences.walletPhone ?? '';
+    }
   }
 
   @override
@@ -43,9 +44,14 @@ class _WalletSheetState extends State<WalletSheet> {
   Future<void> _save() async {
     final phone = _phoneCtrl.text.trim();
     if (phone.isNotEmpty) {
-      context.read<WalletCubit>().updateWalletPhone(phone);
+      final saved = await context
+          .read<PaymentPreferencesCubit>()
+          .saveWalletPhone(phone);
+      if (!saved || !mounted) return;
     }
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override
@@ -78,7 +84,10 @@ class _WalletSheetState extends State<WalletSheet> {
           const SizedBox(height: 24),
           Text(
             'wallet.phone_for_wallet'.tr(),
-            style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface),
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 24,
+              color: cs.onSurface,
+            ),
           ),
           const SizedBox(height: 24),
           AppTextField(

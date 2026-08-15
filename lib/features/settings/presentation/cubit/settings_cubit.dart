@@ -10,9 +10,9 @@ class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit({
     required GetSettingsUseCase getSettings,
     required UpdateSettingsUseCase updateSettings,
-  })  : _getSettings = getSettings,
-        _updateSettings = updateSettings,
-        super(const SettingsLoading());
+  }) : _getSettings = getSettings,
+       _updateSettings = updateSettings,
+       super(const SettingsLoading());
 
   Future<void> loadSettings() async {
     final result = await _getSettings();
@@ -40,13 +40,13 @@ class SettingsCubit extends Cubit<SettingsState> {
     await _updateSettings(updated);
   }
 
-
   Future<void> toggleNotifications() async {
     final current = state;
     if (current is! SettingsLoaded) return;
-    final updated = current.settings.copyWith(notificationsOn: !current.notificationsOn);
+    final updated = current.settings.copyWith(
+      notificationsOn: !current.notificationsOn,
+    );
     emit(SettingsLoaded(updated));
     await _updateSettings(updated);
   }
-
 }

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
-import '../../../../core/services/service_locator.dart';
-import '../../../account/domain/usecases/wallet_usecases.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
+import '../../../account/presentation/cubit/wallet_cubit.dart';
+import '../../../account/presentation/cubit/wallet_state.dart';
 import '../../../orders/presentation/cubit/orders_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
@@ -20,26 +20,13 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final _getWalletBalance = sl<GetWalletBalanceUseCase>();
   double _walletBalance = 0;
   bool _walletLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    _loadWallet();
-  }
-
-  Future<void> _loadWallet() async {
-    final result = await _getWalletBalance();
-    if (!mounted) return;
-    result.fold(
-      (_) => setState(() => _walletLoaded = true),
-      (bal) => setState(() {
-        _walletBalance = bal;
-        _walletLoaded = true;
-      }),
-    );
+    context.read<WalletCubit>().loadBalance();
   }
 
   Future<void> _showTopUp(double needed) async {
@@ -60,108 +47,147 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      body: BlocConsumer<CartCubit, CartState>(
-        listener: (context, state) {
-          if (state is OrderPlaced) {
-            context.read<OrdersCubit>().loadOrders();
-            context.read<ProfileCubit>().refreshLoyalty();
-            context.read<ShellCubit>().clearAndPush(
-                  OrderConfirmationRoute(orderId: state.orderId),
+    return BlocListener<WalletCubit, WalletState>(
+      listener: (_, state) {
+        if (state is WalletBalanceLoaded) {
+          setState(() {
+            _walletBalance = state.balance;
+            _walletLoaded = true;
+          });
+        } else if (state is WalletError) {
+          setState(() => _walletLoaded = true);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: cs.surface,
+        body: BlocConsumer<CartCubit, CartState>(
+          listener: (context, state) {
+            if (state is OrderPaymentPendingState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('checkout.payment_pending'.tr())),
+              );
+              context.read<CartCubit>().loadCart();
+            } else if (state is OrderResultState) {
+              if (state is OrderCleanupWarningState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('checkout.cleanup_warning'.tr())),
                 );
-          }
-        },
-        builder: (context, state) {
-          final cart = state is CartLoaded
-              ? state.cart
-              : (state is CartActionInProgress ? (state).cart : null);
+              }
+              context.read<OrdersCubit>().loadOrders();
+              context.read<ProfileCubit>().refreshLoyalty();
+              context.read<ShellCubit>().clearAndPush(
+                OrderConfirmationRoute(orderId: state.orderId),
+              );
+            }
+          },
+          builder: (context, state) {
+            final cart = state is CartLoaded
+                ? state.cart
+                : (state is CartActionInProgress ? (state).cart : null);
 
-          if (cart == null || cart.isEmpty) {
-            return Center(
-              child: Text(
-                'checkout.empty_bag'.tr(),
-                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-              ),
-            );
-          }
+            if (cart == null || cart.isEmpty) {
+              return Center(
+                child: Text(
+                  'checkout.empty_bag'.tr(),
+                  style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                ),
+              );
+            }
 
-          final isLoading = state is CartActionInProgress;
-          final total = cart.subtotal;
-          final canCover = _walletLoaded && _walletBalance >= total;
-          final canConfirm = canCover && !isLoading;
+            final isLoading = state is CartActionInProgress;
+            final total = cart.subtotal;
+            final canCover = _walletLoaded && _walletBalance >= total;
+            final canConfirm = canCover && !isLoading;
 
-          return Stack(children: [
-            SingleChildScrollView(
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 140),
-              child: Column(children: [
-                const SizedBox(height: 16),
-                Text(
-                  'checkout.complete_order'.tr(),
-                  style: tt.headlineMedium?.copyWith(
-                    fontSize: 36,
-                    color: cs.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text('checkout.secure_checkout'.tr(), style: tt.bodySmall),
-                const SizedBox(height: 40),
-                PaymentOrderSummary(
-                  items: cart.items,
-                  total: total,
-                ),
-                const SizedBox(height: 24),
-                if (_walletLoaded)
-                  _buildWalletBanner(cs, tt, total, canCover),
-              ]),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [cs.surface.withAlpha(0), cs.surface],
-                  ),
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: canCover
-                      ? FilledButton.icon(
-                          onPressed: canConfirm
-                              ? () => context
-                                  .read<CartCubit>()
-                                  .placeOrder(paymentMethod: 'wallet')
-                              : null,
-                          icon: const Icon(Icons.check_circle, size: 20),
-                          label: Text('checkout.confirm_order'.tr()),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                        )
-                      : FilledButton.icon(
-                          onPressed: isLoading
-                              ? null
-                              : () => _showTopUp(total - _walletBalance),
-                          icon: const Icon(Icons.add_circle, size: 20),
-                          label: Text(
-                            'Top Up ${(total - _walletBalance).toStringAsFixed(0)} EGP',
-                          ),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: cs.error,
-                            foregroundColor: cs.onError,
-                          ),
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 140),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Text(
+                        'checkout.complete_order'.tr(),
+                        style: tt.headlineMedium?.copyWith(
+                          fontSize: 36,
+                          color: cs.onSurface,
                         ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'checkout.secure_checkout'.tr(),
+                        style: tt.bodySmall,
+                      ),
+                      const SizedBox(height: 40),
+                      PaymentOrderSummary(items: cart.items, total: total),
+                      const SizedBox(height: 24),
+                      if (_walletLoaded)
+                        _buildWalletBanner(cs, tt, total, canCover),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ]);
-        },
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [cs.surface.withAlpha(0), cs.surface],
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: canCover
+                          ? FilledButton.icon(
+                              onPressed: canConfirm
+                                  ? () => context.read<CartCubit>().placeOrder(
+                                      paymentMethod: 'wallet',
+                                    )
+                                  : null,
+                              icon: const Icon(Icons.check_circle, size: 20),
+                              label: Text('checkout.confirm_order'.tr()),
+                              style: FilledButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                              ),
+                            )
+                          : FilledButton.icon(
+                              onPressed: isLoading
+                                  ? null
+                                  : () => _showTopUp(total - _walletBalance),
+                              icon: const Icon(Icons.add_circle, size: 20),
+                              label: Text(
+                                'checkout.top_up_amount'.tr(
+                                  namedArgs: {
+                                    'amount': 'common.price'.tr(
+                                      namedArgs: {
+                                        'amount': (total - _walletBalance)
+                                            .toStringAsFixed(0),
+                                      },
+                                    ),
+                                  },
+                                ),
+                              ),
+                              style: FilledButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                backgroundColor: cs.error,
+                                foregroundColor: cs.onError,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -178,24 +204,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
         color: canCover ? cs.primary.withAlpha(26) : cs.error.withAlpha(26),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(children: [
-        Icon(
-          canCover ? Icons.check_circle : Icons.info_outline,
-          color: canCover ? cs.primary : cs.error,
-          size: 20,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            canCover
-                ? 'Wallet cash (${_walletBalance.toStringAsFixed(0)} EGP) covers this order'
-                : 'Insufficient wallet balance — need ${(total - _walletBalance).toStringAsFixed(0)} EGP more',
-            style: tt.bodySmall?.copyWith(
-              color: canCover ? cs.primary : cs.error,
+      child: Row(
+        children: [
+          Icon(
+            canCover ? Icons.check_circle : Icons.info_outline,
+            color: canCover ? cs.primary : cs.error,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              canCover
+                  ? 'checkout.wallet_covers_order'.tr(
+                      namedArgs: {
+                        'balance': 'common.price'.tr(
+                          namedArgs: {
+                            'amount': _walletBalance.toStringAsFixed(0),
+                          },
+                        ),
+                      },
+                    )
+                  : 'checkout.wallet_needs_more'.tr(
+                      namedArgs: {
+                        'amount': 'common.price'.tr(
+                          namedArgs: {
+                            'amount': (total - _walletBalance).toStringAsFixed(
+                              0,
+                            ),
+                          },
+                        ),
+                      },
+                    ),
+              style: tt.bodySmall?.copyWith(
+                color: canCover ? cs.primary : cs.error,
+              ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

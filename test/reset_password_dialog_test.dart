@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:coffeeshop_app/core/errors/failures.dart';
 import 'package:coffeeshop_app/core/helpers/result.dart';
 import 'package:coffeeshop_app/features/auth/presentation/widgets/reset_password_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Reads translation JSONs synchronously so they load inside the widget
 /// test's fake-async zone, where rootBundle asset loading hangs.
@@ -51,7 +50,8 @@ void main() {
                         builder: (_) => ResetPasswordDialog(
                           token: 'test-token',
                           email: 'user@example.com',
-                          onSubmit: onSubmit ?? (_) async => const Success(null),
+                          onSubmit:
+                              onSubmit ?? (_) async => const Success(null),
                         ),
                       );
                       onResult?.call(password);
@@ -76,25 +76,30 @@ void main() {
   Finder passwordField() => find.byType(TextField).at(1);
   Finder confirmField() => find.byType(TextField).last;
 
-  testWidgets('shows validation error and keeps dialog open for weak password',
-      (tester) async {
-    var submitted = 0;
-    await pumpDialog(
-      tester,
-      onSubmit: (_) async {
-        submitted++;
-        return const Success(null);
-      },
-    );
+  testWidgets(
+    'shows validation error and keeps dialog open for weak password',
+    (tester) async {
+      var submitted = 0;
+      await pumpDialog(
+        tester,
+        onSubmit: (_) async {
+          submitted++;
+          return const Success(null);
+        },
+      );
 
-    await tester.enterText(passwordField(), 'abc');
-    await tester.tap(find.text('Reset'));
-    await tester.pump();
+      await tester.enterText(passwordField(), 'abc');
+      await tester.tap(find.text('Reset'));
+      await tester.pump();
 
-    expect(find.text('Password must be at least 8 characters'), findsOneWidget);
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(submitted, 0);
-  });
+      expect(
+        find.text('Password must be at least 8 characters'),
+        findsOneWidget,
+      );
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(submitted, 0);
+    },
+  );
 
   testWidgets('rejects common passwords client-side', (tester) async {
     var submitted = 0;
@@ -128,8 +133,9 @@ void main() {
     expect(find.byType(AlertDialog), findsOneWidget);
   });
 
-  testWidgets('keeps dialog open and shows backend error, then submits again',
-      (tester) async {
+  testWidgets('keeps dialog open and shows backend error, then submits again', (
+    tester,
+  ) async {
     var failFirst = true;
     String? result;
     await pumpDialog(
@@ -162,8 +168,9 @@ void main() {
     expect(result, 'StrongPass1!');
   });
 
-  testWidgets('pops with the password when both fields validate',
-      (tester) async {
+  testWidgets('pops with the password when both fields validate', (
+    tester,
+  ) async {
     String? result;
     await pumpDialog(tester, onResult: (password) => result = password);
 

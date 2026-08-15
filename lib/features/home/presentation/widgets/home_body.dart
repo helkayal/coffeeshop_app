@@ -38,14 +38,15 @@ class HomeBody extends StatelessWidget {
               children: [
                 BlocBuilder<OrdersCubit, OrdersState>(
                   builder: (_, state) {
-                    if (state is OrdersLoaded &&
-                        state.latestOrder != null &&
-                        state.latestOrder!.items.isNotEmpty) {
+                    if (state case OrdersLoaded(
+                      latestOrder: final order?,
+                    ) when order.items.isNotEmpty) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SectionHeader(
-                              title: 'home_screen.your_last_order'.tr()),
+                            title: 'home_screen.your_last_order'.tr(),
+                          ),
                           const SizedBox(height: 5),
                           _LastOrderCard(),
                           const SizedBox(height: 15),
@@ -104,8 +105,8 @@ class _LastOrderCard extends StatelessWidget {
     final menuState = context.read<MenuCubit>().state;
     if (menuState is MenuLoaded) {
       for (final p in menuState.products) {
-        if (p.id == menuItemId && p.imagePath != null) {
-          return p.imagePath!;
+        if (p.id == menuItemId) {
+          return p.imagePath ?? '';
         }
       }
     }
@@ -134,55 +135,96 @@ class _LastOrderCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text('Order #$shortId',
-                          style: tt.labelLarge?.copyWith(color: cs.secondary)),
+                      Text(
+                        'common.order_id'.tr(namedArgs: {'id': shortId}),
+                        style: tt.labelLarge?.copyWith(color: cs.secondary),
+                      ),
                       const Spacer(),
-                      Text('${latestOrder.total.toStringAsFixed(2)} EGP',
-                          style: tt.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w700, color: cs.primary)),
+                      Text(
+                        'common.price'.tr(
+                          namedArgs: {
+                            'amount': latestOrder.total.toStringAsFixed(2),
+                          },
+                        ),
+                        style: tt.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: cs.primary,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  ...latestOrder.items.map((item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: SizedBox(
-                            width: 44, height: 44,
-                            child: _lookupImage(context, item.menuItemId).isNotEmpty
-                                ? Image.network(_lookupImage(context, item.menuItemId),
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, _, _) =>
-                                        Container(color: cs.surfaceContainerHighest))
-                                : Container(color: cs.surfaceContainerHighest),
+                  ...latestOrder.items.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: SizedBox(
+                              width: 44,
+                              height: 44,
+                              child:
+                                  _lookupImage(
+                                    context,
+                                    item.menuItemId,
+                                  ).isNotEmpty
+                                  ? Image.network(
+                                      _lookupImage(context, item.menuItemId),
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, _, _) => Container(
+                                        color: cs.surfaceContainerHighest,
+                                      ),
+                                    )
+                                  : Container(
+                                      color: cs.surfaceContainerHighest,
+                                    ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(item.name,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
                                   style: tt.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600, color: cs.onSurface)),
-                              Text('x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
-                                  style: tt.bodySmall),
-                            ],
+                                    fontWeight: FontWeight.w600,
+                                    color: cs.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  'common.quantity_price'.tr(
+                                    namedArgs: {
+                                      'quantity': item.quantity.toString(),
+                                      'price': 'common.price'.tr(
+                                        namedArgs: {
+                                          'amount': item.price.toStringAsFixed(
+                                            2,
+                                          ),
+                                        },
+                                      ),
+                                    },
+                                  ),
+                                  style: tt.bodySmall,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                   const SizedBox(height: 8),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton.icon(
                       onPressed: () => _reorder(context, state),
                       icon: Icon(Icons.replay, size: 16, color: cs.primary),
-                      label: Text('orders_screen.reorder'.tr(),
-                          style: tt.labelLarge?.copyWith(color: cs.primary)),
+                      label: Text(
+                        'orders_screen.reorder'.tr(),
+                        style: tt.labelLarge?.copyWith(color: cs.primary),
+                      ),
                     ),
                   ),
                 ],

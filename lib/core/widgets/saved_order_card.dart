@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../features/checkout/domain/entities/cart_item.dart';
 import '../../features/menu/domain/entities/product.dart';
@@ -74,7 +74,14 @@ class SavedOrderCard extends StatelessWidget {
                     style: tt.bodySmall,
                   ),
                 Text(
-                  'x${item.quantity}  ${item.price.toStringAsFixed(2)} EGP',
+                  'common.quantity_price'.tr(
+                    namedArgs: {
+                      'quantity': item.quantity.toString(),
+                      'price': 'common.price'.tr(
+                        namedArgs: {'amount': item.price.toStringAsFixed(2)},
+                      ),
+                    },
+                  ),
                   style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
               ],

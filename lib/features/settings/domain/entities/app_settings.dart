@@ -9,9 +9,13 @@ class AppSettings {
     this.notificationsOn = true,
   });
 
-  AppSettings copyWith({bool? isDarkMode, String? locale, bool? notificationsOn}) => AppSettings(
-        isDarkMode: isDarkMode ?? this.isDarkMode,
-        locale: locale ?? this.locale,
-        notificationsOn: notificationsOn ?? this.notificationsOn,
-      );
+  AppSettings copyWith({
+    bool? isDarkMode,
+    String? locale,
+    bool? notificationsOn,
+  }) => AppSettings(
+    isDarkMode: isDarkMode ?? this.isDarkMode,
+    locale: locale ?? this.locale,
+    notificationsOn: notificationsOn ?? this.notificationsOn,
+  );
 }

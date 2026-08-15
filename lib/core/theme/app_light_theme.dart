@@ -37,8 +37,12 @@ ThemeData createLightTheme() {
       headlineMedium: AppTextStyles.headlineMd(color: AppColors.lightOnSurface),
       bodyLarge: AppTextStyles.bodyLarge(color: AppColors.lightOnSurface),
       bodyMedium: AppTextStyles.bodyMedium(color: AppColors.lightOnSurface),
-      bodySmall: AppTextStyles.bodySmall(color: AppColors.lightOnSurfaceVariant),
-      labelLarge: AppTextStyles.labelCaps(color: AppColors.lightOnSurfaceVariant),
+      bodySmall: AppTextStyles.bodySmall(
+        color: AppColors.lightOnSurfaceVariant,
+      ),
+      labelLarge: AppTextStyles.labelCaps(
+        color: AppColors.lightOnSurfaceVariant,
+      ),
       labelSmall: AppTextStyles.labelCaps(color: AppColors.lightPrimary),
     ),
     appBarTheme: AppBarTheme(

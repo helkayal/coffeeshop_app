@@ -2,12 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../account/presentation/cubit/payment_methods_cubit.dart';
 import '../../../account/presentation/cubit/payment_methods_state.dart';
+import '../../../account/presentation/cubit/payment_preferences_cubit.dart';
 
 class CreditCardSheet extends StatefulWidget {
   const CreditCardSheet({super.key});
@@ -27,7 +26,6 @@ class CreditCardSheet extends StatefulWidget {
 }
 
 class _CreditCardSheetState extends State<CreditCardSheet> {
-  final _storage = sl<LocalStorageService>();
   final _numberCtrl = TextEditingController();
   final _expiryCtrl = TextEditingController();
   final _cvvCtrl = TextEditingController();
@@ -73,21 +71,21 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
   String? _validate() {
     final number = _numberCtrl.text.trim().replaceAll(RegExp(r'\s+'), '');
     if (number.length != 16 || int.tryParse(number) == null) {
-      return 'Card number must be 16 digits';
+      return 'credit_card.invalid_number';
     }
     final name = _nameCtrl.text.trim();
-    if (name.isEmpty) return 'Name on card is required';
+    if (name.isEmpty) return 'credit_card.name_required';
 
     final expiry = _parseExpiry();
-    if (expiry == null) return 'Enter expiry as MM/YY (e.g. 12/28)';
+    if (expiry == null) return 'credit_card.invalid_expiry';
 
     final (month, year) = expiry;
-    if (month < 1 || month > 12) return 'Expiry month must be between 1 and 12';
+    if (month < 1 || month > 12) return 'credit_card.invalid_month';
 
     final now = DateTime.now();
     final expiryDate = DateTime(year, month + 1, 0);
     final currentMonthEnd = DateTime(now.year, now.month + 1, 0);
-    if (expiryDate.isBefore(currentMonthEnd)) return 'Card has expired';
+    if (expiryDate.isBefore(currentMonthEnd)) return 'credit_card.expired';
 
     return null;
   }
@@ -106,11 +104,11 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
     final cvvText = _cvvCtrl.text.trim();
 
     await context.read<PaymentMethodsCubit>().addCard(
-          number: number,
-          expiry: expiryText,
-          cvv: cvvText,
-          name: name,
-        );
+      number: number,
+      expiry: expiryText,
+      cvv: cvvText,
+      name: name,
+    );
 
     _numberCtrl.clear();
     _expiryCtrl.clear();
@@ -154,37 +152,39 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                 const SizedBox(height: 24),
                 Text(
                   'credit_card.select_card'.tr(),
-                  style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface),
+                  style: tt.headlineMedium?.copyWith(
+                    fontSize: 24,
+                    color: cs.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 if (isLoading)
                   const CircularProgressIndicator()
                 else if (cards.isNotEmpty) ...[
-                  ...cards.map(
-                    (card) {
-                      final last4 = card['card_last4'] as String? ?? '••••';
-                      final month = card['expiry_month']?.toString() ?? '';
-                      final year = card['expiry_year']?.toString() ?? '';
-                      final cardId = card['id']?.toString() ?? '';
-                      return SavedCardTile(
-                        mask: '•••• $last4',
-                        expiry: '$month/$year',
-                        isDefault: card['is_default'] == true,
-                        onTap: () {
-                          _storage.setDefaultPaymentMethod(cardId);
-                          Navigator.pop(context, true);
-                        },
-                        onDelete: () => context
-                            .read<PaymentMethodsCubit>()
-                            .deleteCard(cardId),
-                      );
-                    },
-                  ),
+                  ...cards.map((card) {
+                    return SavedCardTile(
+                      mask: '•••• ${card.lastFour}',
+                      expiry: '${card.expiryMonth}/${card.expiryYear}',
+                      isDefault: card.isDefault,
+                      onTap: () {
+                        context.read<PaymentPreferencesCubit>().selectMethod(
+                          card.id,
+                        );
+                        Navigator.pop(context, true);
+                      },
+                      onDelete: () => context
+                          .read<PaymentMethodsCubit>()
+                          .deleteCard(card.id),
+                    );
+                  }),
                   const Divider(height: 32),
                 ],
                 Text(
                   'credit_card.title'.tr(),
-                  style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface),
+                  style: tt.headlineMedium?.copyWith(
+                    fontSize: 20,
+                    color: cs.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
@@ -201,7 +201,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                         controller: _expiryCtrl,
                         label: 'credit_card.expiry'.tr(),
                         keyboardType: TextInputType.datetime,
-                        hintText: 'MM/YY',
+                        hintText: 'credit_card.expiry_hint'.tr(),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -221,9 +221,12 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                   label: 'credit_card.name'.tr(),
                   keyboardType: TextInputType.name,
                 ),
-                if (_formError != null) ...[
+                if (_formError case final error?) ...[
                   const SizedBox(height: 12),
-                  Text(_formError!, style: TextStyle(color: cs.error, fontSize: 13)),
+                  Text(
+                    error.tr(),
+                    style: TextStyle(color: cs.error, fontSize: 13),
+                  ),
                 ],
                 const SizedBox(height: 24),
                 SizedBox(

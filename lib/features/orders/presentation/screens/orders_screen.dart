@@ -37,28 +37,34 @@ class _OrdersScreenState extends State<OrdersScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24, top: 8),
-                  child: Text('orders_screen.your_orders'.tr(),
-                      style: tt.headlineMedium?.copyWith(fontSize: 24)),
+                  child: Text(
+                    'orders_screen.your_orders'.tr(),
+                    style: tt.headlineMedium?.copyWith(fontSize: 24),
+                  ),
                 ),
                 switch (state) {
                   OrdersInitial() || OrdersLoading() => const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 48),
-                        child: CircularProgressIndicator(),
-                      )),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 48),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                   OrdersError(:final message) => Center(
-                      child: Text(message,
-                          style: tt.bodyMedium?.copyWith(color: cs.error))),
+                    child: Text(
+                      message,
+                      style: tt.bodyMedium?.copyWith(color: cs.error),
+                    ),
+                  ),
                   OrdersLoaded(:final orders) when orders.isEmpty =>
                     const EmptyState(message: 'orders_screen.no_orders'),
                   OrdersLoaded(:final orders) => Column(
-                      children: [
-                        for (final order in orders) ...[
-                          OrderCard(order: order),
-                          const SizedBox(height: 16),
-                        ],
+                    children: [
+                      for (final order in orders) ...[
+                        OrderCard(order: order),
+                        const SizedBox(height: 16),
                       ],
-                    ),
+                    ],
+                  ),
                 },
               ],
             ),

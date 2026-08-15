@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
@@ -28,7 +28,10 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
   void initState() {
     super.initState();
     if (widget.group.values.isNotEmpty) {
-      _selectedIndex = widget.initialIndex.clamp(0, widget.group.values.length - 1);
+      _selectedIndex = widget.initialIndex.clamp(
+        0,
+        widget.group.values.length - 1,
+      );
     }
   }
 
@@ -47,12 +50,23 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
             children: [
               Icon(groupIcon, size: 18, color: cs.primary),
               const SizedBox(width: 8),
-              Text(widget.group.name,
-                  style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
+              Text(
+                widget.group.name,
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 18,
+                  color: cs.onSurface,
+                ),
+              ),
               if (widget.group.required) ...[
                 const SizedBox(width: 8),
-                Text('customization.required'.tr(),
-                    style: tt.labelLarge?.copyWith(fontSize: 10, color: cs.primary, letterSpacing: 2)),
+                Text(
+                  'customization.required'.tr(),
+                  style: tt.labelLarge?.copyWith(
+                    fontSize: 10,
+                    color: cs.primary,
+                    letterSpacing: 2,
+                  ),
+                ),
               ],
             ],
           ),
@@ -106,24 +120,36 @@ class _OptionCircle extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? cs.primary.withAlpha(26) : cs.surfaceContainerHighest,
+              color: isSelected
+                  ? cs.primary.withAlpha(26)
+                  : cs.surfaceContainerHighest,
               border: Border.all(
                 color: isSelected ? cs.primary : cs.outlineVariant,
                 width: isSelected ? 2 : 1,
               ),
             ),
-            child: Icon(icon, size: 32, color: isSelected ? cs.primary : cs.onSurfaceVariant),
+            child: Icon(
+              icon,
+              size: 32,
+              color: isSelected ? cs.primary : cs.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 6),
-          Text(option.name,
-              style: tt.bodySmall?.copyWith(
-                color: isSelected ? cs.primary : cs.onSurfaceVariant,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              )),
+          Text(
+            option.name,
+            style: tt.bodySmall?.copyWith(
+              color: isSelected ? cs.primary : cs.onSurfaceVariant,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
           Text(
             option.priceModifier == 0.0
                 ? 'Included'
-                : '+${option.priceModifier.toStringAsFixed(2)} EGP',
+                : 'common.price'.tr(
+                    namedArgs: {
+                      'amount': '+${option.priceModifier.toStringAsFixed(2)}',
+                    },
+                  ),
             style: tt.bodySmall?.copyWith(
               fontSize: 11,
               color: cs.onSurfaceVariant,

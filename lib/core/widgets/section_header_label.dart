@@ -12,7 +12,14 @@ class SectionHeaderLabel extends StatelessWidget {
 
     return Align(
       alignment: AlignmentDirectional.centerStart,
-      child: Text(text, style: tt.labelLarge?.copyWith(color: cs.primary, fontSize: 10, letterSpacing: 2)),
+      child: Text(
+        text,
+        style: tt.labelLarge?.copyWith(
+          color: cs.primary,
+          fontSize: 10,
+          letterSpacing: 2,
+        ),
+      ),
     );
   }
 }

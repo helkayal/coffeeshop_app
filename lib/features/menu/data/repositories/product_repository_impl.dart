@@ -14,7 +14,9 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Result<List<Product>>> getProducts({String? categoryId}) async {
     try {
-      final models = await _remoteDataSource.getProducts(categoryId: categoryId);
+      final models = await _remoteDataSource.getProducts(
+        categoryId: categoryId,
+      );
       return Success(models);
     } on ServerException catch (e) {
       return Error(ServerFailure(e.message ?? 'Failed to load products'));
@@ -53,4 +55,3 @@ class ProductRepositoryImpl implements ProductRepository {
     }
   }
 }
-

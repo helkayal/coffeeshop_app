@@ -37,33 +37,43 @@ class SettingsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: cs.outlineVariant.withAlpha(51)),
                   ),
-                  child: Column(children: [
-                    SettingsRow(
-                      icon: Icons.palette,
-                      title: 'settings.appearance'.tr(),
-                      subtitle: isDark ? 'settings.dark_mode'.tr() : 'settings.light_mode'.tr(),
-                      onTap: cubit.toggleDarkMode,
-                      trailing: Switch(
+                  child: Column(
+                    children: [
+                      SettingsRow(
+                        icon: Icons.palette,
+                        title: 'settings.appearance'.tr(),
+                        subtitle: isDark
+                            ? 'settings.dark_mode'.tr()
+                            : 'settings.light_mode'.tr(),
+                        onTap: cubit.toggleDarkMode,
+                        trailing: Switch(
                           value: isDark,
                           onChanged: (_) => cubit.toggleDarkMode(),
-                          activeThumbColor: cs.primary),
-                    ),
-                    SettingsRow(
-                      icon: Icons.language,
-                      title: 'settings.language'.tr(),
-                      subtitle: locale == 'ar' ? 'العربية' : 'settings.english'.tr(),
-                      onTap: () => showLanguagePicker(context, cubit, locale),
-                    ),
-                    SettingsRow(
-                      icon: Icons.notifications,
-                      title: 'settings.notifications'.tr(),
-                      subtitle: notifOn ? 'settings.notif_on'.tr() : 'settings.notif_off'.tr(),
-                      trailing: Switch(
+                          activeThumbColor: cs.primary,
+                        ),
+                      ),
+                      SettingsRow(
+                        icon: Icons.language,
+                        title: 'settings.language'.tr(),
+                        subtitle: locale == 'ar'
+                            ? 'العربية'
+                            : 'settings.english'.tr(),
+                        onTap: () => showLanguagePicker(context, cubit, locale),
+                      ),
+                      SettingsRow(
+                        icon: Icons.notifications,
+                        title: 'settings.notifications'.tr(),
+                        subtitle: notifOn
+                            ? 'settings.notif_on'.tr()
+                            : 'settings.notif_off'.tr(),
+                        trailing: Switch(
                           value: notifOn,
                           onChanged: (_) => cubit.toggleNotifications(),
-                          activeThumbColor: cs.primary),
-                    ),
-                  ]),
+                          activeThumbColor: cs.primary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 48),
                 SectionHeaderLabel(text: 'settings.support'.tr()),
@@ -75,9 +85,10 @@ class SettingsScreen extends StatelessWidget {
                     border: Border.all(color: cs.outlineVariant.withAlpha(51)),
                   ),
                   child: SettingsRow(
-                      icon: Icons.info,
-                      title: 'settings.about'.tr(),
-                      subtitle: 'settings.version'.tr()),
+                    icon: Icons.info,
+                    title: 'settings.about'.tr(),
+                    subtitle: 'settings.version'.tr(),
+                  ),
                 ),
               ],
             ),

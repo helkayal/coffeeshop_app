@@ -41,10 +41,7 @@ class FavoritesDataSourceImpl implements FavoritesDataSource {
 
   @override
   Future<void> addFavorite(String productId) async {
-    await _api.post(
-      ApiConstants.favorites,
-      data: {'menu_item_id': productId},
-    );
+    await _api.post(ApiConstants.favorites, data: {'menu_item_id': productId});
     _cachedFavoriteIds.add(productId);
   }
 

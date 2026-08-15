@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 import '../cubit/cart_cubit.dart';
@@ -43,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
             CartLoaded() ||
             CartActionInProgress() ||
-            OrderPlaced() => _buildContent(context, tt, cs, cubit, state),
+            OrderResultState() => _buildContent(context, tt, cs, cubit, state),
             _ => const SizedBox.shrink(),
           };
         },
@@ -112,9 +112,13 @@ class _CartScreenState extends State<CartScreen> {
           ),
           const SizedBox(height: 8),
           OrderSummaryCard(
-            subtotal: '${cart.subtotal.toStringAsFixed(2)} EGP',
+            subtotal: 'common.price'.tr(
+              namedArgs: {'amount': cart.subtotal.toStringAsFixed(2)},
+            ),
             shipping: 'checkout.calculated_next'.tr(),
-            total: '${cart.subtotal.toStringAsFixed(2)} EGP',
+            total: 'common.price'.tr(
+              namedArgs: {'amount': cart.subtotal.toStringAsFixed(2)},
+            ),
             onCheckout: () =>
                 context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
           ),

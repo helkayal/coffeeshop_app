@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../menu/domain/entities/option_group.dart';
@@ -25,7 +26,10 @@ class _SliderSectionState extends State<SliderSection> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialIndex.clamp(0, widget.group.values.length - 1);
+    _selectedIndex = widget.initialIndex.clamp(
+      0,
+      widget.group.values.length - 1,
+    );
   }
 
   @override
@@ -41,11 +45,18 @@ class _SliderSectionState extends State<SliderSection> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Row(
           children: [
-            Text(widget.group.name,
-                style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
+            Text(
+              widget.group.name,
+              style: tt.headlineMedium?.copyWith(
+                fontSize: 18,
+                color: cs.onSurface,
+              ),
+            ),
             const Spacer(),
-            Text(values.first.name,
-                style: tt.bodyMedium?.copyWith(color: cs.primary)),
+            Text(
+              values.first.name,
+              style: tt.bodyMedium?.copyWith(color: cs.primary),
+            ),
           ],
         ),
       );
@@ -56,8 +67,13 @@ class _SliderSectionState extends State<SliderSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.group.name,
-              style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface)),
+          Text(
+            widget.group.name,
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 18,
+              color: cs.onSurface,
+            ),
+          ),
           const SizedBox(height: 16),
           SliderTheme(
             data: SliderThemeData(
@@ -87,7 +103,12 @@ class _SliderSectionState extends State<SliderSection> {
               final selected = i == _selectedIndex;
               final priceText = values[i].priceModifier == 0.0
                   ? 'Included'
-                  : '+${values[i].priceModifier.toStringAsFixed(2)} EGP';
+                  : 'common.price'.tr(
+                      namedArgs: {
+                        'amount':
+                            '+${values[i].priceModifier.toStringAsFixed(2)}',
+                      },
+                    );
               return Expanded(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
@@ -98,7 +119,9 @@ class _SliderSectionState extends State<SliderSection> {
                         values[i].name,
                         style: tt.labelLarge?.copyWith(
                           color: selected ? cs.primary : cs.onSurfaceVariant,
-                          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                          fontWeight: selected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
                         ),
                       ),
                       const SizedBox(height: 2),

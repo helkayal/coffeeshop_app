@@ -27,7 +27,7 @@ class AccountScreen extends StatelessWidget {
         final name = switch (state) {
           ProfileLoaded(:final profile) =>
             '${profile.firstName} ${profile.lastName}',
-          _ => '...',
+          _ => 'common.not_available'.tr(),
         };
         final avatarUrl = switch (state) {
           ProfileLoaded(:final profile) => profile.avatarUrl,
@@ -70,7 +70,9 @@ class AccountScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: cs.primary.withAlpha(77), width: 2),
+                            color: cs.primary.withAlpha(77),
+                            width: 2,
+                          ),
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: fullAvatarUrl != null
@@ -96,8 +98,10 @@ class AccountScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 2),
-                            Text('profile_screen.view_profile'.tr(),
-                                style: tt.bodySmall),
+                            Text(
+                              'profile_screen.view_profile'.tr(),
+                              style: tt.bodySmall,
+                            ),
                           ],
                         ),
                       ),
@@ -139,14 +143,18 @@ class AccountScreen extends StatelessWidget {
                   onPressed: () {
                     sl<AuthCubit>().logout();
                     Navigator.pushNamedAndRemoveUntil(
-                        context, AppRoutes.login, (_) => false);
+                      context,
+                      AppRoutes.login,
+                      (_) => false,
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: cs.error,
                     side: BorderSide(color: cs.error.withAlpha(77)),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   icon: const Icon(Icons.logout, size: 18),
                   label: Text('profile_screen.sign_out'.tr()),
@@ -163,7 +171,8 @@ class AccountScreen extends StatelessWidget {
     final asset = gender == 'female'
         ? 'assets/images/female_placeholder.png'
         : 'assets/images/male_placeholder.png';
-    return Image.asset(asset,
+    return Image.asset(
+      asset,
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => Container(color: cs.surfaceContainerHighest),
     );

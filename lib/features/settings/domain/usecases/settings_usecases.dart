@@ -11,5 +11,6 @@ class GetSettingsUseCase {
 class UpdateSettingsUseCase {
   final SettingsRepository _r;
   const UpdateSettingsUseCase(this._r);
-  Future<Result<void>> call(AppSettings settings) => _r.updateSettings(settings);
+  Future<Result<void>> call(AppSettings settings) =>
+      _r.updateSettings(settings);
 }

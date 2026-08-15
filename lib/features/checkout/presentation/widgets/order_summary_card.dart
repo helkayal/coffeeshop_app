@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 
@@ -30,62 +30,120 @@ class OrderSummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: cs.outlineVariant.withAlpha(77)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: cs.surfaceContainer,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: cs.outlineVariant.withAlpha(128)),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
-              const SizedBox(width: 8),
-              Text('checkout.special_instructions'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
-            ]),
-            const SizedBox(height: 12),
-            TextField(
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'checkout.add_note'.tr(),
-                hintStyle: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: cs.surfaceContainer,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: cs.outlineVariant.withAlpha(128)),
             ),
-          ]),
-        ),
-        const SizedBox(height: 24),
-        Text('checkout.summary'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
-        const SizedBox(height: 24),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('checkout.subtotal'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          Text(subtotal, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
-        ]),
-        const SizedBox(height: 12),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('checkout.shipping'.tr(), style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          Text(shipping, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
-        ]),
-        const SizedBox(height: 24),
-        Divider(color: cs.outlineVariant.withAlpha(128)),
-        const SizedBox(height: 24),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('checkout.total'.tr(), style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface)),
-          Text(total, style: tt.headlineMedium?.copyWith(fontSize: 30, color: cs.primary)),
-        ]),
-        const SizedBox(height: 24),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-          onPressed: onCheckout ??  
-              () => context.read<ShellCubit>().pushSecondary(const PaymentRoute()),
-            icon: const Icon(Icons.arrow_forward, size: 20),
-            label: Text('checkout.proceed_to_checkout'.tr()),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
+                    const SizedBox(width: 8),
+                    Text(
+                      'checkout.special_instructions'.tr(),
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 20,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: 'checkout.add_note'.tr(),
+                    hintStyle: tt.bodySmall?.copyWith(
+                      color: cs.onSurfaceVariant,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ]),
+          const SizedBox(height: 24),
+          Text(
+            'checkout.summary'.tr(),
+            style: tt.headlineMedium?.copyWith(
+              fontSize: 24,
+              color: cs.onSurface,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'checkout.subtotal'.tr(),
+                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              ),
+              Text(
+                subtotal,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'checkout.shipping'.tr(),
+                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              ),
+              Text(
+                shipping,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Divider(color: cs.outlineVariant.withAlpha(128)),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'checkout.total'.tr(),
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 20,
+                  color: cs.onSurface,
+                ),
+              ),
+              Text(
+                total,
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 30,
+                  color: cs.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed:
+                  onCheckout ??
+                  () => context.read<ShellCubit>().pushSecondary(
+                    const PaymentRoute(),
+                  ),
+              icon: const Icon(Icons.arrow_forward, size: 20),
+              label: Text('checkout.proceed_to_checkout'.tr()),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

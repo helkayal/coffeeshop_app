@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -62,7 +62,8 @@ class RegisterForm extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignConstants.paddingLarge),
+        horizontal: AppDesignConstants.paddingLarge,
+      ),
       child: Column(
         children: [
           AuthHeader(
@@ -118,7 +119,10 @@ class RegisterForm extends StatelessWidget {
               child: AppTextField(
                 controller: dateOfBirthController,
                 hintText: 'auth.date_of_birth'.tr(),
-                prefixIcon: Icon(Icons.calendar_today_outlined, color: colorScheme.outline),
+                prefixIcon: Icon(
+                  Icons.calendar_today_outlined,
+                  color: colorScheme.outline,
+                ),
                 errorText: dateOfBirthError,
               ),
             ),

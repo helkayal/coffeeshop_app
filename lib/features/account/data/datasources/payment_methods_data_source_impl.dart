@@ -1,6 +1,7 @@
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/services/local_storage_service.dart';
+import '../models/payment_method_model.dart';
 import 'payment_methods_data_source.dart';
 
 class PaymentMethodsDataSourceImpl implements PaymentMethodsDataSource {
@@ -10,9 +11,9 @@ class PaymentMethodsDataSourceImpl implements PaymentMethodsDataSource {
   PaymentMethodsDataSourceImpl(this._api, this._storage);
 
   @override
-  Future<List<Map<String, dynamic>>> getPaymentMethods() async {
+  Future<List<PaymentMethodModel>> getPaymentMethods() async {
     final data = await _api.get(ApiConstants.paymentMethods);
-    return List<Map<String, dynamic>>.from(data as List);
+    return _parseMethods(data);
   }
 
   @override
@@ -26,7 +27,9 @@ class PaymentMethodsDataSourceImpl implements PaymentMethodsDataSource {
     final expiryMonth = parts.isNotEmpty ? parts[0].trim() : '';
     final expiryYear = parts.length > 1 ? parts[1].trim() : '';
     final last4 = number.replaceAll(' ', '').length >= 4
-        ? number.replaceAll(' ', '').substring(number.replaceAll(' ', '').length - 4)
+        ? number
+              .replaceAll(' ', '')
+              .substring(number.replaceAll(' ', '').length - 4)
         : number;
     await _api.post(
       ApiConstants.paymentMethods,
@@ -40,8 +43,10 @@ class PaymentMethodsDataSourceImpl implements PaymentMethodsDataSource {
     );
     // Cache to local storage after successful add.
     final fresh = await _api.get(ApiConstants.paymentMethods);
-    final cards = List<Map<String, dynamic>>.from(fresh as List);
-    await _storage.setSavedCards(cards);
+    final cards = _parseMethods(fresh);
+    await _storage.setSavedCards(
+      cards.map((card) => card.toJson()).toList(growable: false),
+    );
   }
 
   @override
@@ -49,7 +54,18 @@ class PaymentMethodsDataSourceImpl implements PaymentMethodsDataSource {
     await _api.delete('${ApiConstants.paymentMethods}/$cardId');
     // Update local cache.
     final fresh = await _api.get(ApiConstants.paymentMethods);
-    final cards = List<Map<String, dynamic>>.from(fresh as List);
-    await _storage.setSavedCards(cards);
+    final cards = _parseMethods(fresh);
+    await _storage.setSavedCards(
+      cards.map((card) => card.toJson()).toList(growable: false),
+    );
   }
+
+  List<PaymentMethodModel> _parseMethods(dynamic data) =>
+      (data as List<dynamic>)
+          .map(
+            (item) => PaymentMethodModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(growable: false);
 }

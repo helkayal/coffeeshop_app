@@ -34,11 +34,15 @@ ThemeData createDarkTheme() {
       displayLarge: AppTextStyles.h1(color: AppColors.darkOnBackground),
       displayMedium: AppTextStyles.h2(color: AppColors.primary),
       displaySmall: AppTextStyles.h3(color: AppColors.darkOnBackground),
-      headlineMedium: AppTextStyles.headlineMd(color: AppColors.darkOnBackground),
+      headlineMedium: AppTextStyles.headlineMd(
+        color: AppColors.darkOnBackground,
+      ),
       bodyLarge: AppTextStyles.bodyLarge(color: AppColors.darkOnBackground),
       bodyMedium: AppTextStyles.bodyMedium(color: AppColors.darkOnBackground),
       bodySmall: AppTextStyles.bodySmall(color: AppColors.darkOnSurfaceVariant),
-      labelLarge: AppTextStyles.labelCaps(color: AppColors.darkOnSurfaceVariant),
+      labelLarge: AppTextStyles.labelCaps(
+        color: AppColors.darkOnSurfaceVariant,
+      ),
       labelSmall: AppTextStyles.labelCaps(color: AppColors.primary),
     ),
     appBarTheme: AppBarTheme(
@@ -52,7 +56,10 @@ ThemeData createDarkTheme() {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: AppDesignConstants.radiusMedium,
-        side: BorderSide(color: AppColors.darkOutlineVariant.withAlpha(153), width: 1),
+        side: BorderSide(
+          color: AppColors.darkOutlineVariant.withAlpha(153),
+          width: 1,
+        ),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(

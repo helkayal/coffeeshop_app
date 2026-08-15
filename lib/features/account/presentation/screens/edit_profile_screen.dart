@@ -33,19 +33,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final profile = state is ProfileLoaded ? state.profile : null;
         final fullName = profile != null
             ? '${profile.firstName} ${profile.lastName}'
-            : '...';
-        final email = profile?.email ?? '...';
+            : 'common.not_available'.tr();
+        final email = profile?.email ?? 'common.not_available'.tr();
         final gender = profile?.gender == 'female'
             ? 'auth.female'.tr()
             : 'auth.male'.tr();
-        final dob = profile?.dateOfBirth ?? '...';
-        final location = profile != null && profile.state != null
-            ? '${profile.state!}, ${profile.city ?? ''}'
-            : '...';
-        final cacheBuster = state is ProfileLoaded ? state.avatarCacheBuster : 0;
-        final fullAvatarUrl = profile?.avatarUrl != null
-            ? '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}${profile!.avatarUrl}${cacheBuster > 0 ? '?t=$cacheBuster' : ''}'
-            : null;
+        final dob = profile?.dateOfBirth ?? 'common.not_available'.tr();
+        final location = switch (profile?.state) {
+          final state? => '$state, ${profile?.city ?? ''}',
+          null => 'common.not_available'.tr(),
+        };
+        final cacheBuster = state is ProfileLoaded
+            ? state.avatarCacheBuster
+            : 0;
+        final fullAvatarUrl = switch (profile?.avatarUrl) {
+          final avatarUrl? =>
+            '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}$avatarUrl${cacheBuster > 0 ? '?t=$cacheBuster' : ''}',
+          null => null,
+        };
 
         return Scaffold(
           backgroundColor: cs.surface,
@@ -70,10 +75,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       : () => ProfileEditDialogs.editName(context, profile),
                 ),
                 const SizedBox(height: 12),
-                ProfileField(
-                  label: 'profile_screen.email'.tr(),
-                  value: email,
-                ),
+                ProfileField(label: 'profile_screen.email'.tr(), value: email),
                 const SizedBox(height: 12),
                 ProfileField(
                   label: 'profile_screen.gender'.tr(),

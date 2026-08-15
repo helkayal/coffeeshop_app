@@ -1,11 +1,10 @@
 import '../../domain/entities/option_group.dart';
 import '../../domain/entities/option_value.dart';
 import '../../domain/entities/product.dart';
+
 /// Maps the backend's flat modifier list into the frontend's nested
 /// OptionGroup → OptionValue structure by grouping on [modifier_group].
-List<OptionGroup> _mapModifiersToOptionGroups(
-  List<dynamic> modifiersJson,
-) {
+List<OptionGroup> _mapModifiersToOptionGroups(List<dynamic> modifiersJson) {
   if (modifiersJson.isEmpty) return [];
 
   final grouped = <String, List<OptionValue>>{};
@@ -64,8 +63,12 @@ class ProductModel extends Product {
         ? priceRaw
         : double.tryParse(priceRaw?.toString() ?? '0') ?? 0.0;
 
-    final categoryId = json['_category_id'] as String? ??
-        (json['category'] is Map ? (json['category'] as Map)['id'] : json['category']) as String? ??
+    final categoryId =
+        json['_category_id'] as String? ??
+        (json['category'] is Map
+                ? (json['category'] as Map)['id']
+                : json['category'])
+            as String? ??
         '';
 
     return ProductModel(

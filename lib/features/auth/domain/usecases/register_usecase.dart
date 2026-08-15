@@ -16,15 +16,14 @@ class RegisterUseCase {
     String? state,
     String? city,
     DateTime? dateOfBirth,
-  }) =>
-      repository.register(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-        gender: gender,
-        state: state,
-        city: city,
-        dateOfBirth: dateOfBirth,
-      );
+  }) => repository.register(
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
+    gender: gender,
+    state: state,
+    city: city,
+    dateOfBirth: dateOfBirth,
+  );
 }

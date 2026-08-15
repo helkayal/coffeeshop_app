@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,8 +32,8 @@ class CartItemCard extends StatelessWidget {
           break;
         }
       }
-      if (product != null && product.imagePath != null) {
-        return product.imagePath!;
+      if (product?.imagePath case final imagePath?) {
+        return imagePath;
       }
     }
     return item.imagePath;
@@ -45,15 +46,18 @@ class CartItemCard extends StatelessWidget {
 
     final imageUrl = _resolveImage(context.watch<MenuCubit>().state);
 
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        width: 96, height: 120,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: cs.surfaceContainerHighest,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: CachedNetworkImage(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 96,
+          height: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: cs.surfaceContainerHighest,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
             placeholder: (_, _) => Container(color: cs.surfaceContainerHighest),
@@ -62,52 +66,92 @@ class CartItemCard extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-      ),
-      const SizedBox(width: 16),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(
-              child: Text(item.name,
-                  style: tt.headlineMedium?.copyWith(fontSize: 24, color: cs.onSurface)),
-            ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: onRemove,
-              icon: Icon(Icons.close, size: 18, color: cs.onSurfaceVariant),
-            ),
-          ]),
-          const SizedBox(height: 4),
-          Text(item.variant, style: tt.bodySmall),
-          const SizedBox(height: 4),
-          Text('${item.unitPrice.toStringAsFixed(2)} EGP',
-              style: tt.bodyLarge?.copyWith(fontSize: 18, color: cs.primary, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              color: cs.surfaceContainerLowest,
-              border: Border.all(color: cs.outlineVariant),
-            ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              GestureDetector(
-                onTap: onDecrement,
-                child: Icon(Icons.remove, size: 18, color: cs.onSurfaceVariant),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.name,
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 24,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: onRemove,
+                    icon: Icon(
+                      Icons.close,
+                      size: 18,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              Text('${item.quantity}',
-                  style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
-              const SizedBox(width: 16),
-              GestureDetector(
-                onTap: onIncrement,
-                child: Icon(Icons.add, size: 18, color: cs.onSurfaceVariant),
+              const SizedBox(height: 4),
+              Text(item.variant, style: tt.bodySmall),
+              const SizedBox(height: 4),
+              Text(
+                'common.price'.tr(
+                  namedArgs: {'amount': item.unitPrice.toStringAsFixed(2)},
+                ),
+                style: tt.bodyLarge?.copyWith(
+                  fontSize: 18,
+                  color: cs.primary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ]),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: cs.surfaceContainerLowest,
+                  border: Border.all(color: cs.outlineVariant),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: onDecrement,
+                      child: Icon(
+                        Icons.remove,
+                        size: 18,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      '${item.quantity}',
+                      style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+                    ),
+                    const SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: onIncrement,
+                      child: Icon(
+                        Icons.add,
+                        size: 18,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ]),
-      ),
-    ]);
+        ),
+      ],
+    );
   }
 }

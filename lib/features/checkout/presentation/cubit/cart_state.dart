@@ -28,13 +28,43 @@ class CartActionInProgress extends CartState {
   const CartActionInProgress(this.cart);
 }
 
-class OrderPlaced extends CartState {
+sealed class OrderResultState extends CartState {
   final String orderId;
   final List<CartItem> items;
   final double total;
-  const OrderPlaced({
+  const OrderResultState({
     required this.orderId,
     required this.items,
     required this.total,
+  });
+}
+
+final class OrderPlaced extends OrderResultState {
+  const OrderPlaced({
+    required super.orderId,
+    required super.items,
+    required super.total,
+  });
+}
+
+final class OrderPaymentPendingState extends OrderResultState {
+  final String failureCode;
+
+  const OrderPaymentPendingState({
+    required super.orderId,
+    required super.items,
+    required super.total,
+    required this.failureCode,
+  });
+}
+
+final class OrderCleanupWarningState extends OrderResultState {
+  final String failureCode;
+
+  const OrderCleanupWarningState({
+    required super.orderId,
+    required super.items,
+    required super.total,
+    required this.failureCode,
   });
 }

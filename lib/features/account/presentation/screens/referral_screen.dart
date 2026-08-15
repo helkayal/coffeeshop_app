@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
+import '../../domain/entities/referral_history_entry.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/referral_cubit.dart';
 import '../cubit/referral_state.dart';
@@ -40,7 +41,11 @@ class _ReferralScreenState extends State<ReferralScreen> {
   void _copyCode(String code) {
     if (code.isEmpty) return;
     Clipboard.setData(ClipboardData(text: code));
-    AppSnackBar.show(context, 'referral.code_copied'.tr(), type: SnackBarType.info);
+    AppSnackBar.show(
+      context,
+      'referral.code_copied'.tr(),
+      type: SnackBarType.info,
+    );
   }
 
   void _applyReferral() {
@@ -59,7 +64,11 @@ class _ReferralScreenState extends State<ReferralScreen> {
         if (state is ReferralApplySuccess) {
           _applyCtrl.clear();
           context.read<ProfileCubit>().loadProfile();
-          AppSnackBar.show(context, 'referral.applied_success'.tr(), type: SnackBarType.success);
+          AppSnackBar.show(
+            context,
+            'referral.applied_success'.tr(),
+            type: SnackBarType.success,
+          );
         } else if (state is ReferralApplyError) {
           AppSnackBar.show(context, state.message, type: SnackBarType.error);
         }
@@ -92,8 +101,13 @@ class _ReferralScreenState extends State<ReferralScreen> {
                     onCopy: () => _copyCode(code),
                   ),
                   const SizedBox(height: 32),
-                  Text('referral.apply_title'.tr(),
-                      style: tt.headlineMedium?.copyWith(fontSize: 20, fontWeight: FontWeight.w700)),
+                  Text(
+                    'referral.apply_title'.tr(),
+                    style: tt.headlineMedium?.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   _ApplyReferralRow(
                     controller: _applyCtrl,
@@ -101,8 +115,13 @@ class _ReferralScreenState extends State<ReferralScreen> {
                     onApply: _applyReferral,
                   ),
                   const SizedBox(height: 40),
-                  Text('referral.history'.tr(),
-                      style: tt.headlineMedium?.copyWith(fontSize: 20, fontWeight: FontWeight.w700)),
+                  Text(
+                    'referral.history'.tr(),
+                    style: tt.headlineMedium?.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   if (history.isEmpty)
                     Text('referral.no_history'.tr(), style: tt.bodySmall)
@@ -148,7 +167,7 @@ class _ReferralCodeCard extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.share_outlined),
               color: cs.primary,
-              tooltip: 'Share',
+              tooltip: 'referral.share'.tr(),
               onPressed: onShare,
             ),
             const SizedBox(height: 12),
@@ -188,9 +207,11 @@ class _ReferralCodeCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Text('referral.share_earn'.tr(),
-                textAlign: TextAlign.center,
-                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+            Text(
+              'referral.share_earn'.tr(),
+              textAlign: TextAlign.center,
+              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+            ),
           ],
         ),
       ),
@@ -223,7 +244,10 @@ class _ApplyReferralRow extends StatelessWidget {
               hintText: 'referral.enter_code'.tr(),
               filled: true,
               fillColor: cs.surfaceContainerLow,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: cs.outlineVariant.withAlpha(128)),
@@ -240,13 +264,18 @@ class _ApplyReferralRow extends StatelessWidget {
           onPressed: isApplying ? null : onApply,
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: isApplying
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 )
               : Text('referral.apply'.tr()),
         ),
@@ -256,7 +285,7 @@ class _ApplyReferralRow extends StatelessWidget {
 }
 
 class _ReferralHistoryTile extends StatelessWidget {
-  final Map<String, dynamic> item;
+  final ReferralHistoryEntry item;
 
   const _ReferralHistoryTile({required this.item});
 
@@ -265,14 +294,9 @@ class _ReferralHistoryTile extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    final name = item['referred_email'] as String? ??
-        item['referee_name'] as String? ??
-        item['referred_name'] as String? ??
-        item['email'] as String? ??
-        'User';
-    final points = item['points_earned'] as int? ?? 0;
-    final rawDate = item['created_at'] as String? ?? '';
-    final date = rawDate.length >= 10 ? rawDate.substring(0, 10) : rawDate;
+    final date = DateFormat.yMd(
+      context.locale.toString(),
+    ).format(item.createdAt);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -289,14 +313,28 @@ class _ReferralHistoryTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: tt.bodyMedium?.copyWith(color: cs.onSurface, fontWeight: FontWeight.w600)),
-                Text(date, style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                Text(
+                  item.referredEmail,
+                  style: tt.bodyMedium?.copyWith(
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  date,
+                  style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
               ],
             ),
           ),
           Text(
-            '+$points ${'loyalty.pts'.tr()}',
-            style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.w700, color: cs.primary),
+            'loyalty.points_value'.tr(
+              namedArgs: {'points': '+${item.pointsEarned}'},
+            ),
+            style: tt.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: cs.primary,
+            ),
           ),
         ],
       ),

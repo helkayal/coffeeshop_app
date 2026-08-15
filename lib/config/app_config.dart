@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class AppConfig {
   static const String appName = 'Coffee Shop';
-  // static const String appName = 'كافيه السعاده';
 
   // Localization
   static const List<Locale> supportedLocales = [Locale('ar'), Locale('en')];
@@ -11,9 +10,6 @@ class AppConfig {
 
   // Theme
   static const ThemeMode defaultThemeMode = ThemeMode.dark;
-
-  // Data source mode — set to false when a real backend is available.
-  static const bool useMockData = false;
 
   // Loyalty Tiers
   static const double tier1Boundary = 180.0;

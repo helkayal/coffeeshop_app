@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/location_service.dart';
 import '../../../../core/widgets/app_dropdown.dart';
+import '../../../auth/presentation/cubit/locations_cubit.dart';
+import '../../../auth/presentation/cubit/locations_state.dart';
 
 class LocationEditData {
   final String? state;
@@ -12,13 +14,11 @@ class LocationEditData {
 
 class LocationEditDialog extends StatefulWidget {
   final LocationEditData initial;
-  final LocationService locationService;
   final void Function(String? state, String? city) onSaved;
 
   const LocationEditDialog({
     super.key,
     required this.initial,
-    required this.locationService,
     required this.onSaved,
   });
 
@@ -29,25 +29,14 @@ class LocationEditDialog extends StatefulWidget {
 class _LocationEditDialogState extends State<LocationEditDialog> {
   late final _state = ValueNotifier<String?>(widget.initial.state);
   late final _city = ValueNotifier<String?>(widget.initial.city);
-  List<String> _states = [];
-  List<String> _cities = [];
-  bool _loading = true;
-
   @override
   void initState() {
     super.initState();
-    widget.locationService.getStates().then((s) {
-      if (mounted) setState(() { _states = s; _loading = false; });
-    });
-    if (widget.initial.state != null) {
-      _loadCities(widget.initial.state!);
+    if (widget.initial.state case final state?) {
+      context.read<LocationsCubit>().loadCities(state);
+    } else {
+      context.read<LocationsCubit>().loadStates();
     }
-  }
-
-  Future<void> _loadCities(String state) async {
-    setState(() => _loading = true);
-    final cities = await widget.locationService.getCities(state);
-    if (mounted) setState(() { _cities = cities; _loading = false; });
   }
 
   @override
@@ -59,54 +48,73 @@ class _LocationEditDialogState extends State<LocationEditDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('profile_screen.location'.tr()),
-      content: _loading && _states.isEmpty
-          ? const SizedBox(height: 80, child: Center(child: CircularProgressIndicator()))
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ValueListenableBuilder<String?>(
-                  valueListenable: _state,
-                  builder: (_, state, _) => AppDropdown(
-                    hint: 'locations.select_state'.tr(),
-                    items: _states,
-                    value: state,
-                    useLocalization: false,
-                    onChanged: (v) {
-                      _state.value = v;
-                      _city.value = null;
-                      if (v != null) _loadCities(v);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ValueListenableBuilder<String?>(
-                  valueListenable: _state,
-                  builder: (_, s, _) =>
-                      ValueListenableBuilder<String?>(
+    return BlocBuilder<LocationsCubit, LocationsState>(
+      builder: (context, locationState) {
+        final states = switch (locationState) {
+          LocationsLoaded(:final states) => states,
+          LocationsLoading(:final states) => states,
+          _ => const <String>[],
+        };
+        final cities = locationState is LocationsLoaded
+            ? locationState.cities
+            : const <String>[];
+        return AlertDialog(
+          title: Text('profile_screen.location'.tr()),
+          content: locationState is LocationsLoading && states.isEmpty
+              ? const SizedBox(
+                  height: 80,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _state,
+                      builder: (_, state, _) => AppDropdown(
+                        hint: 'locations.select_state'.tr(),
+                        items: states,
+                        value: state,
+                        useLocalization: false,
+                        onChanged: (v) {
+                          _state.value = v;
+                          _city.value = null;
+                          if (v != null) {
+                            context.read<LocationsCubit>().loadCities(v);
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _state,
+                      builder: (_, s, _) => ValueListenableBuilder<String?>(
                         valueListenable: _city,
                         builder: (_, city, _) => AppDropdown(
                           hint: 'locations.select_city'.tr(),
-                          items: _cities,
+                          items: cities,
                           value: city,
                           useLocalization: false,
                           onChanged: (v) => _city.value = v,
                         ),
                       ),
+                    ),
+                  ],
                 ),
-              ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('cancel'.tr()),
             ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: Text('cancel'.tr())),
-        FilledButton(
-          onPressed: () {
-            Navigator.pop(context);
-            widget.onSaved(_state.value, _city.value);
-          },
-          child: Text('save'.tr()),
-        ),
-      ],
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context);
+                widget.onSaved(_state.value, _city.value);
+              },
+              child: Text('save'.tr()),
+            ),
+          ],
+        );
+      },
     );
   }
 }

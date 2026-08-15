@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/helpers/result.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
@@ -7,9 +8,9 @@ import '../../domain/usecases/refresh_session_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/resend_verification_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
+import '../../domain/usecases/save_pending_avatar_usecase.dart';
 import '../../domain/usecases/social_login_usecase.dart';
 import '../../domain/usecases/verify_email_usecase.dart';
-import '../../../../core/helpers/result.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -22,6 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final SocialLoginUseCase _socialLoginUseCase;
+  final SavePendingAvatarUseCase _savePendingAvatarUseCase;
 
   AuthCubit({
     required LoginUseCase loginUseCase,
@@ -33,16 +35,23 @@ class AuthCubit extends Cubit<AuthState> {
     required ForgotPasswordUseCase forgotPasswordUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
     required SocialLoginUseCase socialLoginUseCase,
-  })  : _loginUseCase = loginUseCase,
-        _registerUseCase = registerUseCase,
-        _refreshSessionUseCase = refreshSessionUseCase,
-        _verifyEmailUseCase = verifyEmailUseCase,
-        _resendVerificationUseCase = resendVerificationUseCase,
-        _logoutUseCase = logoutUseCase,
-        _forgotPasswordUseCase = forgotPasswordUseCase,
-        _resetPasswordUseCase = resetPasswordUseCase,
-        _socialLoginUseCase = socialLoginUseCase,
-        super(const AuthInitial());
+    required SavePendingAvatarUseCase savePendingAvatarUseCase,
+  }) : _loginUseCase = loginUseCase,
+       _registerUseCase = registerUseCase,
+       _refreshSessionUseCase = refreshSessionUseCase,
+       _verifyEmailUseCase = verifyEmailUseCase,
+       _resendVerificationUseCase = resendVerificationUseCase,
+       _logoutUseCase = logoutUseCase,
+       _forgotPasswordUseCase = forgotPasswordUseCase,
+       _resetPasswordUseCase = resetPasswordUseCase,
+       _socialLoginUseCase = socialLoginUseCase,
+       _savePendingAvatarUseCase = savePendingAvatarUseCase,
+       super(const AuthInitial());
+
+  Future<void> savePendingAvatar(String path) async {
+    final result = await _savePendingAvatarUseCase(path);
+    result.fold((failure) => emit(AuthError(failure.message)), (_) {});
+  }
 
   Future<void> refreshSession() async {
     if (isClosed) return;

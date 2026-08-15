@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../entities/connection_status.dart';
 import '../services/network_info_service.dart';
 
 sealed class ConnectivityState {
@@ -10,6 +11,10 @@ class ConnectivityOnline extends ConnectivityState {
   const ConnectivityOnline();
 }
 
+class ConnectivityChecking extends ConnectivityState {
+  const ConnectivityChecking();
+}
+
 class ConnectivityOffline extends ConnectivityState {
   final ConnectionStatus status;
   const ConnectivityOffline(this.status);
@@ -18,7 +23,7 @@ class ConnectivityOffline extends ConnectivityState {
 class ConnectivityCubit extends Cubit<ConnectivityState> {
   final NetworkInfoService _networkInfo;
 
-  ConnectivityCubit(this._networkInfo) : super(const ConnectivityOnline());
+  ConnectivityCubit(this._networkInfo) : super(const ConnectivityChecking());
 
   /// Called by feature Cubits whenever a [ConnectionFailure] is detected.
   void markOffline(ConnectionStatus status) {
@@ -28,7 +33,8 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   }
 
   /// Re-checks connectivity. Emits [ConnectivityOnline] if resolved.
-  Future<void> retry() async {
+  Future<void> check() async {
+    emit(const ConnectivityChecking());
     final status = await _networkInfo.checkConnectivity();
     if (isClosed) return;
     if (status == ConnectionStatus.connected) {
@@ -37,4 +43,6 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
       emit(ConnectivityOffline(status));
     }
   }
+
+  Future<void> retry() => check();
 }

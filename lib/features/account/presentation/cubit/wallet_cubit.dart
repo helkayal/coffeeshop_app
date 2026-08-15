@@ -19,12 +19,12 @@ class WalletCubit extends Cubit<WalletState> {
     required GetWalletPackagesUseCase getPackages,
     required BuyWalletPackageUseCase buyPackage,
     this.onConnectionFailure,
-  })  : _getBalance = getBalance,
-        _getTransactions = getTransactions,
-        _updatePhone = updatePhone,
-        _getPackages = getPackages,
-        _buyPackage = buyPackage,
-        super(const WalletInitial());
+  }) : _getBalance = getBalance,
+       _getTransactions = getTransactions,
+       _updatePhone = updatePhone,
+       _getPackages = getPackages,
+       _buyPackage = buyPackage,
+       super(const WalletInitial());
 
   Future<void> loadWallet() async {
     emit(const WalletLoading());
@@ -36,14 +36,20 @@ class WalletCubit extends Cubit<WalletState> {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
         emit(WalletError(failure.message));
       },
-      (balance) => txnResult.fold(
-        (failure) {
-          if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-          emit(WalletError(failure.message));
-        },
-        (txns) => emit(WalletLoaded(balance: balance, transactions: txns)),
-      ),
+      (balance) => txnResult.fold((failure) {
+        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+        emit(WalletError(failure.message));
+      }, (txns) => emit(WalletLoaded(balance: balance, transactions: txns))),
     );
+  }
+
+  Future<void> loadBalance() async {
+    emit(const WalletLoading());
+    final result = await _getBalance();
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(WalletError(failure.message));
+    }, (balance) => emit(WalletBalanceLoaded(balance)));
   }
 
   Future<void> updateWalletPhone(String phone) async {
@@ -57,13 +63,10 @@ class WalletCubit extends Cubit<WalletState> {
   Future<void> loadPackages() async {
     emit(const PackagesLoading());
     final result = await _getPackages();
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(PackagesError(failure.message));
-      },
-      (packages) => emit(PackagesLoaded(packages)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(PackagesError(failure.message));
+    }, (packages) => emit(PackagesLoaded(packages)));
   }
 
   Future<void> buyPackage(String packageId) async {

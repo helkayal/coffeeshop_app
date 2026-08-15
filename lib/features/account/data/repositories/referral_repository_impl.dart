@@ -2,6 +2,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../data/datasources/referral_data_source.dart';
+import '../../domain/entities/referral_history_entry.dart';
 import '../../domain/repositories/referral_repository.dart';
 
 class ReferralRepositoryImpl implements ReferralRepository {
@@ -10,8 +11,8 @@ class ReferralRepositoryImpl implements ReferralRepository {
   ReferralRepositoryImpl(this._dataSource);
 
   @override
-  Future<Result<({String code, List<Map<String, dynamic>> history})>>
-      getReferral() async {
+  Future<Result<({String code, List<ReferralHistoryEntry> history})>>
+  getReferral() async {
     try {
       return Success(await _dataSource.getReferral());
     } on ConnectionException catch (e) {
@@ -30,8 +31,8 @@ class ReferralRepositoryImpl implements ReferralRepository {
       return Error(ServerFailure(e.message ?? 'Failed to apply referral code'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
-    } catch (e) {
-      return Error(ServerFailure(e.toString()));
+    } catch (_) {
+      return const Error(ServerFailure('referral_apply_failed'));
     }
   }
 }

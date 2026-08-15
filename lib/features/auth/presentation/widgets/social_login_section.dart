@@ -22,7 +22,9 @@ class SocialLoginSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'auth.continue_with_social'.tr(),
-                style: textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.outline,
+                ),
               ),
             ),
             Expanded(child: Divider(color: colorScheme.outlineVariant)),

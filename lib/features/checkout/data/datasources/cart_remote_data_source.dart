@@ -63,7 +63,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
     final items = itemsRaw.map((i) {
       final json = i as Map<String, dynamic>;
       // Backend returns line_total as the computed per-item total including modifiers.
-      final lineTotal = double.tryParse(json['line_total']?.toString() ?? '0') ?? 0;
+      final lineTotal =
+          double.tryParse(json['line_total']?.toString() ?? '0') ?? 0;
       final quantity = (json['quantity'] as num?)?.toInt() ?? 1;
       // Build a simple variant from customizations if present.
       final customs = json['customizations'];

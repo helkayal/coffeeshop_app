@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/menu/domain/entities/option_value.dart';
@@ -50,7 +51,11 @@ class QuickAddOptionCard extends StatelessWidget {
             ),
             if (option.priceModifier > 0)
               Text(
-                '+${option.priceModifier.toStringAsFixed(2)} EGP',
+                'common.price'.tr(
+                  namedArgs: {
+                    'amount': '+${option.priceModifier.toStringAsFixed(2)}',
+                  },
+                ),
                 style: tt.labelLarge?.copyWith(color: cs.primary),
               ),
           ],

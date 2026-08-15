@@ -24,24 +24,21 @@ class CartCubit extends Cubit<CartState> {
     required ClearCartUseCase clearCart,
     required PlaceOrderUseCase placeOrder,
     this.onConnectionFailure,
-  })  : _getCart = getCart,
-        _addToCart = addToCart,
-        _updateItem = updateItem,
-        _removeItem = removeItem,
-        _clearCart = clearCart,
-        _placeOrder = placeOrder,
-        super(const CartInitial());
+  }) : _getCart = getCart,
+       _addToCart = addToCart,
+       _updateItem = updateItem,
+       _removeItem = removeItem,
+       _clearCart = clearCart,
+       _placeOrder = placeOrder,
+       super(const CartInitial());
 
   Future<void> loadCart() async {
     emit(const CartLoading());
     final result = await _getCart();
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (cart) => emit(CartLoaded(cart)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (cart) => emit(CartLoaded(cart)));
   }
 
   Future<void> addItem(CartItem item) async {
@@ -65,13 +62,10 @@ class CartCubit extends Cubit<CartState> {
     }
 
     final result = await _addToCart(item);
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (cart) => emit(CartLoaded(cart)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (cart) => emit(CartLoaded(cart)));
   }
 
   Future<void> increment(String itemId) async {
@@ -80,13 +74,10 @@ class CartCubit extends Cubit<CartState> {
     final item = current.items.firstWhere((i) => i.id == itemId);
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity + 1);
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (cart) => emit(CartLoaded(cart)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (cart) => emit(CartLoaded(cart)));
   }
 
   Future<void> decrement(String itemId) async {
@@ -95,39 +86,30 @@ class CartCubit extends Cubit<CartState> {
     final item = current.items.firstWhere((i) => i.id == itemId);
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity - 1);
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (cart) => emit(CartLoaded(cart)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (cart) => emit(CartLoaded(cart)));
   }
 
   Future<void> remove(String itemId) async {
     final current = _currentCart;
     if (current != null) emit(CartActionInProgress(current));
     final result = await _removeItem(itemId);
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (cart) => emit(CartLoaded(cart)),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (cart) => emit(CartLoaded(cart)));
   }
 
   Future<void> clearCart() async {
     final current = _currentCart;
     if (current != null) emit(CartActionInProgress(current));
     final result = await _clearCart();
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(CartError(failure.message));
-      },
-      (_) => emit(CartLoaded(const Cart())),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(CartError(failure.message));
+    }, (_) => emit(CartLoaded(const Cart())));
   }
 
   Future<void> placeOrder({String paymentMethod = 'wallet'}) async {
@@ -142,8 +124,29 @@ class CartCubit extends Cubit<CartState> {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
         emit(CartError(failure.message));
       },
-      (orderId) {
-        emit(OrderPlaced(orderId: orderId, items: items, total: total));
+      (outcome) {
+        final nextState = switch (outcome) {
+          OrderCompleted(:final orderId) => OrderPlaced(
+            orderId: orderId,
+            items: items,
+            total: total,
+          ),
+          OrderPaymentPending(:final orderId, :final failure) =>
+            OrderPaymentPendingState(
+              orderId: orderId,
+              items: items,
+              total: total,
+              failureCode: failure.message,
+            ),
+          OrderCleanupWarning(:final orderId, :final failure) =>
+            OrderCleanupWarningState(
+              orderId: orderId,
+              items: items,
+              total: total,
+              failureCode: failure.message,
+            ),
+        };
+        emit(nextState);
       },
     );
   }

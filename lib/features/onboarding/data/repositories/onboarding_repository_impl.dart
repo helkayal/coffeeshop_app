@@ -25,7 +25,9 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   }
 
   @override
-  Future<Result<void>> completeOnboarding({Map<String, String>? answers}) async {
+  Future<Result<void>> completeOnboarding({
+    Map<String, String>? answers,
+  }) async {
     try {
       if (answers != null && answers.isNotEmpty) {
         await remoteDataSource.saveOnboarding(answers);

@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/wallet_package_model.dart';
+import '../../domain/entities/wallet_package.dart';
 
 class WalletPackageTile extends StatelessWidget {
   final WalletPackage package;
@@ -65,7 +66,11 @@ class WalletPackageTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          '+${package.loyaltyPoints} pts',
+                          'wallet.loyalty_points_value'.tr(
+                            namedArgs: {
+                              'points': package.loyaltyPoints.toString(),
+                            },
+                          ),
                           style: tt.labelSmall?.copyWith(
                             color: cs.onPrimaryContainer,
                             fontWeight: FontWeight.w800,
@@ -74,7 +79,7 @@ class WalletPackageTile extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '2x Loyalty Bonus',
+                        'wallet.loyalty_bonus'.tr(),
                         style: tt.bodySmall?.copyWith(
                           color: cs.secondary,
                           fontSize: 11,
@@ -86,7 +91,9 @@ class WalletPackageTile extends StatelessWidget {
               ),
             ),
             Text(
-              '${package.amount.toStringAsFixed(0)} EGP',
+              'common.price'.tr(
+                namedArgs: {'amount': package.amount.toStringAsFixed(0)},
+              ),
               style: tt.titleLarge?.copyWith(
                 fontWeight: FontWeight.w800,
                 color: cs.primary,

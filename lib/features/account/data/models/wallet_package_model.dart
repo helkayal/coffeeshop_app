@@ -1,25 +1,27 @@
-class WalletPackage {
-  final String id;
-  final String name;
-  final double amount;
-  final int loyaltyPoints;
+import '../../domain/entities/wallet_package.dart';
 
-  const WalletPackage({
-    required this.id,
-    required this.name,
-    required this.amount,
-    required this.loyaltyPoints,
+class WalletPackageModel extends WalletPackage {
+  const WalletPackageModel({
+    required super.id,
+    required super.name,
+    required super.amount,
+    required super.loyaltyPoints,
   });
 
-  factory WalletPackage.fromJson(Map<String, dynamic> json) {
+  factory WalletPackageModel.fromJson(Map<String, dynamic> json) {
     final amtRaw = json['amount'];
     final amt = amtRaw is num
         ? amtRaw.toDouble()
-        : double.tryParse(amtRaw?.toString() ?? '0') ?? 0.0;
+        : double.tryParse(amtRaw?.toString() ?? '');
+    final id = json['id'];
+    final name = json['name'];
+    if (id is! String || id.isEmpty || name is! String || amt == null) {
+      throw const FormatException('Invalid wallet package');
+    }
 
-    return WalletPackage(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
+    return WalletPackageModel(
+      id: id,
+      name: name,
       amount: amt,
       loyaltyPoints: (json['loyalty_points'] as num?)?.toInt() ?? 0,
     );

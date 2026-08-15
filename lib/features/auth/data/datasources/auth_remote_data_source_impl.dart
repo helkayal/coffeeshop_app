@@ -72,17 +72,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   /// so the request is authenticated even before the token is stored in storage.
   @override
   Future<void> uploadAvatarWithToken(
-      String filePath, String accessToken) async {
+    String filePath,
+    String accessToken,
+  ) async {
     final formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(filePath),
     });
     await _apiService.post(
       ApiConstants.profileAvatar,
       data: formData,
-      options: Options(headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer $accessToken',
-      }),
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
     );
   }
 
@@ -135,10 +139,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<void> verifyEmail(String token) async {
-    await _apiService.post(
-      ApiConstants.verifyEmail,
-      data: {'token': token},
-    );
+    await _apiService.post(ApiConstants.verifyEmail, data: {'token': token});
   }
 
   @override

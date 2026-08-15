@@ -15,10 +15,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
     return list.map((json) {
       final cat = json as Map<String, dynamic>;
-      return CategoryModel.fromJson({
-        'id': cat['id'],
-        'name': cat['name'],
-      });
+      return CategoryModel.fromJson({'id': cat['id'], 'name': cat['name']});
     }).toList();
   }
 }

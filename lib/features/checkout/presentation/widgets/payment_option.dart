@@ -59,10 +59,11 @@ class PaymentOption extends StatelessWidget {
                       fontWeight: subtitle != null ? FontWeight.w600 : null,
                     ),
                   ),
-                  if (subtitle != null && subtitle!.isNotEmpty) ...[
+                  if (subtitle case final subtitleText?
+                      when subtitleText.isNotEmpty) ...[
                     const SizedBox(height: 2),
                     Text(
-                      subtitle!,
+                      subtitleText,
                       style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                   ],
@@ -107,10 +108,12 @@ class PaymentOption extends StatelessWidget {
             ],
             Icon(
               isCheckbox
-                  ? (isSelected ? Icons.check_box : Icons.check_box_outline_blank)
+                  ? (isSelected
+                        ? Icons.check_box
+                        : Icons.check_box_outline_blank)
                   : (isSelected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked),
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked),
               color: isSelected ? cs.primary : cs.onSurfaceVariant,
             ),
           ],

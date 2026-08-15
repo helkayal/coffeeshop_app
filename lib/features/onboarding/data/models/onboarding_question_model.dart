@@ -1,10 +1,7 @@
 import '../../domain/entities/onboarding_question.dart';
 
 class OnboardingOptionModel extends OnboardingOption {
-  const OnboardingOptionModel({
-    required super.id,
-    required super.text,
-  });
+  const OnboardingOptionModel({required super.id, required super.text});
 
   factory OnboardingOptionModel.fromJson(Map<String, dynamic> json) {
     return OnboardingOptionModel(
@@ -14,10 +11,7 @@ class OnboardingOptionModel extends OnboardingOption {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-    };
+    return {'id': id, 'text': text};
   }
 }
 

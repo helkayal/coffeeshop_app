@@ -26,4 +26,5 @@ abstract class AuthRepository {
   Future<Result<User>> refreshSession();
   Future<Result<void>> verifyEmail(String token);
   Future<Result<void>> resendVerification(String email);
+  Future<Result<void>> savePendingAvatar(String path);
 }

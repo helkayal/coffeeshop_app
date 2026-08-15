@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/entities/connection_status.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/services/network_info_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/connection_error_view.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
-import '../../../../core/widgets/connection_error_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,67 +18,54 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _networkInfo = sl<NetworkInfoService>();
-  bool _checking = true;
-  ConnectionStatus? _errorStatus;
-
   @override
   void initState() {
     super.initState();
-    _checkConnection();
-  }
-
-  Future<void> _checkConnection() async {
-    setState(() {
-      _checking = true;
-      _errorStatus = null;
-    });
-
-    final status = await _networkInfo.checkConnectivity();
-
-    if (!mounted) return;
-
-    if (status == ConnectionStatus.connected) {
-      setState(() => _checking = false);
-      context.read<AuthCubit>().refreshSession();
-    } else {
-      setState(() {
-        _checking = false;
-        _errorStatus = status;
-      });
-    }
+    context.read<ConnectivityCubit>().check();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        switch (state) {
-          case AuthAuthenticated():
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.home,
-              (route) => false,
-            );
-          case AuthSessionExpired():
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.login,
-              (route) => false,
-            );
-          default:
-            break;
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ConnectivityCubit, ConnectivityState>(
+          listener: (context, state) {
+            if (state is ConnectivityOnline) {
+              context.read<AuthCubit>().refreshSession();
+            }
+          },
+        ),
+        BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            switch (state) {
+              case AuthAuthenticated():
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.home,
+                  (route) => false,
+                );
+              case AuthSessionExpired():
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.login,
+                  (route) => false,
+                );
+              default:
+                break;
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: _buildBody(),
+        body: _buildBody(context),
       ),
     );
   }
 
-  Widget _buildBody() {
-    if (_checking) {
+  Widget _buildBody(BuildContext context) {
+    final state = context.watch<ConnectivityCubit>().state;
+    if (state is ConnectivityChecking || state is ConnectivityOnline) {
       return const Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -87,17 +73,19 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
 
-    if (_errorStatus == ConnectionStatus.noInternet) {
+    if (state is ConnectivityOffline &&
+        state.status == ConnectionStatus.noInternet) {
       return ConnectionErrorView(
         message: 'splash_screen.no_internet'.tr(),
-        onRetry: _checkConnection,
+        onRetry: context.read<ConnectivityCubit>().retry,
       );
     }
 
-    if (_errorStatus == ConnectionStatus.serverUnreachable) {
+    if (state is ConnectivityOffline &&
+        state.status == ConnectionStatus.serverUnreachable) {
       return ConnectionErrorView(
         message: 'splash_screen.server_error'.tr(),
-        onRetry: _checkConnection,
+        onRetry: context.read<ConnectivityCubit>().retry,
       );
     }
 

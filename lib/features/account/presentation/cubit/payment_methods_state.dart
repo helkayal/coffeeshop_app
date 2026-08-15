@@ -1,3 +1,5 @@
+import '../../domain/entities/payment_method.dart';
+
 sealed class PaymentMethodsState {
   const PaymentMethodsState();
 }
@@ -11,12 +13,12 @@ final class PaymentMethodsLoading extends PaymentMethodsState {
 }
 
 final class PaymentMethodsLoaded extends PaymentMethodsState {
-  final List<Map<String, dynamic>> cards;
+  final List<PaymentMethod> cards;
   const PaymentMethodsLoaded(this.cards);
 }
 
 final class PaymentMethodsActionInProgress extends PaymentMethodsState {
-  final List<Map<String, dynamic>> cards;
+  final List<PaymentMethod> cards;
   const PaymentMethodsActionInProgress(this.cards);
 }
 

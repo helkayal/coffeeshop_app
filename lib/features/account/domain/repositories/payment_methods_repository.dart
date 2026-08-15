@@ -1,7 +1,8 @@
 import '../../../../core/helpers/result.dart';
+import '../entities/payment_method.dart';
 
 abstract class PaymentMethodsRepository {
-  Future<Result<List<Map<String, dynamic>>>> getPaymentMethods();
+  Future<Result<List<PaymentMethod>>> getPaymentMethods();
   Future<Result<void>> addCard({
     required String number,
     required String expiry,

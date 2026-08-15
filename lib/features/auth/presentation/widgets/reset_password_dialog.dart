@@ -87,8 +87,10 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
 
   Future<void> _onResetPressed() async {
     final password = _passwordController.text;
-    final passwordError =
-        PasswordValidator.validate(password, email: widget.email);
+    final passwordError = PasswordValidator.validate(
+      password,
+      email: widget.email,
+    );
     final confirmError = PasswordValidator.validateConfirm(
       password,
       _confirmPasswordController.text,
@@ -144,14 +146,13 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
             prefixIcon: const Icon(Icons.lock_outlined),
             errorText: _confirmPasswordError,
           ),
-          if (_submitError != null) ...[
+          if (_submitError case final submitError?) ...[
             const SizedBox(height: 12),
             Text(
-              _submitError!,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: colorScheme.error),
+              submitError,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: colorScheme.error),
             ),
           ],
         ],

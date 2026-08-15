@@ -14,7 +14,8 @@ class AddCardFormSheet extends StatefulWidget {
     String year,
     String name,
     String brand,
-  ) onSave;
+  )
+  onSave;
 
   const AddCardFormSheet({
     super.key,
@@ -33,8 +34,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
   String? _error;
 
   String? _validate() {
-    final number =
-        widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
+    final number = widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
     if (number.length != 16 || int.tryParse(number) == null) {
       return 'Card number must be 16 digits';
     }
@@ -72,8 +72,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
       return;
     }
 
-    final number =
-        widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
+    final number = widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
     final last4 = number.substring(number.length - 4);
     var year = int.parse(widget.yearCtrl.text.trim());
     if (year < 100) year += 2000;
@@ -107,7 +106,11 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
       padding: EdgeInsets.fromLTRB(
-          24, 24, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
+        24,
+        24,
+        24,
+        24 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -120,8 +123,10 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
             ),
           ),
           const SizedBox(height: 24),
-          Text('credit_card.add_new_card'.tr(),
-              style: tt.headlineMedium?.copyWith(fontSize: 20)),
+          Text(
+            'credit_card.add_new_card'.tr(),
+            style: tt.headlineMedium?.copyWith(fontSize: 20),
+          ),
           const SizedBox(height: 16),
           AppTextField(
             controller: widget.last4Ctrl,
@@ -130,26 +135,32 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
             prefixIcon: const Icon(Icons.credit_card),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
+          Row(
+            children: [
+              Expanded(
                 child: AppTextField(
-                    controller: widget.monthCtrl,
-                    label: 'credit_card.month'.tr())),
-            const SizedBox(width: 12),
-            Expanded(
+                  controller: widget.monthCtrl,
+                  label: 'credit_card.month'.tr(),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
                 child: AppTextField(
-                    controller: widget.yearCtrl,
-                    label: 'credit_card.year'.tr())),
-          ]),
+                  controller: widget.yearCtrl,
+                  label: 'credit_card.year'.tr(),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
           AppTextField(
             controller: widget.nameCtrl,
             label: 'credit_card.name_on_card'.tr(),
             prefixIcon: const Icon(Icons.person_outline),
           ),
-          if (_error != null) ...[
+          if (_error case final error?) ...[
             const SizedBox(height: 8),
-            Text(_error!, style: tt.bodySmall?.copyWith(color: cs.error)),
+            Text(error, style: tt.bodySmall?.copyWith(color: cs.error)),
           ],
           const SizedBox(height: 24),
           SizedBox(

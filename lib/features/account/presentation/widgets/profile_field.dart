@@ -30,12 +30,18 @@ class ProfileField extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: tt.labelLarge?.copyWith(
-                        color: cs.onSurfaceVariant, fontSize: 10)),
+                Text(
+                  label,
+                  style: tt.labelLarge?.copyWith(
+                    color: cs.onSurfaceVariant,
+                    fontSize: 10,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(value,
-                    style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
+                Text(
+                  value,
+                  style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+                ),
               ],
             ),
           ),

@@ -38,12 +38,10 @@ class _AppTextFieldState extends State<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null) ...[
+        if (widget.label case final label?) ...[
           Text(
-            widget.label!,
-            style: textTheme.labelLarge?.copyWith(
-              color: colorScheme.onSurface,
-            ),
+            label,
+            style: textTheme.labelLarge?.copyWith(color: colorScheme.onSurface),
           ),
           const SizedBox(height: 8),
         ],
@@ -51,9 +49,7 @@ class _AppTextFieldState extends State<AppTextField> {
           controller: widget.controller,
           obscureText: widget.isPassword && _obscured,
           keyboardType: widget.keyboardType,
-          style: textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface,
-          ),
+          style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: textTheme.bodyMedium?.copyWith(

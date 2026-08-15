@@ -2,6 +2,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../data/datasources/payment_methods_data_source.dart';
+import '../../domain/entities/payment_method.dart';
 import '../../domain/repositories/payment_methods_repository.dart';
 
 class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
@@ -10,7 +11,7 @@ class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
   PaymentMethodsRepositoryImpl(this._dataSource);
 
   @override
-  Future<Result<List<Map<String, dynamic>>>> getPaymentMethods() async {
+  Future<Result<List<PaymentMethod>>> getPaymentMethods() async {
     try {
       return Success(await _dataSource.getPaymentMethods());
     } on ConnectionException catch (e) {

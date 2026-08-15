@@ -9,7 +9,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource _remoteDataSource;
 
   CategoryRepositoryImpl(CategoryRemoteDataSource remoteDataSource)
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<Result<List<Category>>> getCategories() async {

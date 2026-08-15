@@ -7,6 +7,16 @@
   "cart": "Cart",
   "cancel": "Cancel",
   "save": "Save",
+  "common": {
+    "price": "{amount} EGP",
+    "quantity": "x{quantity}",
+    "order_id": "Order #{id}",
+    "close": "Close",
+    "quantity_price": "x{quantity}  {price}",
+    "price_quantity": "{price} x{quantity}",
+    "not_available": "Not available",
+    "add_to_cart_price": "{price} - Add to Cart"
+  },
   "error_route_not_found": "No route defined for {}",
   "splash_screen": {
     "no_internet": "No internet connection. Please check your network and try again.",
@@ -72,7 +82,9 @@
     "if_you_have_account": "If you have an account ",
     "create_one": "Create one",
     "continue_with_social": "CONTINUE WITH SOCIAL",
-    "please_fill_all_fields": "Please fill in all fields"
+    "please_fill_all_fields": "Please fill in all fields",
+    "social_sign_in": "Sign in with {provider}",
+    "full_name_optional": "Full Name (optional)"
   },
   "locations": {
     "select_state": "Select State",
@@ -200,6 +212,12 @@
     "date": "Date",
     "back_home": "Back to Home",
     "empty_bag": "Your bag is empty"
+    ,"use_wallet_cash_first": "Use Coffee Wallet Cash First",
+    "payment_pending": "The order was created, but payment is still pending. Your cart was preserved.",
+    "cleanup_warning": "The order was paid, but some cart items could not be cleared.",
+    "top_up_amount": "Top Up {amount}",
+    "wallet_covers_order": "Wallet cash ({balance}) covers this order",
+    "wallet_needs_more": "Insufficient wallet balance — need {amount} more"
   },
   "credit_card": {
     "saved_cards": "Saved Cards",
@@ -215,6 +233,12 @@
     "month": "Month",
     "year": "Year",
     "expires_at": "Expires {}"
+    ,"expiry_hint": "MM/YY",
+    "invalid_number": "Card number must be 16 digits",
+    "name_required": "Name on card is required",
+    "invalid_expiry": "Enter expiry as MM/YY (e.g. 12/28)",
+    "invalid_month": "Expiry month must be between 1 and 12",
+    "expired": "Card has expired"
   },
   "wallet": {
     "current_balance": "Current Balance",
@@ -237,9 +261,17 @@
     "enter_cvc": "Enter CVC",
     "cvc_required": "Please enter a valid CVC (3-4 digits)",
     "mobile_wallet_confirm": "Payment will proceed using your saved Mobile Wallet phone ({})",
+    "mobile_wallet_generic": "Confirm payment with Mobile Wallet?",
     "buy_package_button": "Buy {} ({} EGP)",
     "select_package": "Select a Package",
-    "confirm_payment": "Confirm Payment"
+    "confirm_payment": "Confirm Payment",
+    "buy_package": "Buy Wallet Package",
+    "no_transactions": "No transactions yet",
+    "refund": "Refund",
+    "unknown_transaction": "Wallet transaction",
+    "package_purchase_success": "Package purchased successfully!",
+    "loyalty_points_value": "+{points} pts",
+    "loyalty_bonus": "2x Loyalty Bonus"
   },
   "quick_add": {
     "saved_orders": "Saved Orders",
@@ -283,7 +315,8 @@
     "reason_referral": "Referral Bonus",
     "reason_review": "Review Bonus",
     "reason_birthday": "Birthday Bonus",
-    "pts": "pts"
+    "pts": "pts",
+    "points_value": "{points} pts"
   },
   "benefits": {
     "your_level": "Your Level",
@@ -314,7 +347,8 @@
     "no_history": "No referrals yet",
     "applied_success": "Referral code applied",
     "apply_failed": "Failed to apply referral code",
-    "code_copied": "Referral code copied to clipboard!"
+    "code_copied": "Referral code copied to clipboard!",
+    "share": "Share"
   },
   "verification": {
     "title": "Verify Your Email",

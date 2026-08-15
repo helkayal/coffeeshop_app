@@ -1,11 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/location_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/widgets/app_dropdown.dart';
+import '../cubit/locations_cubit.dart';
+import '../cubit/locations_state.dart';
 
-class LocationSection extends StatefulWidget {
+class LocationSection extends StatelessWidget {
   final ValueNotifier<String?> stateNotifier;
   final ValueNotifier<String?> cityNotifier;
   final String? stateError;
@@ -20,91 +21,56 @@ class LocationSection extends StatefulWidget {
   });
 
   @override
-  State<LocationSection> createState() => _LocationSectionState();
-}
-
-class _LocationSectionState extends State<LocationSection> {
-  final _service = sl<LocationService>();
-  List<String> _states = [];
-  List<String> _cities = [];
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadStates();
-  }
-
-  Future<void> _loadStates() async {
-    final states = await _service.getStates();
-    if (mounted) {
-      setState(() {
-        _states = states;
-        _loading = false;
-      });
-    }
-  }
-
-  Future<void> _loadCities(String state) async {
-    setState(() => _loading = true);
-    final cities = await _service.getCities(state);
-    if (mounted) {
-      setState(() {
-        _cities = cities;
-        _loading = false;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_loading && _states.isEmpty) {
-      _service.getStates().then((s) {
-        if (mounted) {
-          setState(() { _states = s; _loading = false; });
-        }
-      });
-    }
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: ValueListenableBuilder<String?>(
-            valueListenable: widget.stateNotifier,
-            builder: (context, selectedState, _) => AppDropdown(
-              hint: 'locations.select_state'.tr(),
-              items: _states,
-              value: selectedState,
-              errorText: widget.stateError,
-              useLocalization: false,
-              onChanged: (value) {
-                widget.stateNotifier.value = value;
-                widget.cityNotifier.value = null;
-                if (value != null) _loadCities(value);
-              },
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: ValueListenableBuilder<String?>(
-            valueListenable: widget.stateNotifier,
-            builder: (context, selectedState, _) =>
-                ValueListenableBuilder<String?>(
-                  valueListenable: widget.cityNotifier,
-                  builder: (context, selectedCity, _) => AppDropdown(
-                    hint: 'locations.select_city'.tr(),
-                    items: _cities,
-                    value: selectedCity,
-                    errorText: widget.cityError,
-                    useLocalization: false,
-                    onChanged: (value) => widget.cityNotifier.value = value,
-                  ),
+    return BlocBuilder<LocationsCubit, LocationsState>(
+      builder: (context, locationState) {
+        final states = switch (locationState) {
+          LocationsLoaded(:final states) => states,
+          LocationsLoading(:final states) => states,
+          _ => const <String>[],
+        };
+        final cities = locationState is LocationsLoaded
+            ? locationState.cities
+            : const <String>[];
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ValueListenableBuilder<String?>(
+                valueListenable: stateNotifier,
+                builder: (_, selectedState, _) => AppDropdown(
+                  hint: 'locations.select_state'.tr(),
+                  items: states,
+                  value: selectedState,
+                  errorText: stateError,
+                  useLocalization: false,
+                  onChanged: (value) {
+                    stateNotifier.value = value;
+                    cityNotifier.value = null;
+                    if (value != null) {
+                      context.read<LocationsCubit>().loadCities(value);
+                    }
+                  },
                 ),
-          ),
-        ),
-      ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ValueListenableBuilder<String?>(
+                valueListenable: cityNotifier,
+                builder: (_, selectedCity, _) => AppDropdown(
+                  hint: 'locations.select_city'.tr(),
+                  items: cities,
+                  value: selectedCity,
+                  errorText: cityError,
+                  useLocalization: false,
+                  onChanged: (value) => cityNotifier.value = value,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

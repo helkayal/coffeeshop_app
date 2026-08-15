@@ -22,7 +22,4 @@ class OrdersDataSourceImpl implements OrdersDataSource {
     final data = await _api.get('${ApiConstants.orders}/track/$id');
     return OrderModel.fromJson(data as Map<String, dynamic>);
   }
-
-  // // --- Mock data (commented out) ---
-  // List<OrderModel> _mockOrders() { ... }
 }

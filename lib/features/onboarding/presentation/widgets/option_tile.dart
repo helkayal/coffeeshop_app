@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_design_constants.dart';
 
@@ -30,7 +30,9 @@ class OptionTile extends StatelessWidget {
               : colorScheme.surface,
           borderRadius: AppDesignConstants.radiusMedium,
           border: Border.all(
-            color: isSelected ? colorScheme.primary : colorScheme.outlineVariant,
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -43,7 +45,9 @@ class OptionTile extends StatelessWidget {
                 text.tr(),
                 textAlign: TextAlign.center,
                 style: textTheme.bodyLarge?.copyWith(
-                  color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+                  color: isSelected
+                      ? colorScheme.primary
+                      : colorScheme.onSurface,
                   fontWeight: isSelected ? FontWeight.w600 : null,
                 ),
               ),

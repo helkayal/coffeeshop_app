@@ -26,25 +26,26 @@ class ViewBenefitsScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: cs.surface,
           body: SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 96),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LoyaltyCardImage(
-                tier: tier,
-                tierName: tierName,
-                pointsText: '${points.toStringAsFixed(0)} ${'benefits.points'.tr()}',
-                showViewBenefits: false,
-              ),
-              const SizedBox(height: 32),
-              _sectionTitle(tt, 'benefits.rewards'.tr()),
-              const SizedBox(height: 16),
-              BenefitsAllTiers(currentIndex: tier.index),
-              const SizedBox(height: 32),
-              _sectionTitle(tt, 'benefits.how_to_earn'.tr()),
-              const SizedBox(height: 16),
-              const BenefitsEarnPoints(),
-            ],
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 96),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LoyaltyCardImage(
+                  tier: tier,
+                  tierName: tierName,
+                  pointsText:
+                      '${points.toStringAsFixed(0)} ${'benefits.points'.tr()}',
+                  showViewBenefits: false,
+                ),
+                const SizedBox(height: 32),
+                _sectionTitle(tt, 'benefits.rewards'.tr()),
+                const SizedBox(height: 16),
+                BenefitsAllTiers(currentIndex: tier.index),
+                const SizedBox(height: 32),
+                _sectionTitle(tt, 'benefits.how_to_earn'.tr()),
+                const SizedBox(height: 16),
+                const BenefitsEarnPoints(),
+              ],
             ),
           ),
         );
@@ -55,7 +56,10 @@ class ViewBenefitsScreen extends StatelessWidget {
   Widget _sectionTitle(TextTheme tt, String text) {
     return Text(
       text,
-      style: tt.headlineMedium?.copyWith(fontSize: 20, fontWeight: FontWeight.w700),
+      style: tt.headlineMedium?.copyWith(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      ),
     );
   }
 }

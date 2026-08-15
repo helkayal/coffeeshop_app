@@ -24,7 +24,10 @@ class AuthHeader extends StatelessWidget {
         const SizedBox(height: 40),
 
         // Title & Subtitle
-        Text(title, style: textTheme.displayLarge?.copyWith(color: colorScheme.onSurface)),
+        Text(
+          title,
+          style: textTheme.displayLarge?.copyWith(color: colorScheme.onSurface),
+        ),
         const SizedBox(height: 12),
         Text(
           subtitle,

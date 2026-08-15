@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class MenuHeader extends StatelessWidget {
   const MenuHeader({super.key});
@@ -19,11 +19,7 @@ class MenuHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Container(
-          width: 48,
-          height: 1,
-          color: cs.primary.withAlpha(77),
-        ),
+        Container(width: 48, height: 1, color: cs.primary.withAlpha(77)),
       ],
     );
   }

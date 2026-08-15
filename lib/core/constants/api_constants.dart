@@ -1,9 +1,28 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class ApiConstants {
-  static final String apiBaseUrl = Platform.isAndroid
-      ? 'http://10.0.2.2:8000/api/v1'
-      : 'http://127.0.0.1:8000/api/v1';
+  static final String apiBaseUrl = _resolveBaseUrl();
+
+  static String _resolveBaseUrl() {
+    const configured = String.fromEnvironment('API_BASE_URL');
+    final fallback = defaultTargetPlatform == TargetPlatform.android
+        ? 'http://10.0.2.2:8000/api/v1'
+        : 'http://127.0.0.1:8000/api/v1';
+    final value = configured.isEmpty ? fallback : configured;
+    final uri = Uri.tryParse(value);
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
+      throw StateError('API_BASE_URL must be an absolute URL.');
+    }
+
+    if (!kDebugMode && uri.scheme != 'https') {
+      throw StateError('API_BASE_URL must use HTTPS in non-debug builds.');
+    }
+    const debugHttpHosts = {'localhost', '127.0.0.1', '10.0.2.2'};
+    if (uri.scheme == 'http' && !debugHttpHosts.contains(uri.host)) {
+      throw StateError('HTTP is only allowed for local debug servers.');
+    }
+    return value.endsWith('/') ? value.substring(0, value.length - 1) : value;
+  }
 
   // Auth
   static const String login = '/auth/login';

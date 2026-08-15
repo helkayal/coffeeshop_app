@@ -32,8 +32,8 @@ class _MenuScreenState extends State<MenuScreen> {
       builder: (context, state) => switch (state) {
         MenuLoading() => const Center(child: CircularProgressIndicator()),
         MenuError(message: final msg) => Center(
-            child: Text(msg, style: TextStyle(color: cs.onSurface)),
-          ),
+          child: Text(msg, style: TextStyle(color: cs.onSurface)),
+        ),
         MenuLoaded(
           products: final products,
           categories: final categories,

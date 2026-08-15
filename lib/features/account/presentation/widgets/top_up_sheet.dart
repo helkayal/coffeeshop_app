@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../features/checkout/presentation/widgets/payment_method_selector.dart';
 
@@ -22,30 +22,37 @@ class TopUpSheet extends StatelessWidget {
         ),
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 48, height: 4,
-              decoration: BoxDecoration(
-                color: cs.outlineVariant.withAlpha(128),
-                borderRadius: BorderRadius.circular(2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 48,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: cs.outlineVariant.withAlpha(128),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'wallet.top_up'.tr(),
-              style: tt.headlineMedium?.copyWith(fontSize: 20, color: cs.onSurface),
-            ),
-            const SizedBox(height: 24),
-            const PaymentMethodSelector(),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('wallet.add'.tr()),
+              const SizedBox(height: 24),
+              Text(
+                'wallet.top_up'.tr(),
+                style: tt.headlineMedium?.copyWith(
+                  fontSize: 20,
+                  color: cs.onSurface,
+                ),
               ),
-            ),
-          ]),
+              const SizedBox(height: 24),
+              const PaymentMethodSelector(),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('wallet.add'.tr()),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import '../../../../core/helpers/result.dart';
+import '../entities/loyalty_history_entry.dart';
 import '../entities/user_profile.dart';
 import '../repositories/profile_repository.dart';
 
@@ -24,7 +25,7 @@ class GetLoyaltyPointsUseCase {
 class GetLoyaltyHistoryUseCase {
   final ProfileRepository _repository;
   const GetLoyaltyHistoryUseCase(this._repository);
-  Future<Result<List<Map<String, dynamic>>>> call() =>
+  Future<Result<List<LoyaltyHistoryEntry>>> call() =>
       _repository.getLoyaltyHistory();
 }
 

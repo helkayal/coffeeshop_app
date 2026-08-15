@@ -13,9 +13,9 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     required GetFavoritesUseCase getFavorites,
     required ToggleFavoriteUseCase toggle,
     this.onConnectionFailure,
-  })  : _getFavorites = getFavorites,
-        _toggle = toggle,
-        super(const FavoritesInitial());
+  }) : _getFavorites = getFavorites,
+       _toggle = toggle,
+       super(const FavoritesInitial());
 
   Future<void> loadFavorites() async {
     emit(const FavoritesLoading());
@@ -25,21 +25,20 @@ class FavoritesCubit extends Cubit<FavoritesState> {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
         emit(FavoritesError(failure.message));
       },
-      (products) => emit(FavoritesLoaded(
-        products: products,
-        favoriteIds: products.map((p) => p.id).toSet(),
-      )),
+      (products) => emit(
+        FavoritesLoaded(
+          products: products,
+          favoriteIds: products.map((p) => p.id).toSet(),
+        ),
+      ),
     );
   }
 
   Future<void> toggle(String productId) async {
     final result = await _toggle(productId);
-    result.fold(
-      (failure) {
-        if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
-        emit(FavoritesError(failure.message));
-      },
-      (_) => loadFavorites(),
-    );
+    result.fold((failure) {
+      if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
+      emit(FavoritesError(failure.message));
+    }, (_) => loadFavorites());
   }
 }

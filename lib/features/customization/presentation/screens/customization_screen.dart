@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../favorites/presentation/cubit/favorites_cubit.dart';
@@ -13,6 +11,9 @@ import '../../../favorites/presentation/cubit/favorites_state.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 import '../../../menu/domain/entities/product.dart';
+import '../../domain/entities/saved_customization.dart';
+import '../cubit/customization_cubit.dart';
+import '../cubit/customization_state.dart';
 import '../widgets/bottom_action_bar.dart';
 import '../widgets/modifier_group_picker.dart';
 import '../widgets/modifier_group_toggles.dart';
@@ -38,23 +39,31 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
   final Map<String, String> _savedPickedIds = {};
   final Map<String, List<String>> _savedToggledIds = {};
   double _total = 0;
+  late final ShellCubit _shellCubit;
 
   Product? get _product => widget.product;
 
   @override
   void initState() {
     super.initState();
+    _shellCubit = context.read<ShellCubit>();
     _total = _product?.basePrice ?? 0;
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
     final p = _product;
     if (p == null) return;
-
-    final saved = sl<LocalStorageService>().getFavoriteSelections(p.id);
+    final cubit = context.read<CustomizationCubit>();
+    await cubit.load(p.id);
+    if (!mounted) return;
+    final state = cubit.state;
+    final saved = state is CustomizationLoaded ? state.customization : null;
 
     for (final group in p.optionGroups) {
       if (_isMulti(group)) {
-        final toggledMap = saved?['toggled'];
-        final savedIds = (toggledMap is Map ? toggledMap[group.id] : null);
-        if (savedIds is List) {
+        final savedIds = saved?.toggledOptionIds[group.id];
+        if (savedIds != null) {
           final selected = <OptionValue>[];
           for (final v in group.values) {
             if (savedIds.contains(v.id)) {
@@ -65,8 +74,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
           _toggled[group.id] = selected;
         }
       } else {
-        final pickedMap = saved?['picked'];
-        final savedId = (pickedMap is Map ? pickedMap[group.id] : null) as String?;
+        final savedId = saved?.pickedOptionIds[group.id];
         OptionValue? opt;
         if (savedId != null) {
           opt = group.values.cast<OptionValue?>().firstWhere(
@@ -90,17 +98,16 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       _savedToggledIds[e.key] = ids;
     }
 
-    // Register back-navigation guard — only when opened from Favorites.
     if (widget.fromFavorites) {
-      sl<ShellCubit>().onWillPopSecondary = _handleWillPop;
+      _shellCubit.onWillPopSecondary = _handleWillPop;
     }
+    setState(() {});
   }
 
   @override
   void dispose() {
-    if (sl.isRegistered<ShellCubit>() &&
-        sl<ShellCubit>().onWillPopSecondary == _handleWillPop) {
-      sl<ShellCubit>().onWillPopSecondary = null;
+    if (_shellCubit.onWillPopSecondary == _handleWillPop) {
+      _shellCubit.onWillPopSecondary = null;
     }
     super.dispose();
   }
@@ -110,7 +117,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       final update = await _showUpdateFavoriteDialog();
       if (update == null) return false;
       if (update == true) {
-        _saveFavoriteSelections();
+        await _saveFavoriteSelections();
       }
     }
     return true;
@@ -151,7 +158,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     );
   }
 
-  void _saveFavoriteSelections() {
+  Future<void> _saveFavoriteSelections() async {
     final product = _product;
     if (product == null) return;
     final picked = <String, String>{};
@@ -165,10 +172,10 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       toggled[e.key] = ids;
       _savedToggledIds[e.key] = List.from(ids)..sort();
     }
-    sl<LocalStorageService>().saveFavoriteSelections(product.id, {
-      'picked': picked,
-      'toggled': toggled,
-    });
+    await context.read<CustomizationCubit>().save(
+      product.id,
+      SavedCustomization(pickedOptionIds: picked, toggledOptionIds: toggled),
+    );
   }
 
   bool _isMulti(OptionGroup group) {
@@ -221,7 +228,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     if (widget.fromFavorites && _hasCustomizationChanged()) {
       final update = await _showUpdateFavoriteDialog();
       if (update == null) return;
-      if (update == true) _saveFavoriteSelections();
+      if (update == true) await _saveFavoriteSelections();
     }
 
     if (!mounted) return;
@@ -257,9 +264,8 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
 
     cartCubit.addItem(item);
     if (context.mounted) {
-      // Clear guard so popSecondary doesn't re-trigger dialog.
-      sl<ShellCubit>().onWillPopSecondary = null;
-      context.read<ShellCubit>().popSecondary();
+      _shellCubit.onWillPopSecondary = null;
+      _shellCubit.popSecondary();
     }
   }
 
@@ -267,7 +273,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     final product = _product;
     if (product == null) return;
     final cubit = context.read<FavoritesCubit>();
-    final storage = sl<LocalStorageService>();
+    final customizationCubit = context.read<CustomizationCubit>();
 
     final favState = cubit.state;
     final isFav =
@@ -277,18 +283,18 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       if (_hasCustomizationChanged()) {
         final update = await _showUpdateFavoriteDialog();
         if (update == true) {
-          _saveFavoriteSelections();
+          await _saveFavoriteSelections();
         } else {
           cubit.toggle(product.id);
-          storage.clearFavoriteSelections(product.id);
+          await customizationCubit.clear(product.id);
         }
       } else {
         cubit.toggle(product.id);
-        storage.clearFavoriteSelections(product.id);
+        await customizationCubit.clear(product.id);
       }
     } else {
       cubit.toggle(product.id);
-      _saveFavoriteSelections();
+      await _saveFavoriteSelections();
     }
   }
 
@@ -360,10 +366,13 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
             bottom: 0,
             child: BlocBuilder<FavoritesCubit, FavoritesState>(
               builder: (context, favState) {
-                final isFav = favState is FavoritesLoaded &&
+                final isFav =
+                    favState is FavoritesLoaded &&
                     favState.isFavorite(product.id);
                 return BottomActionBar(
-                  total: '${_total.toStringAsFixed(2)} EGP',
+                  total: 'common.price'.tr(
+                    namedArgs: {'amount': _total.toStringAsFixed(2)},
+                  ),
                   isFavorite: isFav,
                   onFavorite: _toggleFavorite,
                   onComplete: _addToCart,
@@ -407,13 +416,18 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(product.name,
-                    style: tt.headlineMedium?.copyWith(
-                        fontSize: 36, color: cs.onSurface)),
+                Text(
+                  product.name,
+                  style: tt.headlineMedium?.copyWith(
+                    fontSize: 36,
+                    color: cs.onSurface,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(product.description,
-                    style:
-                        tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                Text(
+                  product.description,
+                  style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                ),
               ],
             ),
           ),

@@ -1,5 +1,6 @@
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/services/api_service.dart';
+import '../models/referral_history_model.dart';
 import 'referral_data_source.dart';
 
 class ReferralDataSourceImpl implements ReferralDataSource {
@@ -8,12 +9,19 @@ class ReferralDataSourceImpl implements ReferralDataSource {
   ReferralDataSourceImpl(this._api);
 
   @override
-  Future<({String code, List<Map<String, dynamic>> history})> getReferral() async {
+  Future<({String code, List<ReferralHistoryModel> history})>
+  getReferral() async {
     final data = await _api.get(ApiConstants.referral);
     final history = await _api.get(ApiConstants.referralHistory);
     return (
       code: (data as Map<String, dynamic>)['code'] as String? ?? '',
-      history: List<Map<String, dynamic>>.from(history as List),
+      history: (history as List<dynamic>)
+          .map(
+            (item) => ReferralHistoryModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 

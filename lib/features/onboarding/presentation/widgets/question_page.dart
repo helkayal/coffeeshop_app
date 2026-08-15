@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_design_constants.dart';
 import '../../domain/entities/onboarding_question.dart';
@@ -27,7 +26,7 @@ class QuestionPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (question.imageUrl != null) ...[
+          if (question.imageUrl case final imageUrl?) ...[
             Center(
               child: Container(
                 decoration: BoxDecoration(
@@ -47,9 +46,10 @@ class QuestionPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(18),
                   child: Image.asset(
-                    question.imageUrl!,
+                    imageUrl,
                     width: MediaQuery.of(context).size.width * 0.6,
-                    errorBuilder: (_, _, _) => const Icon(Icons.image, size: 48),
+                    errorBuilder: (_, _, _) =>
+                        const Icon(Icons.image, size: 48),
                     height: MediaQuery.of(context).size.width * 0.5,
                     fit: BoxFit.fill,
                   ),

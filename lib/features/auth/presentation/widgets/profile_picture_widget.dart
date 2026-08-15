@@ -23,15 +23,16 @@ class ProfilePictureWidget extends StatelessWidget {
       child: Stack(
         children: [
           ClipOval(
-            child: imagePath != null
-                ? Image.file(
-                    File(imagePath!),
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => _placeholder(colorScheme),
-                  )
-                : _placeholder(colorScheme),
+            child: switch (imagePath) {
+              final path? => Image.file(
+                File(path),
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => _placeholder(colorScheme),
+              ),
+              null => _placeholder(colorScheme),
+            },
           ),
           Positioned(
             bottom: 0,
@@ -58,7 +59,8 @@ class ProfilePictureWidget extends StatelessWidget {
       width: 120,
       height: 120,
       fit: BoxFit.cover,
-      errorBuilder: (_, _, _) => Icon(Icons.person, size: 60, color: colorScheme.outline),
+      errorBuilder: (_, _, _) =>
+          Icon(Icons.person, size: 60, color: colorScheme.outline),
     );
   }
 }

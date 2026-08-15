@@ -11,11 +11,10 @@ class SocialLoginUseCase {
     required String email,
     String? firstName,
     String? lastName,
-  }) =>
-      _repository.socialLogin(
-        provider: provider,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-      );
+  }) => _repository.socialLogin(
+    provider: provider,
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+  );
 }

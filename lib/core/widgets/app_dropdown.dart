@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
 
@@ -46,7 +45,9 @@ class AppDropdown extends StatelessWidget {
               value: value,
               hint: Text(
                 hint,
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.outline,
+                ),
               ),
               isExpanded: true,
               dropdownColor: colorScheme.surface,
@@ -56,7 +57,9 @@ class AppDropdown extends StatelessWidget {
                   value: item,
                   child: Text(
                     useLocalization ? item.tr() : item,
-                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 );
               }).toList(),
@@ -64,11 +67,11 @@ class AppDropdown extends StatelessWidget {
             ),
           ),
         ),
-        if (hasError)
+        if (errorText case final error?)
           Padding(
             padding: const EdgeInsets.only(left: 12, top: 4),
             child: Text(
-              errorText!,
+              error,
               style: textTheme.bodySmall?.copyWith(color: colorScheme.error),
             ),
           ),

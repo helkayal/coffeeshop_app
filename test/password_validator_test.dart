@@ -1,6 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:coffeeshop_app/core/helpers/password_validator.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PasswordValidator.validate', () {

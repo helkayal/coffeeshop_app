@@ -2,7 +2,8 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../data/datasources/wallet_data_source.dart';
-import '../../data/models/wallet_package_model.dart';
+import '../../domain/entities/wallet_package.dart';
+import '../../domain/entities/wallet_transaction.dart';
 import '../../domain/repositories/wallet_repository.dart';
 
 class WalletRepositoryImpl implements WalletRepository {
@@ -22,7 +23,7 @@ class WalletRepositoryImpl implements WalletRepository {
   }
 
   @override
-  Future<Result<List<Map<String, dynamic>>>> getTransactions() async {
+  Future<Result<List<WalletTransaction>>> getTransactions() async {
     try {
       return Success(await _dataSource.getTransactions());
     } on ConnectionException catch (e) {
