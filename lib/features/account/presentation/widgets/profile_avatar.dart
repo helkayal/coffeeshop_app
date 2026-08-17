@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+
 class ProfileAvatar extends StatelessWidget {
   final double size;
   final bool showEditButton;
@@ -48,7 +50,7 @@ class ProfileAvatar extends StatelessWidget {
             child: GestureDetector(
               onTap: onEditTap,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: AppInsets.a8,
                 decoration: BoxDecoration(
                   color: cs.surfaceContainerHighest,
                   shape: BoxShape.circle,

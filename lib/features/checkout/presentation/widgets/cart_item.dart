@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class CartItem extends StatelessWidget {
   final String imagePath;
   final String name;
@@ -39,7 +42,7 @@ class CartItem extends StatelessWidget {
                 Container(color: cs.surfaceContainerHighest),
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.h16,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,14 +69,11 @@ class CartItem extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              AppSpacing.v4,
               Text(variant, style: tt.bodySmall),
-              const SizedBox(height: 16),
+              AppSpacing.v16,
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
+                padding: AppInsets.h12v4,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
                   color: cs.surfaceContainerLowest,
@@ -83,12 +83,12 @@ class CartItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.remove, size: 18, color: cs.onSurfaceVariant),
-                    const SizedBox(width: 16),
+                    AppSpacing.h16,
                     Text(
                       '$quantity',
                       style: tt.bodyMedium?.copyWith(color: cs.onSurface),
                     ),
-                    const SizedBox(width: 16),
+                    AppSpacing.h16,
                     Icon(Icons.add, size: 18, color: cs.onSurfaceVariant),
                   ],
                 ),

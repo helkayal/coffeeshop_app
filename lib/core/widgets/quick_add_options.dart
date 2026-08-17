@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
+
 class QuickAddOptions extends StatelessWidget {
   final List<String> options;
 
@@ -11,19 +14,19 @@ class QuickAddOptions extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppInsets.a16,
       decoration: BoxDecoration(
         color: cs.surfaceContainerHigh.withAlpha(128),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: cs.outlineVariant.withAlpha(26)),
       ),
       child: Wrap(
-        spacing: 12,
-        runSpacing: 12,
+        spacing: AppSpacing.s12,
+        runSpacing: AppSpacing.s12,
         children: [
           ...options.map(
             (option) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: AppInsets.h12v6,
               decoration: BoxDecoration(
                 border: Border.all(color: cs.outlineVariant.withAlpha(77)),
                 borderRadius: BorderRadius.circular(24),
@@ -35,7 +38,7 @@ class QuickAddOptions extends StatelessWidget {
                     option,
                     style: tt.bodyMedium?.copyWith(color: cs.onSurface),
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.h8,
                   Icon(Icons.add_circle, size: 18, color: cs.primary),
                 ],
               ),

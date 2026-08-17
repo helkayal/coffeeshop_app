@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_design_constants.dart';
+import '../../../../../core/theme/app_insets.dart';
+import '../../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/onboarding_question.dart';
 import 'option_tile.dart';
 
@@ -22,7 +23,7 @@ class QuestionPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppDesignConstants.paddingLarge),
+      padding: AppInsets.a24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -56,7 +57,7 @@ class QuestionPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 32),
+            AppSpacing.v32,
           ],
           Text(
             question.questionText.tr(),
@@ -64,12 +65,12 @@ class QuestionPage extends StatelessWidget {
               color: theme.colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: question.options.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => AppSpacing.v16,
             itemBuilder: (context, index) {
               final option = question.options[index];
               return OptionTile(

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../domain/entities/user_profile.dart';
 import '../cubit/profile_cubit.dart';
@@ -29,7 +30,7 @@ class ProfileEditDialogs {
               hintText: 'auth.first_name'.tr(),
               prefixIcon: const Icon(Icons.person_outline),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.v12,
             AppTextField(controller: ln, hintText: 'auth.last_name'.tr()),
           ],
         ),

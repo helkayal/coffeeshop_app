@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/wallet_transaction.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/wallet_cubit.dart';
@@ -81,11 +83,11 @@ class _WalletBody extends StatelessWidget {
       child: Scaffold(
         backgroundColor: cs.surface,
         body: SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+          padding: AppInsets.screen,
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.all(32),
+                padding: AppInsets.a32,
                 decoration: BoxDecoration(
                   color: cs.surfaceContainerLow,
                   borderRadius: BorderRadius.circular(20),
@@ -98,7 +100,7 @@ class _WalletBody extends StatelessWidget {
                       size: 48,
                       color: cs.primary,
                     ),
-                    const SizedBox(height: 16),
+                    AppSpacing.v16,
                     Text(
                       'wallet.current_balance'.tr(),
                       style: tt.labelLarge?.copyWith(
@@ -107,7 +109,7 @@ class _WalletBody extends StatelessWidget {
                         fontSize: 10,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.v8,
                     Text(
                       'common.price'.tr(
                         namedArgs: {'amount': balance.toStringAsFixed(0)},
@@ -121,7 +123,7 @@ class _WalletBody extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              AppSpacing.v32,
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
@@ -129,11 +131,11 @@ class _WalletBody extends StatelessWidget {
                   icon: const Icon(Icons.stars, size: 18),
                   label: Text('wallet.buy_package'.tr()),
                   style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: AppInsets.v16,
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
+              AppSpacing.v48,
               Text(
                 'wallet.transactions'.tr(),
                 style: tt.headlineMedium?.copyWith(
@@ -141,7 +143,7 @@ class _WalletBody extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.v16,
               if (transactions.isEmpty)
                 Text('wallet.no_transactions'.tr(), style: tt.bodySmall)
               else
@@ -193,8 +195,8 @@ class _TxnTile extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 8),
+      padding: AppInsets.a16,
+      margin: const EdgeInsets.only(bottom: AppSpacing.s8),
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -202,7 +204,7 @@ class _TxnTile extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: color, size: 24),
-          const SizedBox(width: 12),
+          AppSpacing.h12,
           Expanded(
             child: Text(
               label,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/helpers/result.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 /// Reset-password dialog shown after the forgot-password request.
@@ -124,13 +125,13 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('verification.reset_token_msg'.tr()),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           AppTextField(
             label: 'verification.reset_token_label'.tr(),
             controller: _tokenController,
             prefixIcon: const Icon(Icons.key),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           AppTextField(
             controller: _passwordController,
             label: 'verification.new_password'.tr(),
@@ -138,7 +139,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
             prefixIcon: const Icon(Icons.lock_outlined),
             errorText: _passwordError,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           AppTextField(
             controller: _confirmPasswordController,
             label: 'auth.confirm_password'.tr(),
@@ -147,7 +148,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
             errorText: _confirmPasswordError,
           ),
           if (_submitError case final submitError?) ...[
-            const SizedBox(height: 12),
+            AppSpacing.v12,
             Text(
               submitError,
               style: Theme.of(

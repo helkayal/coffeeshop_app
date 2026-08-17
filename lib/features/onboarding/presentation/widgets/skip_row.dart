@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_design_constants.dart';
+import '../../../../../core/theme/app_insets.dart';
 
 class SkipRow extends StatelessWidget {
   final VoidCallback onSkip;
@@ -15,9 +15,7 @@ class SkipRow extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignConstants.paddingLarge,
-      ),
+      padding: AppInsets.h24,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

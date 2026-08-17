@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class SettingsRow extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -24,7 +27,7 @@ class SettingsRow extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppInsets.a24,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: cs.outlineVariant.withAlpha(77)),
@@ -33,7 +36,7 @@ class SettingsRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, size: 22, color: cs.onSurfaceVariant),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +48,7 @@ class SettingsRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  AppSpacing.v2,
                   Text(subtitle, style: tt.bodySmall),
                 ],
               ),

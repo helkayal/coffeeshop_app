@@ -4,6 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../promotions/domain/entities/home_slider_data.dart';
 import '../../../promotions/presentation/cubit/promotions_cubit.dart';
 import '../../../promotions/presentation/cubit/promotions_state.dart';
@@ -113,7 +115,7 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
           itemBuilder: (_, index) => pages[index],
         ),
         Positioned(
-          bottom: 8,
+          bottom: AppSpacing.s8,
           left: 0,
           right: 0,
           child: _buildIndicators(pages.length),
@@ -166,7 +168,7 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
         final isActive = i == _currentPage;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          margin: AppInsets.h4,
           width: isActive ? 24 : 8,
           height: 8,
           decoration: BoxDecoration(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class ProfileField extends StatelessWidget {
   final String label;
   final String value;
@@ -18,7 +21,7 @@ class ProfileField extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppInsets.a16,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -37,7 +40,7 @@ class ProfileField extends StatelessWidget {
                     fontSize: 10,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.v4,
                 Text(
                   value,
                   style: tt.bodyMedium?.copyWith(color: cs.onSurface),

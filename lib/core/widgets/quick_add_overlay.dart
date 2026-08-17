@@ -9,6 +9,8 @@ import '../../features/menu/domain/entities/product.dart';
 import '../../features/orders/domain/entities/order_item.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../features/orders/presentation/cubit/orders_state.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 import 'quick_add_option_card.dart';
 import 'saved_order_card.dart';
 
@@ -252,7 +254,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
         children: [
           Center(
             child: Container(
-              margin: const EdgeInsets.all(16),
+              margin: AppInsets.a16,
               width: 48,
               height: 4,
               decoration: BoxDecoration(
@@ -263,7 +265,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
           ),
           Flexible(
             child: SingleChildScrollView(
-              padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 24),
+              padding: AppInsets.b24h24,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -276,7 +278,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                         color: cs.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.v12,
                     ...lastItems.map(
                       (item) => SavedOrderCard(
                         item: item,
@@ -286,7 +288,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                         onAddToCart: widget.onAddToCart,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    AppSpacing.v24,
                   ],
                   // Quick Add section
                   if (extras.isNotEmpty) ...[
@@ -297,15 +299,15 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                         color: cs.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.v12,
                     ...extras.map(
                       (opt) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.s8),
                         child: _optionCard(cs, tt, opt),
                       ),
                     ),
                   ],
-                  const SizedBox(height: 32),
+                  AppSpacing.v32,
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
@@ -329,14 +331,14 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                       style: FilledButton.styleFrom(
                         backgroundColor: cs.primary,
                         foregroundColor: cs.onPrimary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: AppInsets.v16,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.v16,
                 ],
               ),
             ),

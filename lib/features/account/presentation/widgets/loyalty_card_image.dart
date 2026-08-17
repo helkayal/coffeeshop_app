@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import '../extensions/loyalty_tier_style.dart';
 
@@ -46,7 +48,7 @@ class LoyaltyCardImage extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(22),
+          padding: AppInsets.a22,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -59,7 +61,7 @@ class LoyaltyCardImage extends StatelessWidget {
                 ),
               ),
               if (pointsText case final text?) ...[
-                const SizedBox(height: 4),
+                AppSpacing.v4,
                 Text(
                   text,
                   style: tt.bodyMedium?.copyWith(
@@ -70,7 +72,7 @@ class LoyaltyCardImage extends StatelessWidget {
                 ),
               ],
               if (showViewBenefits) ...[
-                const SizedBox(height: 4),
+                AppSpacing.v4,
                 GestureDetector(
                   onTap: () => context.read<ShellCubit>().pushSecondary(
                     const ViewBenefitsRoute(),
@@ -86,7 +88,7 @@ class LoyaltyCardImage extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      AppSpacing.h2,
                       Icon(
                         Icons.chevron_right,
                         size: 14,

@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class AppDropdown extends StatelessWidget {
   final String hint;
@@ -32,7 +34,7 @@ class AppDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: AppInsets.h16,
           decoration: BoxDecoration(
             color: colorScheme.surface,
             borderRadius: AppDesignConstants.radiusMedium,
@@ -69,7 +71,7 @@ class AppDropdown extends StatelessWidget {
         ),
         if (errorText case final error?)
           Padding(
-            padding: const EdgeInsets.only(left: 12, top: 4),
+            padding: const EdgeInsets.only(left: AppSpacing.s12, top: AppSpacing.s4),
             child: Text(
               error,
               style: textTheme.bodySmall?.copyWith(color: colorScheme.error),

@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
+
 class MenuHeader extends StatelessWidget {
   const MenuHeader({super.key});
 
@@ -18,7 +20,7 @@ class MenuHeader extends StatelessWidget {
             color: Color(0xFFECE0D6),
           ),
         ),
-        const SizedBox(height: 16),
+        AppSpacing.v16,
         Container(width: 48, height: 1, color: cs.primary.withAlpha(77)),
       ],
     );

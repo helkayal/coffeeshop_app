@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../cubit/settings_cubit.dart';
 
 void showLanguagePicker(
@@ -15,7 +17,7 @@ void showLanguagePicker(
     context: context,
     builder: (_) {
       return Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppInsets.a24,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -23,11 +25,27 @@ void showLanguagePicker(
               'settings.language'.tr(),
               style: tt.headlineMedium?.copyWith(fontSize: 20),
             ),
-            const SizedBox(height: 24),
-            _langTile(context, cubit, 'en', 'English', currentLocale, cs, tt),
-            const SizedBox(height: 12),
-            _langTile(context, cubit, 'ar', 'العربية', currentLocale, cs, tt),
-            const SizedBox(height: 16),
+            AppSpacing.v24,
+            _langTile(
+              context,
+              cubit,
+              'en',
+              'settings.english'.tr(),
+              currentLocale,
+              cs,
+              tt,
+            ),
+            AppSpacing.v12,
+            _langTile(
+              context,
+              cubit,
+              'ar',
+              'settings.arabic'.tr(),
+              currentLocale,
+              cs,
+              tt,
+            ),
+            AppSpacing.v16,
           ],
         ),
       );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+
 class ProgressDots extends StatelessWidget {
   final int totalSteps;
   final int currentStep;
@@ -19,7 +21,7 @@ class ProgressDots extends StatelessWidget {
         final isCurrent = i == currentStep;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          margin: AppInsets.h4,
           width: isCurrent ? 24 : 8,
           height: 8,
           decoration: BoxDecoration(

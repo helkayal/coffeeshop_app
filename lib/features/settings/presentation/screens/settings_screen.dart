@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/section_header_label.dart';
 import '../cubit/settings_cubit.dart';
 import '../cubit/settings_state.dart';
@@ -25,12 +27,12 @@ class SettingsScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: cs.surface,
           body: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+            padding: AppInsets.screen,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SectionHeaderLabel(text: 'settings.preferences'.tr()),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 Container(
                   decoration: BoxDecoration(
                     color: cs.surfaceContainerLow,
@@ -56,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
                         icon: Icons.language,
                         title: 'settings.language'.tr(),
                         subtitle: locale == 'ar'
-                            ? 'العربية'
+                            ? 'settings.arabic'.tr()
                             : 'settings.english'.tr(),
                         onTap: () => showLanguagePicker(context, cubit, locale),
                       ),
@@ -75,9 +77,9 @@ class SettingsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 48),
+                AppSpacing.v48,
                 SectionHeaderLabel(text: 'settings.support'.tr()),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 Container(
                   decoration: BoxDecoration(
                     color: cs.surfaceContainerLow,

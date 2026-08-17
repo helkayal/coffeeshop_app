@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/social_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
@@ -19,7 +21,7 @@ class SocialLoginSection extends StatelessWidget {
           children: [
             Expanded(child: Divider(color: colorScheme.outlineVariant)),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: AppInsets.h16,
               child: Text(
                 'auth.continue_with_social'.tr(),
                 style: textTheme.bodySmall?.copyWith(
@@ -30,7 +32,7 @@ class SocialLoginSection extends StatelessWidget {
             Expanded(child: Divider(color: colorScheme.outlineVariant)),
           ],
         ),
-        const SizedBox(height: 32),
+        AppSpacing.v32,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -39,12 +41,12 @@ class SocialLoginSection extends StatelessWidget {
               onPressed: () => onSocialLogin('google'),
               iconSize: 46,
             ),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             SocialButton(
               icon: Icons.facebook,
               onPressed: () => onSocialLogin('facebook'),
             ),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             SocialButton(
               icon: Icons.apple,
               onPressed: () => onSocialLogin('apple'),

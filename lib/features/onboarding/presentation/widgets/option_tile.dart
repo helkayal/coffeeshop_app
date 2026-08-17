@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_design_constants.dart';
+import '../../../../../core/theme/app_insets.dart';
+import '../../../../../core/theme/app_spacing.dart';
 
 class OptionTile extends StatelessWidget {
   final String text;
@@ -23,7 +25,7 @@ class OptionTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: AppInsets.a20,
         decoration: BoxDecoration(
           color: isSelected
               ? colorScheme.primary.withValues(alpha: 0.1)
@@ -39,7 +41,7 @@ class OptionTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isSelected) const SizedBox(width: 24),
+            if (isSelected) AppSpacing.h24,
             Expanded(
               child: Text(
                 text.tr(),

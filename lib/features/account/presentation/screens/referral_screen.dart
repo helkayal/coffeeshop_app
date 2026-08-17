@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../domain/entities/referral_history_entry.dart';
 import '../cubit/profile_cubit.dart';
@@ -35,7 +37,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
 
   void _shareCode(String code) {
     if (code.isEmpty) return;
-    Share.share('Use my referral code $code to earn rewards!');
+    Share.share('referral.share_text'.tr(namedArgs: {'code': code}));
   }
 
   void _copyCode(String code) {
@@ -44,7 +46,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
     AppSnackBar.show(
       context,
       'referral.code_copied'.tr(),
-      type: SnackBarType.info,
+      type: SnackBarType.success,
     );
   }
 
@@ -91,7 +93,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
           child: Scaffold(
             backgroundColor: cs.surface,
             body: SingleChildScrollView(
-              padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+              padding: AppInsets.screen,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -100,7 +102,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                     onShare: () => _shareCode(code),
                     onCopy: () => _copyCode(code),
                   ),
-                  const SizedBox(height: 32),
+                  AppSpacing.v32,
                   Text(
                     'referral.apply_title'.tr(),
                     style: tt.headlineMedium?.copyWith(
@@ -108,13 +110,13 @@ class _ReferralScreenState extends State<ReferralScreen> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.v16,
                   _ApplyReferralRow(
                     controller: _applyCtrl,
                     isApplying: isApplying,
                     onApply: _applyReferral,
                   ),
-                  const SizedBox(height: 40),
+                  AppSpacing.v40,
                   Text(
                     'referral.history'.tr(),
                     style: tt.headlineMedium?.copyWith(
@@ -122,7 +124,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.v16,
                   if (history.isEmpty)
                     Text('referral.no_history'.tr(), style: tt.bodySmall)
                   else
@@ -156,7 +158,7 @@ class _ReferralCodeCard extends StatelessWidget {
     return Center(
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: AppInsets.a20,
         decoration: BoxDecoration(
           color: cs.surfaceContainerLow,
           borderRadius: BorderRadius.circular(20),
@@ -170,9 +172,9 @@ class _ReferralCodeCard extends StatelessWidget {
               tooltip: 'referral.share'.tr(),
               onPressed: onShare,
             ),
-            const SizedBox(height: 12),
+            AppSpacing.v12,
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: AppInsets.h16v10,
               decoration: BoxDecoration(
                 color: cs.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -195,18 +197,18 @@ class _ReferralCodeCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.h8,
                   IconButton(
                     icon: const Icon(Icons.copy, size: 18),
                     color: cs.primary,
                     onPressed: onCopy,
                     constraints: const BoxConstraints(),
-                    padding: EdgeInsets.zero,
+                    padding: AppInsets.zero,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.v12,
             Text(
               'referral.share_earn'.tr(),
               textAlign: TextAlign.center,
@@ -245,8 +247,8 @@ class _ApplyReferralRow extends StatelessWidget {
               filled: true,
               fillColor: cs.surfaceContainerLow,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
+                horizontal: AppSpacing.s16,
+                vertical: AppSpacing.s14,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -259,11 +261,11 @@ class _ApplyReferralRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        AppSpacing.h12,
         FilledButton(
           onPressed: isApplying ? null : onApply,
           style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: AppInsets.h24v16,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -299,8 +301,8 @@ class _ReferralHistoryTile extends StatelessWidget {
     ).format(item.createdAt);
 
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 8),
+      padding: AppInsets.a16,
+      margin: const EdgeInsets.only(bottom: AppSpacing.s8),
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -308,7 +310,7 @@ class _ReferralHistoryTile extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.person_outline, color: cs.primary, size: 24),
-          const SizedBox(width: 12),
+          AppSpacing.h12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

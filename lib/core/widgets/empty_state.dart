@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
+
 class EmptyState extends StatelessWidget {
   final String message;
   final String imageAsset;
@@ -20,7 +22,7 @@ class EmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 48),
+        padding: const EdgeInsets.only(top: AppSpacing.s48),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -33,7 +35,7 @@ class EmptyState extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.v16,
             Text(
               message.tr(),
               style: tt.bodyLarge?.copyWith(

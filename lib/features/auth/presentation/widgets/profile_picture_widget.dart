@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+
 class ProfilePictureWidget extends StatelessWidget {
   final String gender;
   final String? imagePath;
@@ -38,7 +40,7 @@ class ProfilePictureWidget extends StatelessWidget {
             bottom: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: AppInsets.a6,
               decoration: BoxDecoration(
                 color: colorScheme.primary,
                 shape: BoxShape.circle,

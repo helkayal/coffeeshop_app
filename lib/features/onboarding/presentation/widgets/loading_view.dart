@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
+
 class LoadingView extends StatelessWidget {
   const LoadingView({super.key});
 
@@ -11,7 +13,7 @@ class LoadingView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           Text(
             'onboarding.loading'.tr(),
             style: Theme.of(context).textTheme.bodyMedium,

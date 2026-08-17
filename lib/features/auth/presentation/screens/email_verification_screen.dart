@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../cubit/auth_cubit.dart';
@@ -121,17 +123,17 @@ class _EmailVerificationContentState extends State<_EmailVerificationContent> {
 
           return SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: AppInsets.a24,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 16),
+                  AppSpacing.v16,
                   Icon(
                     Icons.mark_email_unread_outlined,
                     size: 72,
                     color: colorScheme.primary,
                   ),
-                  const SizedBox(height: 24),
+                  AppSpacing.v24,
                   Text(
                     'verification.title'.tr(),
                     style: theme.textTheme.headlineSmall?.copyWith(
@@ -139,7 +141,7 @@ class _EmailVerificationContentState extends State<_EmailVerificationContent> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   Text(
                     'verification.message'.tr(),
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -147,7 +149,7 @@ class _EmailVerificationContentState extends State<_EmailVerificationContent> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.v8,
                   Text(
                     widget.email,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -156,14 +158,14 @@ class _EmailVerificationContentState extends State<_EmailVerificationContent> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  AppSpacing.v32,
                   AppTextField(
                     controller: _tokenController,
                     label: 'verification.token_label'.tr(),
                     prefixIcon: const Icon(Icons.verified_outlined),
                     keyboardType: TextInputType.text,
                   ),
-                  const SizedBox(height: 24),
+                  AppSpacing.v24,
                   FilledButton(
                     onPressed: isLoading ? null : _onVerify,
                     child: isLoading
@@ -177,12 +179,12 @@ class _EmailVerificationContentState extends State<_EmailVerificationContent> {
                           )
                         : Text('verification.verify'.tr()),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   TextButton(
                     onPressed: isLoading ? null : _onResend,
                     child: Text('verification.resend'.tr()),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   TextButton(
                     onPressed: () => Navigator.pushNamedAndRemoveUntil(
                       context,

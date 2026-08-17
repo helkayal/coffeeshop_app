@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
+
 class RadioOption extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -44,7 +46,7 @@ class RadioOption extends StatelessWidget {
                   )
                 : null,
           ),
-          const SizedBox(width: 8),
+          AppSpacing.h8,
           Text(
             label,
             style: textTheme.bodyMedium?.copyWith(

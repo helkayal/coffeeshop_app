@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/quick_add_overlay.dart';
 import '../../../menu/domain/entities/product.dart';
 import '../../../menu/presentation/cubit/menu_cubit.dart';
@@ -93,7 +95,7 @@ class FeaturedItemCard extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: AppInsets.h10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -112,15 +114,12 @@ class FeaturedItemCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      AppSpacing.h8,
                       InkWell(
                         onTap: () => _onCustomize(context),
                         borderRadius: BorderRadius.circular(4),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 4,
-                          ),
+                          padding: AppInsets.a4,
                           child: Text(
                             'menu_screen.customize'.tr(),
                             style: tt.labelLarge?.copyWith(
@@ -133,7 +132,7 @@ class FeaturedItemCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.v4,
                   Text(
                     description,
                     maxLines: 2,
@@ -159,7 +158,7 @@ class FeaturedItemCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  AppSpacing.v6,
                 ],
               ),
             ),
@@ -185,7 +184,7 @@ class _FeatureImage extends StatelessWidget {
         Radius.circular(AppDesignConstants.borderRadius2xl),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: AppInsets.v6,
         child: Center(
           child: isNetwork
               ? Image.network(

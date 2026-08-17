@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
+
 class BannerTextOverlay extends StatelessWidget {
   final String? subtitle;
   final String? title;
@@ -19,7 +21,7 @@ class BannerTextOverlay extends StatelessWidget {
           subtitle ?? 'home_screen.limited_release'.tr(),
           style: tt.labelSmall?.copyWith(letterSpacing: 2, fontSize: 10),
         ),
-        const SizedBox(height: 4),
+        AppSpacing.v4,
         Text(
           title ?? 'home_screen.autumn_blend'.tr(),
           style: tt.displaySmall?.copyWith(

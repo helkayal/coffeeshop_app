@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+
 class ChipItem extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -22,7 +24,7 @@ class ChipItem extends StatelessWidget {
       child: Container(
         height: 40,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: AppInsets.h20,
         decoration: BoxDecoration(
           color: isSelected ? cs.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(24),

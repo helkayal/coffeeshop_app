@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../domain/entities/order.dart';
@@ -17,14 +19,15 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
-    final dateStr =
-        '${order.createdAt.day} ${_month(order.createdAt.month)} ${order.createdAt.year}';
+    final dateStr = DateFormat.yMMMd(
+      context.locale.toString(),
+    ).format(order.createdAt);
     final shortId = order.id.length > 8
         ? '#${order.id.substring(0, 8).toUpperCase()}'
         : '#${order.id}';
 
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: AppInsets.a24,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -44,7 +47,7 @@ class OrderCard extends StatelessWidget {
                       dateStr,
                       style: tt.labelLarge?.copyWith(color: cs.secondary),
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.v4,
                     Text(
                       shortId,
                       style: tt.headlineMedium?.copyWith(
@@ -67,18 +70,15 @@ class OrderCard extends StatelessWidget {
                       color: cs.primary,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.v4,
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
+                    padding: AppInsets.h8v4,
                     decoration: BoxDecoration(
                       color: cs.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      order.status,
+                      _localizedStatus(order.status),
                       style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                   ),
@@ -86,7 +86,7 @@ class OrderCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           ...order.items.map((item) => OrderItemRow(item: item)),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -99,7 +99,7 @@ class OrderCard extends StatelessWidget {
                   style: tt.labelLarge?.copyWith(color: cs.primary),
                 ),
               ),
-              const SizedBox(width: 12),
+              AppSpacing.h12,
               TextButton.icon(
                 onPressed: () => _reorder(context),
                 icon: Icon(Icons.replay, size: 16, color: cs.primary),
@@ -126,14 +126,14 @@ class OrderCard extends StatelessWidget {
           children: [
             _receiptLine(
               context,
-              'Order',
+              'orders_screen.order'.tr(),
               order.id.substring(0, 8).toUpperCase(),
             ),
-            const SizedBox(height: 4),
+            AppSpacing.v4,
             _receiptLine(
               context,
-              'Date',
-              '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}',
+              'orders_screen.date'.tr(),
+              DateFormat.yMd(context.locale.toString()).format(order.createdAt),
             ),
             const Divider(),
             ...order.items.map(
@@ -153,7 +153,7 @@ class OrderCard extends StatelessWidget {
             const Divider(),
             _receiptLine(
               context,
-              'Total',
+              'orders_screen.total'.tr(),
               'common.price'.tr(
                 namedArgs: {'amount': order.total.toStringAsFixed(2)},
               ),
@@ -183,7 +183,7 @@ class OrderCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(child: Text(label, style: tt.bodySmall)),
-        const SizedBox(width: 12),
+        AppSpacing.h12,
         Flexible(
           child: Text(
             value,
@@ -228,19 +228,16 @@ class OrderCard extends StatelessWidget {
     context.read<ShellCubit>().pushSecondary(const CartRoute());
   }
 
-  String _month(int m) => const [
-    '',
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ][m];
+  String _localizedStatus(String status) {
+    final key = switch (status.toLowerCase()) {
+      'pending' => 'pending',
+      'accepted' => 'accepted',
+      'preparing' => 'preparing',
+      'ready_for_pickup' => 'ready_for_pickup',
+      'completed' => 'completed',
+      'cancelled' => 'cancelled',
+      _ => 'unknown',
+    };
+    return 'orders_screen.status.$key'.tr();
+  }
 }

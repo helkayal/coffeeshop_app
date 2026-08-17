@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../menu/presentation/cubit/menu_cubit.dart';
@@ -20,19 +22,19 @@ class HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.only(top: 5),
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.s6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            padding: AppInsets.h16,
             child: HomeProfileSection(),
           ),
-          const SizedBox(height: 15),
+          AppSpacing.v16,
           const FeaturedItemsView(),
-          const SizedBox(height: 15),
+          AppSpacing.v16,
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            padding: AppInsets.h16,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -47,9 +49,9 @@ class HomeBody extends StatelessWidget {
                           SectionHeader(
                             title: 'home_screen.your_last_order'.tr(),
                           ),
-                          const SizedBox(height: 5),
+                          AppSpacing.v6,
                           _LastOrderCard(),
-                          const SizedBox(height: 15),
+                          AppSpacing.v16,
                         ],
                       );
                     }
@@ -57,7 +59,7 @@ class HomeBody extends StatelessWidget {
                   },
                 ),
                 const ExploreMenuButton(),
-                const SizedBox(height: 40),
+                AppSpacing.v40,
               ],
             ),
           ),
@@ -129,7 +131,7 @@ class _LastOrderCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: cs.outlineVariant.withAlpha(153)),
               ),
-              padding: const EdgeInsets.all(12),
+              padding: AppInsets.a12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -147,16 +149,16 @@ class _LastOrderCard extends StatelessWidget {
                           },
                         ),
                         style: tt.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
+                           fontWeight: FontWeight.w700,
                           color: cs.primary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   ...latestOrder.items.map(
                     (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.s12),
                       child: Row(
                         children: [
                           ClipRRect(
@@ -181,7 +183,7 @@ class _LastOrderCard extends StatelessWidget {
                                     ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          AppSpacing.h12,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +217,7 @@ class _LastOrderCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.v8,
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton.icon(

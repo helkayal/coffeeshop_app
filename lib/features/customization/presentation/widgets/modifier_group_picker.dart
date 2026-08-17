@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 import 'modifier_icon.dart';
@@ -42,14 +44,14 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
     final groupIcon = modifierGroupIcon(widget.group.name);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: AppInsets.h24v20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(groupIcon, size: 18, color: cs.primary),
-              const SizedBox(width: 8),
+              AppSpacing.h8,
               Text(
                 widget.group.name,
                 style: tt.headlineMedium?.copyWith(
@@ -58,7 +60,7 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
                 ),
               ),
               if (widget.group.required) ...[
-                const SizedBox(width: 8),
+                AppSpacing.h8,
                 Text(
                   'customization.required'.tr(),
                   style: tt.labelLarge?.copyWith(
@@ -70,10 +72,10 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
               ],
             ],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           Wrap(
-            spacing: 12,
-            runSpacing: 12,
+            spacing: AppSpacing.s12,
+            runSpacing: AppSpacing.s12,
             children: List.generate(widget.group.values.length, (i) {
               final option = widget.group.values[i];
               final selected = i == _selectedIndex;
@@ -134,7 +136,7 @@ class _OptionCircle extends StatelessWidget {
               color: isSelected ? cs.primary : cs.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 6),
+          AppSpacing.v6,
           Text(
             option.name,
             style: tt.bodySmall?.copyWith(
@@ -144,7 +146,7 @@ class _OptionCircle extends StatelessWidget {
           ),
           Text(
             option.priceModifier == 0.0
-                ? 'Included'
+                ? 'customization.included'.tr()
                 : 'common.price'.tr(
                     namedArgs: {
                       'amount': '+${option.priceModifier.toStringAsFixed(2)}',

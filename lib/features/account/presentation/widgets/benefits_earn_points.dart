@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class BenefitsEarnPoints extends StatelessWidget {
   const BenefitsEarnPoints({super.key});
 
@@ -10,7 +13,7 @@ class BenefitsEarnPoints extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: AppInsets.a20,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -24,21 +27,21 @@ class BenefitsEarnPoints extends StatelessWidget {
             tt,
             cs,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Divider(color: cs.outlineVariant.withAlpha(77)),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           _earnRow(Icons.shopping_bag, 'benefits.earn_purchase'.tr(), tt, cs),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Divider(color: cs.outlineVariant.withAlpha(77)),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           _earnRow(Icons.reviews, 'benefits.earn_review'.tr(), tt, cs),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Divider(color: cs.outlineVariant.withAlpha(77)),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           _earnRow(Icons.share, 'benefits.earn_referral'.tr(), tt, cs),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Divider(color: cs.outlineVariant.withAlpha(77)),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           _earnRow(Icons.card_giftcard, 'benefits.earn_birthday'.tr(), tt, cs),
         ],
       ),
@@ -57,7 +60,7 @@ class BenefitsEarnPoints extends StatelessWidget {
           ),
           child: Icon(icon, color: cs.primary, size: 20),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.h16,
         Expanded(
           child: Text(
             text,

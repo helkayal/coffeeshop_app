@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
 import 'radio_option.dart';
 
 class GenderSelection extends StatelessWidget {
@@ -30,7 +31,7 @@ class GenderSelection extends StatelessWidget {
           genderLabel,
           style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
         ),
-        const SizedBox(width: 40),
+        AppSpacing.h40,
         Expanded(
           child: RadioOption(
             label: maleLabel,

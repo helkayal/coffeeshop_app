@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
+
 class QuickAddSavedOrder extends StatelessWidget {
   final String name;
   final String description;
@@ -18,7 +21,7 @@ class QuickAddSavedOrder extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppInsets.a12,
       decoration: BoxDecoration(
         color: cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(16),
@@ -41,7 +44,7 @@ class QuickAddSavedOrder extends StatelessWidget {
                   Container(color: cs.surfaceContainerHighest),
             ),
           ),
-          const SizedBox(width: 16),
+          AppSpacing.h16,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +56,7 @@ class QuickAddSavedOrder extends StatelessWidget {
                     color: cs.primary,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.v4,
                 Text(
                   description,
                   maxLines: 2,

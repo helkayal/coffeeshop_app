@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -26,7 +28,7 @@ class ViewBenefitsScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: cs.surface,
           body: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 96),
+            padding: AppInsets.screenTop24,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,13 +39,13 @@ class ViewBenefitsScreen extends StatelessWidget {
                       '${points.toStringAsFixed(0)} ${'benefits.points'.tr()}',
                   showViewBenefits: false,
                 ),
-                const SizedBox(height: 32),
+                AppSpacing.v32,
                 _sectionTitle(tt, 'benefits.rewards'.tr()),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 BenefitsAllTiers(currentIndex: tier.index),
-                const SizedBox(height: 32),
+                AppSpacing.v32,
                 _sectionTitle(tt, 'benefits.how_to_earn'.tr()),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 const BenefitsEarnPoints(),
               ],
             ),

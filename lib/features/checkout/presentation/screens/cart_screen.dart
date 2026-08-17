@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import '../widgets/cart_item_card.dart';
@@ -74,7 +76,7 @@ class _CartScreenState extends State<CartScreen> {
               size: 64,
               color: cs.onSurfaceVariant,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.v16,
             Text(
               'checkout.empty_bag'.tr(),
               style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
@@ -85,7 +87,7 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.fromSTEB(24, 8, 24, 96),
+      padding: AppInsets.screenTop8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -96,12 +98,12 @@ class _CartScreenState extends State<CartScreen> {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
           Text('checkout.review_selection'.tr(), style: tt.bodySmall),
-          const SizedBox(height: 40),
+          AppSpacing.v40,
           ...cart.items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s32),
               child: CartItemCard(
                 item: item,
                 onIncrement: () => cubit.increment(item.id),
@@ -110,7 +112,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
           OrderSummaryCard(
             subtotal: 'common.price'.tr(
               namedArgs: {'amount': cart.subtotal.toStringAsFixed(2)},

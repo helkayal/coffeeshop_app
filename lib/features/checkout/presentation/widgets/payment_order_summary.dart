@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/cart_item.dart';
 
 class PaymentOrderSummary extends StatelessWidget {
@@ -19,7 +21,7 @@ class PaymentOrderSummary extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: AppInsets.a24,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -35,10 +37,10 @@ class PaymentOrderSummary extends StatelessWidget {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           ...items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s12),
               child: _OrderLine(
                 imagePath: item.imagePath,
                 name: item.name,
@@ -49,9 +51,9 @@ class PaymentOrderSummary extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
           Divider(color: cs.outlineVariant.withAlpha(128)),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -114,7 +116,7 @@ class _OrderLine extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.h16,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

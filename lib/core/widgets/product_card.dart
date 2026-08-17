@@ -2,6 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
+
 class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -51,7 +54,7 @@ class ProductCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppInsets.a16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,7 +87,7 @@ class ProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: text.bodySmall,
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.v12,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

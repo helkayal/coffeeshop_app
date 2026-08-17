@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
 import 'app_text_field.dart';
 
 class AddCardForm extends StatelessWidget {
@@ -17,22 +18,22 @@ class AddCardForm extends StatelessWidget {
             context,
           ).textTheme.headlineMedium?.copyWith(fontSize: 20),
         ),
-        const SizedBox(height: 16),
+        AppSpacing.v16,
         AppTextField(
           label: 'credit_card.card_number'.tr(),
           keyboardType: TextInputType.number,
           prefixIcon: const Icon(Icons.credit_card),
         ),
-        const SizedBox(height: 16),
+        AppSpacing.v16,
         Row(
           children: [
             Expanded(
               child: AppTextField(
-                label: 'credit_card.expiry'.tr(),
+                 label: 'credit_card.expiry'.tr(),
                 keyboardType: TextInputType.datetime,
               ),
             ),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             Expanded(
               child: AppTextField(
                 label: 'credit_card.cvv'.tr(),
@@ -42,12 +43,12 @@ class AddCardForm extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        AppSpacing.v16,
         AppTextField(
           label: 'credit_card.name_on_card'.tr(),
           prefixIcon: const Icon(Icons.person_outline),
         ),
-        const SizedBox(height: 32),
+        AppSpacing.v32,
         SizedBox(
           width: double.infinity,
           child: FilledButton(

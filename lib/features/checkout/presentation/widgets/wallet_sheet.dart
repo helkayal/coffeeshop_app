@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../account/presentation/cubit/payment_preferences_cubit.dart';
 import '../../../account/presentation/cubit/payment_preferences_state.dart';
@@ -64,12 +66,7 @@ class _WalletSheetState extends State<WalletSheet> {
         color: cs.surfaceContainerLow,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        24,
-        24,
-        24,
-        24 + MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: AppInsets.bottomSheetWithKeyboard(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -81,7 +78,7 @@ class _WalletSheetState extends State<WalletSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Text(
             'wallet.phone_for_wallet'.tr(),
             style: tt.headlineMedium?.copyWith(
@@ -89,14 +86,14 @@ class _WalletSheetState extends State<WalletSheet> {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           AppTextField(
             controller: _phoneCtrl,
             label: 'wallet.phone_number'.tr(),
             keyboardType: TextInputType.phone,
             prefixIcon: const Icon(Icons.phone_android),
           ),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -104,7 +101,7 @@ class _WalletSheetState extends State<WalletSheet> {
               child: Text('wallet.continue'.tr()),
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
         ],
       ),
     );

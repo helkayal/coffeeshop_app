@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class OrderSummaryCard extends StatelessWidget {
   final String subtotal;
@@ -24,7 +26,7 @@ class OrderSummaryCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: AppInsets.a32,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -34,7 +36,7 @@ class OrderSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: AppInsets.a24,
             decoration: BoxDecoration(
               color: cs.surfaceContainer,
               borderRadius: BorderRadius.circular(4),
@@ -46,7 +48,7 @@ class OrderSummaryCard extends StatelessWidget {
                 Row(
                   children: [
                     Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
-                    const SizedBox(width: 8),
+                    AppSpacing.h8,
                     Text(
                       'checkout.special_instructions'.tr(),
                       style: tt.headlineMedium?.copyWith(
@@ -56,7 +58,7 @@ class OrderSummaryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 TextField(
                   maxLines: 3,
                   decoration: InputDecoration(
@@ -71,7 +73,7 @@ class OrderSummaryCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Text(
             'checkout.summary'.tr(),
             style: tt.headlineMedium?.copyWith(
@@ -79,7 +81,7 @@ class OrderSummaryCard extends StatelessWidget {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -93,7 +95,7 @@ class OrderSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -107,9 +109,9 @@ class OrderSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Divider(color: cs.outlineVariant.withAlpha(128)),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -129,7 +131,7 @@ class OrderSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(

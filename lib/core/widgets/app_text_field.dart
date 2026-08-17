@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class AppTextField extends StatefulWidget {
   final String? label;
@@ -43,7 +45,7 @@ class _AppTextFieldState extends State<AppTextField> {
             label,
             style: textTheme.labelLarge?.copyWith(color: colorScheme.onSurface),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
         ],
         TextField(
           controller: widget.controller,
@@ -73,10 +75,7 @@ class _AppTextFieldState extends State<AppTextField> {
             border: _outlineBorder(colorScheme.outlineVariant),
             enabledBorder: _outlineBorder(colorScheme.outlineVariant),
             focusedBorder: _outlineBorder(colorScheme.primary, width: 2),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            contentPadding: AppInsets.a16,
           ),
         ),
       ],

@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/order_item.dart';
 
 class OrderItemRow extends StatelessWidget {
@@ -13,7 +15,7 @@ class OrderItemRow extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: AppInsets.b16,
       child: Row(
         children: [
           Container(
@@ -25,7 +27,7 @@ class OrderItemRow extends StatelessWidget {
             ),
             child: Icon(Icons.coffee, size: 20, color: cs.onSurfaceVariant),
           ),
-          const SizedBox(width: 16),
+          AppSpacing.h16,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +36,7 @@ class OrderItemRow extends StatelessWidget {
                   item.name,
                   style: tt.bodyMedium?.copyWith(color: cs.onSurface),
                 ),
-                const SizedBox(height: 2),
+                AppSpacing.v2,
                 Text(
                   'common.price'.tr(
                     namedArgs: {'amount': item.price.toStringAsFixed(2)},
@@ -45,7 +47,9 @@ class OrderItemRow extends StatelessWidget {
             ),
           ),
           Text(
-            'x${item.quantity}',
+            'common.quantity'.tr(
+              namedArgs: {'quantity': item.quantity.toString()},
+            ),
             style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
           ),
         ],

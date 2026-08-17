@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_dropdown.dart';
 import '../../../auth/presentation/cubit/locations_cubit.dart';
 import '../../../auth/presentation/cubit/locations_state.dart';
@@ -84,7 +85,7 @@ class _LocationEditDialogState extends State<LocationEditDialog> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.v12,
                     ValueListenableBuilder<String?>(
                       valueListenable: _state,
                       builder: (_, s, _) => ValueListenableBuilder<String?>(

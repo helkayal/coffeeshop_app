@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../cubit/orders_cubit.dart';
 import '../cubit/orders_state.dart';
@@ -31,12 +33,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
         return Scaffold(
           backgroundColor: cs.surface,
           body: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+            padding: AppInsets.screen,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24, top: 8),
+                  padding: AppInsets.b24t8,
                   child: Text(
                     'orders_screen.your_orders'.tr(),
                     style: tt.headlineMedium?.copyWith(fontSize: 24),
@@ -45,7 +47,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 switch (state) {
                   OrdersInitial() || OrdersLoading() => const Center(
                     child: Padding(
-                      padding: EdgeInsets.only(top: 48),
+                      padding: EdgeInsets.only(top: AppSpacing.s48),
                       child: CircularProgressIndicator(),
                     ),
                   ),
@@ -61,7 +63,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     children: [
                       for (final order in orders) ...[
                         OrderCard(order: order),
-                        const SizedBox(height: 16),
+                        AppSpacing.v16,
                       ],
                     ],
                   ),

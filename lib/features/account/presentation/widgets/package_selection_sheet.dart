@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../domain/entities/payment_method.dart';
 import '../../domain/entities/wallet_package.dart';
@@ -182,10 +184,10 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         ),
         padding: EdgeInsets.fromLTRB(
-          24,
-          24,
-          24,
-          24 + MediaQuery.of(context).viewInsets.bottom,
+          AppSpacing.s24,
+          AppSpacing.s24,
+          AppSpacing.s24,
+          AppSpacing.s24 + MediaQuery.of(context).viewInsets.bottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -201,7 +203,7 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            AppSpacing.v24,
             Text(
               'wallet.select_package'.tr(),
               style: tt.headlineMedium?.copyWith(
@@ -210,23 +212,23 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                 color: cs.onSurface,
               ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.v8,
             Text(
               'wallet.package_subtitle'.tr(),
               style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
-            const SizedBox(height: 24),
+            AppSpacing.v24,
             if (_loading)
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(32),
+                  padding: AppInsets.a32,
                   child: CircularProgressIndicator(),
                 ),
               )
             else if (_error case final error? when _packages.isEmpty)
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppInsets.a16,
                   child: Text(error, style: TextStyle(color: cs.error)),
                 ),
               )
@@ -238,7 +240,7 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: _packages.length,
-                  separatorBuilder: (_, index) => const SizedBox(height: 12),
+                  separatorBuilder: (_, index) => AppSpacing.v12,
                   itemBuilder: (context, index) {
                     final pkg = _packages[index];
                     final isSelected = _selectedPackage?.id == pkg.id;
@@ -251,16 +253,16 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                 ),
               ),
               if (_error case final error?) ...[
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 Text(error, style: TextStyle(color: cs.error, fontSize: 13)),
               ],
-              const SizedBox(height: 24),
+              AppSpacing.v24,
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: _purchasing ? null : _onBuyPressed,
                   style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: AppInsets.v16,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -284,7 +286,7 @@ class _PackageSelectionSheetState extends State<PackageSelectionSheet> {
                 ),
               ),
             ],
-            const SizedBox(height: 16),
+            AppSpacing.v16,
           ],
         ),
       ),

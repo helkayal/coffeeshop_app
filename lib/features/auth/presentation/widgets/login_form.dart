@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class LoginForm extends StatelessWidget {
@@ -29,7 +30,7 @@ class LoginForm extends StatelessWidget {
           prefixIcon: Icon(Icons.email_outlined, color: colorScheme.outline),
           errorText: emailError,
         ),
-        const SizedBox(height: 16),
+        AppSpacing.v16,
         AppTextField(
           controller: passwordController,
           hintText: 'auth.password'.tr(),

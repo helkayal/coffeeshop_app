@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../favorites/presentation/cubit/favorites_cubit.dart';
@@ -332,7 +334,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 120),
+            padding: AppInsets.b120,
             child: Column(
               children: [
                 _buildHero(cs, tt, product),
@@ -409,9 +411,9 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
             ),
           ),
           PositionedDirectional(
-            start: 24,
-            bottom: 24,
-            end: 24,
+            start: AppSpacing.s24,
+            bottom: AppSpacing.s24,
+            end: AppSpacing.s24,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -423,7 +425,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
                     color: cs.onSurface,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.v4,
                 Text(
                   product.description,
                   style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),

@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/auth_header.dart';
@@ -61,16 +62,14 @@ class RegisterForm extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignConstants.paddingLarge,
-      ),
+      padding: AppInsets.h24,
       child: Column(
         children: [
           AuthHeader(
             title: 'auth.join_the_club'.tr(),
             subtitle: 'auth.register_subtitle'.tr(),
           ),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           ValueListenableBuilder<String?>(
             valueListenable: genderNotifier,
             builder: (context, gender, _) => ProfilePictureWidget(
@@ -79,14 +78,14 @@ class RegisterForm extends StatelessWidget {
               onTap: onPickImage,
             ),
           ),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           NameFields(
             firstNameController: firstNameController,
             lastNameController: lastNameController,
             firstNameError: firstNameError,
             lastNameError: lastNameError,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           AppTextField(
             controller: emailController,
             hintText: 'auth.email_address'.tr(),
@@ -94,7 +93,7 @@ class RegisterForm extends StatelessWidget {
             prefixIcon: Icon(Icons.email_outlined, color: colorScheme.outline),
             errorText: emailError,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           ValueListenableBuilder<String?>(
             valueListenable: genderNotifier,
             builder: (context, gender, _) => GenderSelection(
@@ -105,14 +104,14 @@ class RegisterForm extends StatelessWidget {
               genderLabel: 'auth.gender'.tr(),
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           LocationSection(
             stateNotifier: stateNotifier,
             cityNotifier: cityNotifier,
             stateError: stateError,
             cityError: cityError,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           GestureDetector(
             onTap: onPickDateOfBirth,
             child: AbsorbPointer(
@@ -127,7 +126,7 @@ class RegisterForm extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           AppTextField(
             controller: passwordController,
             hintText: 'auth.password'.tr(),
@@ -135,7 +134,7 @@ class RegisterForm extends StatelessWidget {
             prefixIcon: Icon(Icons.lock_outline, color: colorScheme.outline),
             errorText: passwordError,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           AppTextField(
             controller: confirmPasswordController,
             hintText: 'auth.confirm_password'.tr(),
@@ -143,15 +142,15 @@ class RegisterForm extends StatelessWidget {
             prefixIcon: Icon(Icons.lock_outline, color: colorScheme.outline),
             errorText: confirmPasswordError,
           ),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           AppButton(
             text: 'auth.register_now'.tr(),
             isLoading: isLoading,
             onPressed: isLoading ? () {} : onRegisterPressed,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           const LoginLink(),
-          const SizedBox(height: 40),
+          AppSpacing.v40,
         ],
       ),
     );

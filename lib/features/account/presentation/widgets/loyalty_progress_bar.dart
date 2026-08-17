@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import 'loyalty_cup_indicator.dart';
 import 'loyalty_point_labels.dart';
 import 'loyalty_tier_labels.dart';
@@ -54,9 +55,9 @@ class LoyaltyProgressBar extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: 4),
+        AppSpacing.v4,
         LoyaltyPointLabels(selectedTierIndex: selectedTierIndex),
-        const SizedBox(height: 4),
+        AppSpacing.v4,
         LoyaltyTierLabels(selectedTierIndex: selectedTierIndex),
       ],
     );

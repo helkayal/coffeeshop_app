@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class PaymentOption extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -33,7 +36,7 @@ class PaymentOption extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppInsets.a16,
         decoration: BoxDecoration(
           color: cs.surfaceContainer,
           borderRadius: BorderRadius.circular(12),
@@ -46,7 +49,7 @@ class PaymentOption extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, size: 22, color: cs.onSurfaceVariant),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +64,7 @@ class PaymentOption extends StatelessWidget {
                   ),
                   if (subtitle case final subtitleText?
                       when subtitleText.isNotEmpty) ...[
-                    const SizedBox(height: 2),
+                    AppSpacing.v2,
                     Text(
                       subtitleText,
                       style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
@@ -77,7 +80,7 @@ class PaymentOption extends StatelessWidget {
                 icon: Icon(Icons.edit_outlined, size: 18, color: cs.primary),
                 onPressed: onEdit,
               ),
-              const SizedBox(width: 12),
+              AppSpacing.h12,
             ],
             if (isSelected && onDelete != null) ...[
               IconButton(
@@ -86,11 +89,11 @@ class PaymentOption extends StatelessWidget {
                 icon: Icon(Icons.delete_outline, size: 20, color: cs.error),
                 onPressed: onDelete,
               ),
-              const SizedBox(width: 12),
+              AppSpacing.h12,
             ],
             if (isSelected && showDefaultBadge) ...[
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: AppInsets.h8v4,
                 decoration: BoxDecoration(
                   color: cs.primary.withAlpha(26),
                   borderRadius: BorderRadius.circular(6),
@@ -104,7 +107,7 @@ class PaymentOption extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              AppSpacing.h8,
             ],
             Icon(
               isCheckbox

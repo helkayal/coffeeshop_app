@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class BottomActionBar extends StatelessWidget {
   final String total;
   final bool isFavorite;
@@ -21,7 +24,7 @@ class BottomActionBar extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppInsets.a16,
       decoration: BoxDecoration(
         color: cs.surface.withAlpha(242),
         border: Border(
@@ -59,7 +62,7 @@ class BottomActionBar extends StatelessWidget {
               foregroundColor: cs.primary,
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.h12,
           FilledButton.icon(
             onPressed: onComplete,
             icon: const Icon(Icons.check_circle, size: 18),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
 
 class ExploreMenuButton extends StatelessWidget {
   const ExploreMenuButton({super.key});
@@ -19,7 +20,7 @@ class ExploreMenuButton extends StatelessWidget {
         onPressed: () => context.read<ShellCubit>().selectTab(1),
         style: TextButton.styleFrom(
           backgroundColor: cs.primaryContainer,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          padding: AppInsets.v16h24,
           shape: RoundedRectangleBorder(
             borderRadius: AppDesignConstants.radiusXl,
             side: BorderSide(color: cs.outlineVariant.withAlpha(102)),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/category.dart';
 import 'chip_item.dart';
 
@@ -23,7 +24,7 @@ class CategoryChips extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length + 1,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => AppSpacing.h12,
         itemBuilder: (_, index) {
           if (index == 0) {
             return ChipItem(

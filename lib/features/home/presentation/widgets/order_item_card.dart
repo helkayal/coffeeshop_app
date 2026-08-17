@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import 'action_button.dart';
 
 class OrderItemCard extends StatelessWidget {
@@ -35,11 +37,11 @@ class OrderItemCard extends StatelessWidget {
         borderRadius: AppDesignConstants.radiusXl,
         border: Border.all(color: cs.outlineVariant.withAlpha(153)),
       ),
-      padding: const EdgeInsets.all(12),
+      padding: AppInsets.a12,
       child: Row(
         children: [
           _buildImage(cs),
-          const SizedBox(width: 16),
+          AppSpacing.h16,
           _buildDetails(cs, tt),
           ActionButton(
             icon: actionIcon,
@@ -90,13 +92,13 @@ class OrderItemCard extends StatelessWidget {
             ),
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          AppSpacing.v4,
           Text(
             description,
             style: tt.bodySmall,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
           Text(
             price,
             style: tt.bodyLarge?.copyWith(

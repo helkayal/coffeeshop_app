@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/auth_header.dart';
 import 'login_form.dart';
@@ -36,16 +37,14 @@ class LoginBody extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignConstants.paddingLarge,
-      ),
+      padding: AppInsets.h24,
       child: Column(
         children: [
           AuthHeader(
             title: 'auth.welcome_back'.tr(),
             subtitle: 'auth.login_subtitle'.tr(),
           ),
-          const SizedBox(height: 48),
+          AppSpacing.v48,
           LoginForm(
             emailController: emailController,
             passwordController: passwordController,
@@ -64,17 +63,17 @@ class LoginBody extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           AppButton(
             text: 'auth.sign_in'.tr(),
             isLoading: isLoading,
             onPressed: isLoading ? () {} : onLoginPressed,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           const RegisterLink(),
-          const SizedBox(height: 32),
+          AppSpacing.v32,
           SocialLoginSection(onSocialLogin: onSocialLogin),
-          const SizedBox(height: 40),
+          AppSpacing.v40,
         ],
       ),
     );

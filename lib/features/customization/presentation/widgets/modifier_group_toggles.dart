@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 import 'modifier_icon.dart';
@@ -31,14 +33,14 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
     final groupIcon = modifierGroupIcon(widget.group.name);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: AppInsets.h24v20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(groupIcon, size: 18, color: cs.primary),
-              const SizedBox(width: 8),
+              AppSpacing.h8,
               Text(
                 widget.group.name,
                 style: tt.headlineMedium?.copyWith(
@@ -48,12 +50,12 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           ...List.generate(widget.group.values.length, (i) {
             final option = widget.group.values[i];
             final selected = _selectedIndices.contains(i);
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s8),
               child: _ToggleCard(
                 option: option,
                 isSelected: selected,
@@ -100,7 +102,7 @@ class _ToggleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        padding: AppInsets.h20v14,
         decoration: BoxDecoration(
           color: isSelected
               ? cs.surfaceContainerHighest
@@ -121,7 +123,7 @@ class _ToggleCard extends StatelessWidget {
               ),
               child: Icon(icon, size: 20, color: cs.onSurfaceVariant),
             ),
-            const SizedBox(width: 12),
+            AppSpacing.h12,
             Expanded(
               child: Text(
                 option.name,
@@ -130,7 +132,7 @@ class _ToggleCard extends StatelessWidget {
             ),
             Text(
               option.priceModifier == 0.0
-                  ? 'Free'
+                  ? 'customization.free'.tr()
                   : 'common.price'.tr(
                       namedArgs: {
                         'amount': '+${option.priceModifier.toStringAsFixed(2)}',

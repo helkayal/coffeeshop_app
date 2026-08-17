@@ -4,6 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -32,7 +34,7 @@ class AppBottomNavBar extends StatelessWidget {
               ),
             ),
           ),
-          padding: const EdgeInsetsDirectional.fromSTEB(8, 12, 8, 24),
+          padding: AppInsets.b24t12h8,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -92,7 +94,7 @@ class _NavItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: AppInsets.h16v8,
         decoration: BoxDecoration(
           color: isActive ? cs.primary.withAlpha(26) : Colors.transparent,
           borderRadius: AppDesignConstants.radiusMedium,
@@ -101,7 +103,7 @@ class _NavItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 24, color: color),
-            const SizedBox(height: 3),
+            AppSpacing.v2,
             Text(label, style: tt.labelLarge?.copyWith(color: color)),
           ],
         ),

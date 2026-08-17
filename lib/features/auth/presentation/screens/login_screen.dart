@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../cubit/auth_cubit.dart';
@@ -108,7 +109,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('verification.forgot_password_msg'.tr()),
-            const SizedBox(height: 16),
+            AppSpacing.v16,
             AppTextField(
               controller: emailCtrl,
               hintText: 'auth.email_address'.tr(),
@@ -195,7 +196,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
               keyboardType: TextInputType.emailAddress,
               prefixIcon: const Icon(Icons.email_outlined),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.v12,
             AppTextField(
               controller: nameCtrl,
               hintText: 'auth.full_name_optional'.tr(),

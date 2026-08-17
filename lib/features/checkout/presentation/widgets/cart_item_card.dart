@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../menu/domain/entities/product.dart';
 import '../../../menu/presentation/cubit/menu_cubit.dart';
 import '../../../menu/presentation/cubit/menu_state.dart';
@@ -67,7 +69,7 @@ class CartItemCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.h16,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,9 +98,9 @@ class CartItemCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              AppSpacing.v4,
               Text(item.variant, style: tt.bodySmall),
-              const SizedBox(height: 4),
+              AppSpacing.v4,
               Text(
                 'common.price'.tr(
                   namedArgs: {'amount': item.unitPrice.toStringAsFixed(2)},
@@ -109,12 +111,9 @@ class CartItemCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.v12,
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
+                padding: AppInsets.h12v4,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
                   color: cs.surfaceContainerLowest,
@@ -131,12 +130,12 @@ class CartItemCard extends StatelessWidget {
                         color: cs.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    AppSpacing.h16,
                     Text(
                       '${item.quantity}',
                       style: tt.bodyMedium?.copyWith(color: cs.onSurface),
                     ),
-                    const SizedBox(width: 16),
+                    AppSpacing.h16,
                     GestureDetector(
                       onTap: onIncrement,
                       child: Icon(

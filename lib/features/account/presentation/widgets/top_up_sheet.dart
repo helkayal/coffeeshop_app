@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../features/checkout/presentation/widgets/payment_method_selector.dart';
 
 class TopUpSheet extends StatelessWidget {
@@ -20,7 +22,7 @@ class TopUpSheet extends StatelessWidget {
           color: cs.surfaceContainerLow,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         ),
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+        padding: AppInsets.bottomSheetTop16,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -33,7 +35,7 @@ class TopUpSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.v24,
               Text(
                 'wallet.top_up'.tr(),
                 style: tt.headlineMedium?.copyWith(
@@ -41,9 +43,9 @@ class TopUpSheet extends StatelessWidget {
                   color: cs.onSurface,
                 ),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.v24,
               const PaymentMethodSelector(),
-              const SizedBox(height: 24),
+              AppSpacing.v24,
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(

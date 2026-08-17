@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/loyalty_history_entry.dart';
 import '../cubit/loyalty_history_cubit.dart';
 import '../cubit/loyalty_history_state.dart';
@@ -101,7 +103,7 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Padding(
-                        padding: const EdgeInsets.all(32),
+                        padding: AppInsets.a32,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -110,7 +112,7 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                               size: 64,
                               color: cs.onSurfaceVariant.withAlpha(128),
                             ),
-                            const SizedBox(height: 16),
+                            AppSpacing.v16,
                             Text(
                               'loyalty.no_transactions'.tr(),
                               style: tt.bodyLarge?.copyWith(
@@ -124,7 +126,12 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                     ),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(24, 32, 24, 96),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.s24,
+                      AppSpacing.s32,
+                      AppSpacing.s24,
+                      AppSpacing.s96,
+                    ),
                     itemCount: _history.length,
                     itemBuilder: (_, i) {
                       final t = _history[i];
@@ -136,8 +143,8 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                       final isPositive = points >= 0;
 
                       return Container(
-                        padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: AppInsets.a16,
+                        margin: const EdgeInsets.only(bottom: AppSpacing.s12),
                         decoration: BoxDecoration(
                           color: cs.surfaceContainerLow,
                           borderRadius: BorderRadius.circular(16),
@@ -162,7 +169,7 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                                 size: 22,
                               ),
                             ),
-                            const SizedBox(width: 14),
+                            AppSpacing.h14,
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +181,7 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
+                                  AppSpacing.v2,
                                   Text(
                                     date,
                                     style: tt.bodySmall?.copyWith(
@@ -185,10 +192,7 @@ class _LoyaltyHistoryScreenState extends State<LoyaltyHistoryScreen> {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
+                              padding: AppInsets.h12v6,
                               decoration: BoxDecoration(
                                 color: isPositive
                                     ? cs.primary.withAlpha(20)

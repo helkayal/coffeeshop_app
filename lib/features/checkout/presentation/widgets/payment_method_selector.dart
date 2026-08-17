@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../account/presentation/cubit/payment_preferences_cubit.dart';
 import '../../../account/presentation/cubit/payment_preferences_state.dart';
 import 'credit_card_sheet.dart';
@@ -65,7 +67,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: AppInsets.a24,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -81,7 +83,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           PaymentOption(
             icon: Icons.star,
             label: 'checkout.use_wallet_cash_first'.tr(),
@@ -89,21 +91,21 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             isCheckbox: true,
             onTap: _togglePoints,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           PaymentOption(
             icon: Icons.payments,
             label: 'checkout.credit_card'.tr(),
             isSelected: _paymentMethod == 'card',
             onTap: _openCardSheet,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           PaymentOption(
             icon: Icons.account_balance_wallet,
             label: 'checkout.wallets'.tr(),
             isSelected: _paymentMethod == 'wallet',
             onTap: _openWalletSheet,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           PaymentOption(
             icon: Icons.contactless,
             label: 'checkout.apple_pay'.tr(),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/cubit/profile_state.dart';
 
@@ -37,7 +38,7 @@ class HomeProfileSection extends StatelessWidget {
         return Row(
           children: [
             _Avatar(avatarUrl: avatarUrl, gender: gender),
-            const SizedBox(width: 12),
+            AppSpacing.h12,
             _NameSection(name: name),
             _PointsSection(points: points),
           ],
@@ -106,7 +107,7 @@ class _NameSection extends StatelessWidget {
             'home_screen.welcome'.tr(),
             style: tt.bodySmall?.copyWith(fontSize: 12),
           ),
-          const SizedBox(height: 2),
+          AppSpacing.v2,
           Text(
             name,
             style: tt.headlineMedium?.copyWith(

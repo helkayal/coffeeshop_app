@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class AddCardFormSheet extends StatefulWidget {
@@ -36,22 +38,22 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
   String? _validate() {
     final number = widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
     if (number.length != 16 || int.tryParse(number) == null) {
-      return 'Card number must be 16 digits';
+      return 'credit_card.invalid_number';
     }
 
     final name = widget.nameCtrl.text.trim();
     if (name.isEmpty) {
-      return 'Name on card is required';
+      return 'credit_card.name_required';
     }
 
     final month = int.tryParse(widget.monthCtrl.text.trim());
     if (month == null || month < 1 || month > 12) {
-      return 'Expiry month must be between 1 and 12';
+      return 'credit_card.invalid_month';
     }
 
     var year = int.tryParse(widget.yearCtrl.text.trim());
     if (year == null) {
-      return 'Expiry year is required';
+      return 'credit_card.year_required';
     }
     if (year < 100) year += 2000;
 
@@ -59,7 +61,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
     final expiryDate = DateTime(year, month + 1, 0);
     final currentMonthEnd = DateTime(now.year, now.month + 1, 0);
     if (expiryDate.isBefore(currentMonthEnd)) {
-      return 'Card has expired';
+      return 'credit_card.expired';
     }
 
     return null;
@@ -105,12 +107,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
         color: cs.surfaceContainerLow,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      padding: EdgeInsets.fromLTRB(
-        24,
-        24,
-        24,
-        24 + MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: AppInsets.bottomSheetWithKeyboard(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -122,19 +119,19 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           Text(
             'credit_card.add_new_card'.tr(),
             style: tt.headlineMedium?.copyWith(fontSize: 20),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           AppTextField(
             controller: widget.last4Ctrl,
             label: 'credit_card.card_number'.tr(),
             keyboardType: TextInputType.number,
             prefixIcon: const Icon(Icons.credit_card),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           Row(
             children: [
               Expanded(
@@ -143,7 +140,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
                   label: 'credit_card.month'.tr(),
                 ),
               ),
-              const SizedBox(width: 12),
+              AppSpacing.h12,
               Expanded(
                 child: AppTextField(
                   controller: widget.yearCtrl,
@@ -152,17 +149,17 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.v12,
           AppTextField(
             controller: widget.nameCtrl,
             label: 'credit_card.name_on_card'.tr(),
             prefixIcon: const Icon(Icons.person_outline),
           ),
           if (_error case final error?) ...[
-            const SizedBox(height: 8),
-            Text(error, style: tt.bodySmall?.copyWith(color: cs.error)),
+            AppSpacing.v8,
+            Text(error.tr(), style: tt.bodySmall?.copyWith(color: cs.error)),
           ],
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -170,7 +167,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
               child: Text('credit_card.save_card'.tr()),
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
         ],
       ),
     );

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/connectivity_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../../features/checkout/presentation/widgets/payment_option.dart';
@@ -114,7 +116,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           child: Scaffold(
             backgroundColor: cs.surface,
             body: SingleChildScrollView(
-              padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+              padding: AppInsets.screen,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -125,7 +127,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  AppSpacing.v24,
                   PaymentOption(
                     label: 'payment.mobile_wallet'.tr(),
                     subtitle: walletPhone != null && walletPhone.isNotEmpty
@@ -135,7 +137,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     isSelected: selected == 'wallet',
                     onTap: _showWalletSheet,
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   PaymentOption(
                     label: 'payment.apple_pay'.tr(),
                     subtitle: 'payment.apple_pay_subtitle'.tr(),
@@ -143,7 +145,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     isSelected: selected == 'applepay',
                     onTap: () => _selectMethod('applepay'),
                   ),
-                  const SizedBox(height: 32),
+                  AppSpacing.v32,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -161,7 +163,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.v16,
                   if (cards.isEmpty)
                     Text(
                       'payment_methods.no_saved_cards'.tr(),

@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../account/presentation/cubit/payment_methods_cubit.dart';
@@ -126,12 +128,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
         color: cs.surfaceContainerLow,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        24,
-        24,
-        24,
-        24 + MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: AppInsets.bottomSheetWithKeyboard(context),
       child: BlocBuilder<PaymentMethodsCubit, PaymentMethodsState>(
         builder: (context, state) {
           final isLoading = state is PaymentMethodsLoading;
@@ -149,7 +146,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.v24,
                 Text(
                   'credit_card.select_card'.tr(),
                   style: tt.headlineMedium?.copyWith(
@@ -157,7 +154,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                     color: cs.onSurface,
                   ),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 if (isLoading)
                   const CircularProgressIndicator()
                 else if (cards.isNotEmpty) ...[
@@ -186,14 +183,14 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                     color: cs.onSurface,
                   ),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 AppTextField(
                   controller: _numberCtrl,
                   label: 'credit_card.number'.tr(),
                   keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.credit_card),
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 Row(
                   children: [
                     Expanded(
@@ -204,31 +201,31 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                         hintText: 'credit_card.expiry_hint'.tr(),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.h12,
                     Expanded(
                       child: AppTextField(
                         controller: _cvvCtrl,
-                        label: 'CVV',
+                        label: 'credit_card.cvv'.tr(),
                         keyboardType: TextInputType.number,
                         isPassword: true,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 AppTextField(
                   controller: _nameCtrl,
                   label: 'credit_card.name'.tr(),
                   keyboardType: TextInputType.name,
                 ),
                 if (_formError case final error?) ...[
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   Text(
                     error.tr(),
                     style: TextStyle(color: cs.error, fontSize: 13),
                   ),
                 ],
-                const SizedBox(height: 24),
+                AppSpacing.v24,
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -236,7 +233,7 @@ class _CreditCardSheetState extends State<CreditCardSheet> {
                     child: Text('credit_card.save'.tr()),
                   ),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
               ],
             ),
           );

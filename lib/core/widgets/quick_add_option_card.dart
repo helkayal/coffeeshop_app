@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/menu/domain/entities/option_value.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class QuickAddOptionCard extends StatelessWidget {
   final OptionValue option;
@@ -23,7 +25,7 @@ class QuickAddOptionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: AppInsets.h16v10,
         decoration: BoxDecoration(
           color: isSelected
               ? cs.primary.withAlpha(26)
@@ -40,7 +42,7 @@ class QuickAddOptionCard extends StatelessWidget {
               size: 20,
               color: isSelected ? cs.primary : cs.onSurfaceVariant,
             ),
-            const SizedBox(width: 12),
+            AppSpacing.h12,
             Expanded(
               child: Text(
                 option.name,

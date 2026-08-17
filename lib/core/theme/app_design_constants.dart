@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'app_spacing.dart';
+
 class AppDesignConstants {
-  // Spacing
-  static const double spacingUnit = 8.0;
-  static const double paddingSmall = 8.0;
-  static const double paddingMedium = 16.0;
-  static const double paddingLarge = 24.0;
-  static const double paddingExtraLarge = 32.0;
+  // Spacing (delegated to AppSpacing)
+  static const double spacingUnit = AppSpacing.s8;
+  static const double paddingSmall = AppSpacing.s8;
+  static const double paddingMedium = AppSpacing.s16;
+  static const double paddingLarge = AppSpacing.s24;
+  static const double paddingExtraLarge = AppSpacing.s32;
 
   // Border Radius
   static const double borderRadius = 8.0;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../cubit/menu_cubit.dart';
@@ -51,23 +53,23 @@ class _MenuScreenState extends State<MenuScreen> {
     String? selectedId,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+      padding: AppInsets.screenTop16Bottom0,
       child: Column(
         children: [
           const MenuHeader(),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           CategoryChips(
             categories: categories,
             selectedId: selectedId,
             onSelected: (id) => context.read<MenuCubit>().selectCategory(id),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.v24,
           for (final p in products)
             Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: AppSpacing.s16),
               child: ProductListItem(product: p),
             ),
-          const SizedBox(height: 96),
+          AppSpacing.v96,
         ],
       ),
     );

@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../customization/presentation/cubit/customization_cubit.dart';
@@ -22,7 +24,7 @@ class FavoritesScreen extends StatelessWidget {
     return BlocBuilder<FavoritesCubit, FavoritesState>(
       builder: (context, state) {
         return SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+          padding: AppInsets.screen,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -30,7 +32,7 @@ class FavoritesScreen extends StatelessWidget {
                 'favorites_screen.your_favorites'.tr(),
                 style: tt.headlineMedium?.copyWith(fontSize: 30),
               ),
-              const SizedBox(height: 32),
+              AppSpacing.v32,
               switch (state) {
                 FavoritesLoading() => const Center(
                   child: CircularProgressIndicator(),
@@ -51,7 +53,7 @@ class FavoritesScreen extends StatelessWidget {
                         onQuickAdd: () =>
                             _quickAddFromFavorites(context, product),
                       ),
-                      const SizedBox(height: 16),
+                      AppSpacing.v16,
                     ],
                   ],
                 ),

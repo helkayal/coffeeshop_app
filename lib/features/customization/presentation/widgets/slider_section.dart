@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 
@@ -42,7 +44,7 @@ class _SliderSectionState extends State<SliderSection> {
     if (steps < 2) {
       // Fallback: if only one option, show as a simple selected text.
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: AppInsets.h24v20,
         child: Row(
           children: [
             Text(
@@ -63,7 +65,7 @@ class _SliderSectionState extends State<SliderSection> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: AppInsets.h24v20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,7 +76,7 @@ class _SliderSectionState extends State<SliderSection> {
               color: cs.onSurface,
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.v16,
           SliderTheme(
             data: SliderThemeData(
               trackHeight: 4,
@@ -96,13 +98,13 @@ class _SliderSectionState extends State<SliderSection> {
               },
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.v8,
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(steps, (i) {
               final selected = i == _selectedIndex;
               final priceText = values[i].priceModifier == 0.0
-                  ? 'Included'
+                  ? 'customization.included'.tr()
                   : 'common.price'.tr(
                       namedArgs: {
                         'amount':
@@ -124,7 +126,7 @@ class _SliderSectionState extends State<SliderSection> {
                               : FontWeight.w400,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      AppSpacing.v2,
                       Text(
                         priceText,
                         style: tt.bodySmall?.copyWith(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class AdditionCard extends StatefulWidget {
   final String name;
   final String price;
@@ -27,7 +30,7 @@ class _AdditionCardState extends State<AdditionCard> {
     return GestureDetector(
       onTap: () => setState(() => _selected = !_selected),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        padding: AppInsets.h20v14,
         decoration: BoxDecoration(
           color: _selected
               ? cs.surfaceContainerHighest
@@ -48,7 +51,7 @@ class _AdditionCardState extends State<AdditionCard> {
               ),
               child: Icon(widget.icon, size: 20, color: cs.onSurfaceVariant),
             ),
-            const SizedBox(width: 12),
+            AppSpacing.h12,
             Expanded(
               child: Text(
                 widget.name,

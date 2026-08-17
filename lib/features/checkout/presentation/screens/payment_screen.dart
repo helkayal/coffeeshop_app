@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/cubit/wallet_cubit.dart';
 import '../../../account/presentation/cubit/wallet_state.dart';
@@ -102,10 +104,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
             return Stack(
               children: [
                 SingleChildScrollView(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 140),
+                  padding: AppInsets.screenCompact,
                   child: Column(
                     children: [
-                      const SizedBox(height: 16),
+                      AppSpacing.v16,
                       Text(
                         'checkout.complete_order'.tr(),
                         style: tt.headlineMedium?.copyWith(
@@ -113,14 +115,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           color: cs.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      AppSpacing.v8,
                       Text(
                         'checkout.secure_checkout'.tr(),
                         style: tt.bodySmall,
                       ),
-                      const SizedBox(height: 40),
+                      AppSpacing.v40,
                       PaymentOrderSummary(items: cart.items, total: total),
-                      const SizedBox(height: 24),
+                      AppSpacing.v24,
                       if (_walletLoaded)
                         _buildWalletBanner(cs, tt, total, canCover),
                     ],
@@ -131,7 +133,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   right: 0,
                   bottom: 0,
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: AppInsets.a24,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -151,9 +153,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               icon: const Icon(Icons.check_circle, size: 20),
                               label: Text('checkout.confirm_order'.tr()),
                               style: FilledButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
+                                padding: AppInsets.v16,
                               ),
                             )
                           : FilledButton.icon(
@@ -174,9 +174,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 ),
                               ),
                               style: FilledButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
+                                padding: AppInsets.v16,
                                 backgroundColor: cs.error,
                                 foregroundColor: cs.onError,
                               ),
@@ -199,7 +197,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     bool canCover,
   ) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppInsets.a16,
       decoration: BoxDecoration(
         color: canCover ? cs.primary.withAlpha(26) : cs.error.withAlpha(26),
         borderRadius: BorderRadius.circular(12),
@@ -211,7 +209,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             color: canCover ? cs.primary : cs.error,
             size: 20,
           ),
-          const SizedBox(width: 12),
+          AppSpacing.h12,
           Expanded(
             child: Text(
               canCover

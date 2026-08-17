@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
+
 class AuthHeader extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -15,20 +17,20 @@ class AuthHeader extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 20),
+        AppSpacing.v20,
         // Brand Logo/Title
         Text(
           'app_name'.tr(),
           style: textTheme.displayLarge?.copyWith(color: colorScheme.primary),
         ),
-        const SizedBox(height: 40),
+        AppSpacing.v40,
 
         // Title & Subtitle
         Text(
           title,
           style: textTheme.displayLarge?.copyWith(color: colorScheme.onSurface),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.v12,
         Text(
           subtitle,
           textAlign: TextAlign.center,

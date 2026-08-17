@@ -15,7 +15,9 @@
     "quantity_price": "x{quantity}  {price}",
     "price_quantity": "{price} x{quantity}",
     "not_available": "Not available",
-    "add_to_cart_price": "{price} - Add to Cart"
+    "add_to_cart_price": "{price} - Add to Cart",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "error_route_not_found": "No route defined for {}",
   "splash_screen": {
@@ -120,7 +122,8 @@
     "explore_menu": "Explore Our Menu",
     "limited_release": "Limited Release",
     "autumn_blend": "The Autumn Equinox Blend",
-    "promo_badge": "20% OFF"
+    "promo_badge": "20% OFF",
+    "percent_off": "{percent}% OFF"
   },
   "menu_screen": {
     "our_menu": "Our Menu",
@@ -133,7 +136,21 @@
     "your_orders": "Your Orders",
     "receipt": "Receipt",
     "reorder": "Reorder",
-    "no_orders": "No orders yet"
+    "no_orders": "No orders yet",
+    "order": "Order",
+    "date": "Date",
+    "total": "Total",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "preparing": "Preparing",
+      "ready_for_pickup": "Ready for pickup",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    }
   },
   "favorites_screen": {
     "your_favorites": "Your Favorites",
@@ -183,7 +200,10 @@
     "update": "Update Favorite",
     "keep_original": "Keep Original",
     "save_updates": "Save Updates",
-    "discard": "Discard"
+    "discard": "Discard",
+    "free": "Free",
+    "included": "Included",
+    "product_not_available": "Product not available"
   },
   "checkout": {
     "your_bag": "Your Bag",
@@ -211,8 +231,8 @@
     "order_number": "Order Number",
     "date": "Date",
     "back_home": "Back to Home",
-    "empty_bag": "Your bag is empty"
-    ,"use_wallet_cash_first": "Use Coffee Wallet Cash First",
+    "empty_bag": "Your bag is empty",
+    "use_wallet_cash_first": "Use Coffee Wallet Cash First",
     "payment_pending": "The order was created, but payment is still pending. Your cart was preserved.",
     "cleanup_warning": "The order was paid, but some cart items could not be cleared.",
     "top_up_amount": "Top Up {amount}",
@@ -220,6 +240,11 @@
     "wallet_needs_more": "Insufficient wallet balance — need {amount} more"
   },
   "credit_card": {
+    "select_card": "Select a card",
+    "title": "Card details",
+    "number": "Card number",
+    "name": "Name on card",
+    "save": "Save card",
     "saved_cards": "Saved Cards",
     "add_new_card": "Add New Card",
     "card_number": "Card Number",
@@ -232,12 +257,13 @@
     "retry": "Retry",
     "month": "Month",
     "year": "Year",
-    "expires_at": "Expires {}"
-    ,"expiry_hint": "MM/YY",
+    "expires_at": "Expires {}",
+    "expiry_hint": "MM/YY",
     "invalid_number": "Card number must be 16 digits",
     "name_required": "Name on card is required",
     "invalid_expiry": "Enter expiry as MM/YY (e.g. 12/28)",
     "invalid_month": "Expiry month must be between 1 and 12",
+    "year_required": "Expiry year is required",
     "expired": "Card has expired"
   },
   "wallet": {
@@ -253,6 +279,7 @@
     "continue": "Continue",
     "buy_packages": "Buy Wallet Package",
     "buy_package_title": "Buy Coffee Cash Package",
+    "package_subtitle": "Choose a package to add to your wallet",
     "earn_2x_loyalty": "Earn 2x Loyalty Points on every package purchase!",
     "no_payment_method": "No Payment Method Saved",
     "no_payment_method_msg": "You don't have a default payment method saved. Please add a payment method to proceed.",
@@ -290,6 +317,7 @@
     "dark_mode": "Dark mode",
     "language": "Language",
     "english": "English (US)",
+    "arabic": "Arabic",
     "notifications": "Notifications",
     "push_email": "Push, Email",
     "about": "About Coffee Shop",
@@ -329,8 +357,8 @@
     "priority": "Priority Support",
     "free_drink": "Free Drink Monthly",
     "exclusive": "Exclusive Events",
-    "earn_purchase": "Earn 1 points for every E\u00a31 purchase",
-    "earn_points_per_pound": "Earn 2 points for every E\u00a31 uploaded to wallet",
+    "earn_purchase": "Earn 1 points for every E£1 purchase",
+    "earn_points_per_pound": "Earn 2 points for every E£1 uploaded to wallet",
     "earn_review": "Earn 10 points for writing a review",
     "earn_referral": "Earn 50 points for each referral",
     "earn_birthday": "Earn 100 bonus points on your birthday",
@@ -348,7 +376,8 @@
     "applied_success": "Referral code applied",
     "apply_failed": "Failed to apply referral code",
     "code_copied": "Referral code copied to clipboard!",
-    "share": "Share"
+    "share": "Share",
+    "share_text": "Use my referral code {code} to earn rewards!"
   },
   "verification": {
     "title": "Verify Your Email",
@@ -389,12 +418,20 @@
     "passwords_do_not_match": "Passwords do not match"
   },
   "payment_methods": {
+    "title": "Payment Methods",
     "saved_cards": "Saved Cards",
     "other_methods": "Other Payment Methods",
     "add_new_card": "Add New Card",
     "coffee_cash_wallet": "Phone Wallet",
     "apple_pay": "Apple Pay",
     "default": "Default",
-    "no_saved_cards": "No saved cards"
+    "no_saved_cards": "No saved cards",
+    "add_card": "Add card"
+  },
+  "payment": {
+    "mobile_wallet": "Mobile wallet",
+    "tap_to_set_phone": "Tap to set a wallet phone number",
+    "apple_pay": "Apple Pay",
+    "apple_pay_subtitle": "Pay using Apple Pay"
   }
 }

@@ -7,6 +7,8 @@ import '../../../../core/constants/api_constants.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -50,13 +52,13 @@ class AccountScreen extends StatelessWidget {
             : null;
 
         return SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+          padding: AppInsets.screen,
           child: Column(
             children: [
               GestureDetector(
                 onTap: () => cubit.pushSecondary(const EditProfileRoute()),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppInsets.a16,
                   decoration: BoxDecoration(
                     color: cs.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -84,7 +86,7 @@ class AccountScreen extends StatelessWidget {
                               )
                             : _placeholderAvatar(cs, gender),
                       ),
-                      const SizedBox(width: 16),
+                      AppSpacing.h16,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +99,7 @@ class AccountScreen extends StatelessWidget {
                                 color: cs.onSurface,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            AppSpacing.v2,
                             Text(
                               'profile_screen.view_profile'.tr(),
                               style: tt.bodySmall,
@@ -110,33 +112,33 @@ class AccountScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              AppSpacing.v40,
               LoyaltyCard(points: points),
-              const SizedBox(height: 40),
+              AppSpacing.v40,
               AccountCard(
                 icon: Icons.account_balance_wallet,
                 onTap: () => cubit.pushSecondary(const WalletRoute()),
                 label: 'profile_screen.wallet'.tr(),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.v12,
               AccountCard(
                 icon: Icons.payments,
                 onTap: () => cubit.pushSecondary(const PaymentMethodsRoute()),
                 label: 'profile_screen.payment_methods'.tr(),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.v12,
               AccountCard(
                 icon: Icons.card_giftcard,
                 onTap: () => cubit.pushSecondary(const ReferralRoute()),
                 label: 'profile_screen.referral'.tr(),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.v12,
               AccountCard(
                 icon: Icons.history,
                 label: 'profile_screen.order_history'.tr(),
                 onTap: () => cubit.pushSecondary(const OrdersHistoryRoute()),
               ),
-              const SizedBox(height: 40),
+              AppSpacing.v40,
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -151,7 +153,7 @@ class AccountScreen extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: cs.error,
                     side: BorderSide(color: cs.error.withAlpha(77)),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: AppInsets.v14,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

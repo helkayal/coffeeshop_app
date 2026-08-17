@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
-import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 import '../widgets/error_view.dart';
@@ -56,7 +57,7 @@ class OnboardingScreen extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: AppDesignConstants.paddingMedium),
+        AppSpacing.v16,
         SkipRow(onSkip: cubit.skip),
         Expanded(
           child: QuestionPage(
@@ -71,10 +72,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDesignConstants.paddingLarge,
-            vertical: AppDesignConstants.paddingMedium,
-          ),
+          padding: AppInsets.h24v16,
           child: Row(
             children: [
               if (!isFirstStep)
@@ -87,7 +85,7 @@ class OnboardingScreen extends StatelessWidget {
                   label: Text('onboarding.back'.tr()),
                 )
               else
-                const SizedBox(width: 80),
+                AppSpacing.h80,
               const Spacer(),
               ProgressDots(
                 totalSteps: state.questions.length,

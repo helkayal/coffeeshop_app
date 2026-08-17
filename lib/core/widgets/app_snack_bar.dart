@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_design_constants.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 enum SnackBarType { error, success, info }
 
@@ -55,7 +57,7 @@ class AppSnackBar {
                 ),
                 child: Icon(icon, color: accent, size: 22),
               ),
-              const SizedBox(width: 14),
+              AppSpacing.h14,
               Expanded(
                 child: Text(
                   message,
@@ -72,8 +74,8 @@ class AppSnackBar {
           shape: RoundedRectangleBorder(
             borderRadius: AppDesignConstants.radiusMedium,
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          margin: AppInsets.h16v12,
+          padding: AppInsets.h18v14,
           duration: const Duration(seconds: 4),
           dismissDirection: DismissDirection.horizontal,
           elevation: 0,

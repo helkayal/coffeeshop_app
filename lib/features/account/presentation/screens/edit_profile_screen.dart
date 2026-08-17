@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -35,13 +37,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ? '${profile.firstName} ${profile.lastName}'
             : 'common.not_available'.tr();
         final email = profile?.email ?? 'common.not_available'.tr();
-        final gender = profile?.gender == 'female'
-            ? 'auth.female'.tr()
-            : 'auth.male'.tr();
+        final gender = switch (profile?.gender) {
+          'female' => 'auth.female'.tr(),
+          'male' => 'auth.male'.tr(),
+          _ => 'common.not_available'.tr(),
+        };
         final dob = profile?.dateOfBirth ?? 'common.not_available'.tr();
         final location = switch (profile?.state) {
-          final state? => '$state, ${profile?.city ?? ''}',
-          null => 'common.not_available'.tr(),
+          final state? when state.isNotEmpty =>
+            profile?.city != null && profile!.city!.isNotEmpty
+                ? '$state, ${profile.city}'
+                : state,
+          _ => 'common.not_available'.tr(),
         };
         final cacheBuster = state is ProfileLoaded
             ? state.avatarCacheBuster
@@ -55,7 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return Scaffold(
           backgroundColor: cs.surface,
           body: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 40, 24, 96),
+            padding: AppInsets.screenTop40,
             child: Column(
               children: [
                 ProfileAvatar(
@@ -64,9 +71,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   showEditButton: true,
                   onEditTap: () => _pickAndUploadAvatar(context),
                 ),
-                const SizedBox(height: 48),
+                AppSpacing.v48,
                 _sectionHeader(cs, tt, 'profile_screen.account'.tr()),
-                const SizedBox(height: 16),
+                AppSpacing.v16,
                 ProfileField(
                   label: 'profile_screen.full_name'.tr(),
                   value: fullName,
@@ -74,9 +81,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ? null
                       : () => ProfileEditDialogs.editName(context, profile),
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 ProfileField(label: 'profile_screen.email'.tr(), value: email),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 ProfileField(
                   label: 'profile_screen.gender'.tr(),
                   value: gender,
@@ -84,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ? null
                       : () => ProfileEditDialogs.editGender(context, profile),
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 ProfileField(
                   label: 'profile_screen.dob'.tr(),
                   value: dob,
@@ -92,7 +99,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ? null
                       : () => ProfileEditDialogs.editDob(context, profile),
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.v12,
                 ProfileField(
                   label: 'profile_screen.location'.tr(),
                   value: location,
@@ -100,7 +107,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ? null
                       : () => ProfileEditDialogs.editLocation(context, profile),
                 ),
-                const SizedBox(height: 48),
+                AppSpacing.v48,
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -108,7 +115,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: cs.error,
                       side: BorderSide(color: cs.error.withAlpha(77)),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: AppInsets.v16,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

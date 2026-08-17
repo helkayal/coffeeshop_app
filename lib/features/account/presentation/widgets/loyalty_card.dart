@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import 'coffee_bean_icon.dart';
 import 'loyalty_card_image.dart';
@@ -29,9 +30,9 @@ class LoyaltyCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LoyaltyCardImage(tier: tier, tierName: tierName),
-        const SizedBox(height: 24),
+        AppSpacing.v24,
         _buildPointsRow(context, cs, tt, targetText),
-        const SizedBox(height: 14),
+        AppSpacing.v14,
         LoyaltyProgressBar(
           progress: tier.progress,
           selectedTierIndex: tier.index,
@@ -59,7 +60,7 @@ class LoyaltyCard extends StatelessWidget {
                 color: cs.onSurface,
               ),
             ),
-            const SizedBox(width: 5),
+            AppSpacing.h6,
             CoffeeBeanIcon(size: 16, color: cs.primary),
           ],
         ),
@@ -77,7 +78,7 @@ class LoyaltyCard extends StatelessWidget {
                   fontSize: 13,
                 ),
               ),
-              const SizedBox(width: 2),
+              AppSpacing.h2,
               Icon(Icons.chevron_right, size: 16, color: cs.primary),
             ],
           ),

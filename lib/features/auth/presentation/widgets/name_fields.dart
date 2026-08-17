@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class NameFields extends StatelessWidget {
@@ -31,7 +32,7 @@ class NameFields extends StatelessWidget {
             errorText: firstNameError,
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.h16,
         Expanded(
           child: AppTextField(
             controller: lastNameController,

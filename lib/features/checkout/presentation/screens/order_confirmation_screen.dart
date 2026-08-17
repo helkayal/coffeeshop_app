@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/cart_item.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
@@ -22,11 +24,11 @@ class OrderConfirmationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: cs.surface,
       body: SingleChildScrollView(
-        padding: const EdgeInsetsDirectional.fromSTEB(24, 32, 24, 96),
+        padding: AppInsets.screen,
         child: Column(
           children: [
             Icon(Icons.check_circle, size: 72, color: cs.primary),
-            const SizedBox(height: 24),
+            AppSpacing.v24,
             Text(
               'checkout.order_complete'.tr(),
               style: tt.headlineMedium?.copyWith(
@@ -35,11 +37,11 @@ class OrderConfirmationScreen extends StatelessWidget {
                 color: cs.onSurface,
               ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.v8,
             Text('checkout.order_complete_sub'.tr(), style: tt.bodySmall),
-            const SizedBox(height: 40),
+            AppSpacing.v40,
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: AppInsets.a24,
               decoration: BoxDecoration(
                 color: cs.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -54,27 +56,27 @@ class OrderConfirmationScreen extends StatelessWidget {
                       color: cs.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  AppSpacing.v20,
                   _receiptBlock(tt, cs, 'checkout.order_number'.tr(), orderId),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   _receiptBlock(
                     tt,
                     cs,
                     'checkout.date'.tr(),
-                    _formatDate(DateTime.now()),
+                    DateFormat.yMd(context.locale.toString()).format(DateTime.now()),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   Divider(color: cs.outlineVariant.withAlpha(128)),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   ...items.map(
                     (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.s12),
                       child: _receiptItem(tt, cs, item),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   Divider(color: cs.outlineVariant.withAlpha(128)),
-                  const SizedBox(height: 12),
+                  AppSpacing.v12,
                   _receiptRow(
                     tt,
                     cs,
@@ -115,7 +117,7 @@ class OrderConfirmationScreen extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        AppSpacing.h12,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +137,7 @@ class OrderConfirmationScreen extends StatelessWidget {
           ),
           style: tt.bodySmall,
         ),
-        const SizedBox(width: 12),
+        AppSpacing.h12,
         Text(
           'common.price'.tr(
             namedArgs: {'amount': item.total.toStringAsFixed(2)},
@@ -159,7 +161,7 @@ class OrderConfirmationScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: tt.bodySmall),
-        const SizedBox(height: 4),
+        AppSpacing.v4,
         Text(
           value,
           style: tt.bodyMedium?.copyWith(
@@ -191,9 +193,5 @@ class OrderConfirmationScreen extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _formatDate(DateTime d) {
-    return '${d.day}/${d.month}/${d.year}';
   }
 }

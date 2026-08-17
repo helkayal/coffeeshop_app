@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_design_constants.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import 'banner_text_overlay.dart';
 
 class PromoBanner extends StatelessWidget {
@@ -88,16 +90,18 @@ class PromoBanner extends StatelessWidget {
 
   Widget _buildBadge(ColorScheme cs, TextTheme tt) {
     final badgeText = discountPercentage != null && discountPercentage! > 0
-        ? '$discountPercentage% OFF'
+        ? 'home_screen.percent_off'.tr(
+            namedArgs: {'percent': discountPercentage.toString()},
+          )
         : 'home_screen.promo_badge'.tr();
 
     return Positioned(
-      top: 16,
-      right: 16,
+      top: AppSpacing.s16,
+      right: AppSpacing.s16,
       child: Transform.rotate(
         angle: 0.2,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: AppInsets.h16v8,
           decoration: BoxDecoration(
             color: cs.primary,
             borderRadius: BorderRadius.circular(999),
@@ -132,9 +136,9 @@ class PromoBanner extends StatelessWidget {
 
   Widget _buildTextContent() {
     return Positioned(
-      left: 24,
-      right: 24,
-      bottom: 24,
+      left: AppSpacing.s24,
+      right: AppSpacing.s24,
+      bottom: AppSpacing.s24,
       child: BannerTextOverlay(subtitle: description, title: title),
     );
   }

@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/app_config.dart';
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class BenefitsAllTiers extends StatelessWidget {
   final int currentIndex;
@@ -44,8 +46,8 @@ class BenefitsAllTiers extends StatelessWidget {
         final t = e.value;
         final isCurrent = i == currentIndex;
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.only(bottom: AppSpacing.s12),
+          padding: AppInsets.a16,
           decoration: BoxDecoration(
             color: cs.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
@@ -69,7 +71,7 @@ class BenefitsAllTiers extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  AppSpacing.h12,
                   Text(
                     t.name,
                     style: tt.bodyLarge?.copyWith(
@@ -80,10 +82,7 @@ class BenefitsAllTiers extends StatelessWidget {
                   const Spacer(),
                   if (isCurrent)
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
+                      padding: AppInsets.h10v4,
                       decoration: BoxDecoration(
                         color: t.color.withAlpha(26),
                         borderRadius: BorderRadius.circular(8),
@@ -98,14 +97,14 @@ class BenefitsAllTiers extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              AppSpacing.v12,
               ...t.benefits.map(
                 (b) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.s4),
                   child: Row(
                     children: [
                       Icon(Icons.check_circle, size: 16, color: t.color),
-                      const SizedBox(width: 8),
+                      AppSpacing.h8,
                       Text(b, style: tt.bodySmall),
                     ],
                   ),

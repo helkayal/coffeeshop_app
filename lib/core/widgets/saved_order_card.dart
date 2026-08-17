@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../../features/checkout/domain/entities/cart_item.dart';
 import '../../features/menu/domain/entities/product.dart';
 import '../../features/orders/domain/entities/order_item.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class SavedOrderCard extends StatelessWidget {
   final OrderItem item;
@@ -28,8 +30,8 @@ class SavedOrderCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 8),
+      padding: AppInsets.a12,
+      margin: const EdgeInsets.only(bottom: AppSpacing.s8),
       decoration: BoxDecoration(
         color: cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(16),
@@ -52,7 +54,7 @@ class SavedOrderCard extends StatelessWidget {
                   : Container(color: cs.surfaceContainerHighest),
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.h12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +89,7 @@ class SavedOrderCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.h8,
           Container(
             width: 40,
             height: 40,

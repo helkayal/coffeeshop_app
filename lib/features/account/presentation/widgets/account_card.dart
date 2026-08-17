@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
+
 class AccountCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -20,7 +23,7 @@ class AccountCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppInsets.a16,
         decoration: BoxDecoration(
           color: cs.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
@@ -37,7 +40,7 @@ class AccountCard extends StatelessWidget {
               ),
               child: Icon(icon, color: cs.primary, size: 20),
             ),
-            const SizedBox(width: 16),
+            AppSpacing.h16,
             Text(label, style: tt.bodyMedium?.copyWith(color: cs.onSurface)),
             const Spacer(),
             Icon(Icons.chevron_right, color: cs.onSurfaceVariant),

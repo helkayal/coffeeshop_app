@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/wallet_package.dart';
 
 class WalletPackageTile extends StatelessWidget {
@@ -24,7 +26,7 @@ class WalletPackageTile extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: AppInsets.a16,
         decoration: BoxDecoration(
           color: isSelected
               ? cs.primary.withAlpha(26)
@@ -41,7 +43,7 @@ class WalletPackageTile extends StatelessWidget {
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               color: isSelected ? cs.primary : cs.outlineVariant,
             ),
-            const SizedBox(width: 14),
+            AppSpacing.h14,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,14 +55,11 @@ class WalletPackageTile extends StatelessWidget {
                       color: cs.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.v4,
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
+                        padding: AppInsets.h8v2,
                         decoration: BoxDecoration(
                           color: cs.primaryContainer,
                           borderRadius: BorderRadius.circular(6),
@@ -77,7 +76,7 @@ class WalletPackageTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      AppSpacing.h8,
                       Text(
                         'wallet.loyalty_bonus'.tr(),
                         style: tt.bodySmall?.copyWith(

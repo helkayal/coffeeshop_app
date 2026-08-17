@@ -15,7 +15,9 @@
     "quantity_price": "x{quantity}  {price}",
     "price_quantity": "{price} x{quantity}",
     "not_available": "غير متاح",
-    "add_to_cart_price": "{price} - أضف إلى السلة"
+    "add_to_cart_price": "{price} - أضف إلى السلة",
+    "cancel": "إلغاء",
+    "save": "حفظ"
   },
   "error_route_not_found": "لم يتم تعريف مسار لـ {}",
   "splash_screen": {
@@ -120,7 +122,8 @@
     "explore_menu": "تصفح القائمة",
     "limited_release": "إصدار محدود",
     "autumn_blend": "مزيج الاعتدال الخريفي",
-    "promo_badge": "خصم 20%"
+    "promo_badge": "خصم 20%",
+    "percent_off": "خصم {percent}%"
   },
   "menu_screen": {
     "our_menu": "قائمتنا",
@@ -133,7 +136,21 @@
     "your_orders": "طلباتك",
     "receipt": "الإيصال",
     "reorder": "إعادة الطلب",
-    "no_orders": "لا توجد طلبات بعد"
+    "no_orders": "لا توجد طلبات بعد",
+    "order": "الطلب",
+    "date": "التاريخ",
+    "total": "الإجمالي",
+    "status": {
+      "pending": "قيد الانتظار",
+      "accepted": "تم القبول",
+      "preparing": "قيد التحضير",
+      "ready_for_pickup": "جاهز للاستلام",
+      "confirmed": "مؤكد",
+      "processing": "قيد التجهيز",
+      "completed": "مكتمل",
+      "cancelled": "ملغي",
+      "unknown": "غير معروف"
+    }
   },
   "favorites_screen": {
     "your_favorites": "مفضلاتك",
@@ -183,7 +200,10 @@
     "update": "تحديث المفضلة",
     "keep_original": "الإبقاء على الأصلي",
     "save_updates": "حفظ التحديثات",
-    "discard": "تجاهل"
+    "discard": "تجاهل",
+    "free": "مجاني",
+    "included": "مشمول",
+    "product_not_available": "المنتج غير متاح"
   },
   "checkout": {
     "your_bag": "حقيبتك",
@@ -211,8 +231,8 @@
     "order_number": "رقم الطلب",
     "date": "التاريخ",
     "back_home": "العودة للرئيسية",
-    "empty_bag": "حقيبتك فارغة"
-    ,"use_wallet_cash_first": "استخدم رصيد محفظة القهوة أولاً",
+    "empty_bag": "حقيبتك فارغة",
+    "use_wallet_cash_first": "استخدم رصيد محفظة القهوة أولاً",
     "payment_pending": "تم إنشاء الطلب، لكن الدفع ما زال معلقاً. تم الاحتفاظ بسلة التسوق.",
     "cleanup_warning": "تم دفع الطلب، لكن تعذر مسح بعض عناصر السلة.",
     "top_up_amount": "اشحن {amount}",
@@ -220,6 +240,11 @@
     "wallet_needs_more": "رصيد المحفظة غير كافٍ — تحتاج {amount} إضافية"
   },
   "credit_card": {
+    "select_card": "اختر بطاقة",
+    "title": "بيانات البطاقة",
+    "number": "رقم البطاقة",
+    "name": "الاسم على البطاقة",
+    "save": "حفظ البطاقة",
     "saved_cards": "البطاقات المحفوظة",
     "add_new_card": "إضافة بطاقة جديدة",
     "card_number": "رقم البطاقة",
@@ -232,12 +257,13 @@
     "retry": "إعادة المحاولة",
     "month": "الشهر",
     "year": "السنة",
-    "expires_at": "ينتهي في {}"
-    ,"expiry_hint": "شهر/سنة",
+    "expires_at": "ينتهي في {}",
+    "expiry_hint": "شهر/سنة",
     "invalid_number": "يجب أن يتكون رقم البطاقة من 16 رقماً",
     "name_required": "الاسم على البطاقة مطلوب",
     "invalid_expiry": "أدخل تاريخ الانتهاء بصيغة شهر/سنة، مثل 12/28",
     "invalid_month": "يجب أن يكون شهر الانتهاء بين 1 و12",
+    "year_required": "سنة انتهاء البطاقة مطلوبة",
     "expired": "انتهت صلاحية البطاقة"
   },
   "wallet": {
@@ -253,6 +279,7 @@
     "continue": "متابعة",
     "buy_packages": "شراء باقة محفظة",
     "buy_package_title": "شراء باقة كوفي كاش",
+    "package_subtitle": "اختر باقة لإضافتها إلى محفظتك",
     "earn_2x_loyalty": "احصل على ضعف نقاط الولاء (2x) مع كل باقة!",
     "no_payment_method": "لا توجد طريقة دفع محفوظة",
     "no_payment_method_msg": "لا تملك طريقة دفع افتراضية محفوظة. يرجى إضافة طريقة دفع للمتابعة.",
@@ -290,6 +317,7 @@
     "dark_mode": "الوضع الداكن",
     "language": "اللغة",
     "english": "English (US)",
+    "arabic": "العربية",
     "notifications": "الإشعارات",
     "push_email": "Push, Email",
     "about": "حول المقهى",
@@ -348,7 +376,8 @@
     "applied_success": "تم تطبيق كود الإحالة بنجاح",
     "apply_failed": "فشل تطبيق كود الإحالة",
     "code_copied": "تم نسخ كود الإحالة إلى الحافظة!",
-    "share": "مشاركة"
+    "share": "مشاركة",
+    "share_text": "استخدم كود الإحالة الخاص بي {code} للحصول على مكافآت!"
   },
   "verification": {
     "title": "تأكيد البريد الإلكتروني",
@@ -389,12 +418,20 @@
     "passwords_do_not_match": "كلمتا المرور غير متطابقتين"
   },
   "payment_methods": {
+    "title": "طرق الدفع",
     "saved_cards": "البطاقات المحفوظة",
     "other_methods": "طرق دفع أخرى",
     "add_new_card": "إضافة بطاقة جديدة",
     "coffee_cash_wallet": "محفظة الهاتف",
     "apple_pay": "Apple Pay",
     "default": "افتراضي",
-    "no_saved_cards": "لا توجد بطاقات محفوظة"
+    "no_saved_cards": "لا توجد بطاقات محفوظة",
+    "add_card": "إضافة بطاقة"
+  },
+  "payment": {
+    "mobile_wallet": "محفظة الهاتف",
+    "tap_to_set_phone": "اضغط لتعيين رقم محفظة الهاتف",
+    "apple_pay": "Apple Pay",
+    "apple_pay_subtitle": "الدفع باستخدام Apple Pay"
   }
 }

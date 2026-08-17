@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_insets.dart';
+import '../theme/app_spacing.dart';
 
 class ConnectionErrorView extends StatelessWidget {
   final String message;
@@ -20,7 +22,7 @@ class ConnectionErrorView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: AppInsets.h32,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -35,20 +37,20 @@ class ConnectionErrorView extends StatelessWidget {
                 color: cs.outlineVariant,
               ),
             ),
-            const SizedBox(height: 24),
+            AppSpacing.v24,
             Text(
               message,
               textAlign: TextAlign.center,
               style: tt.bodyLarge?.copyWith(color: cs.onSurface, height: 1.5),
             ),
-            const SizedBox(height: 32),
+            AppSpacing.v32,
             SizedBox(
               width: 200,
               child: FilledButton.icon(
                 onPressed: onRetry,
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: AppInsets.v14,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
