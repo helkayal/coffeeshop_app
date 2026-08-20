@@ -99,55 +99,31 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   }
 
   Future<void> _onForgotPassword() async {
-    final emailCtrl = TextEditingController();
-
-    await showDialog<void>(
+    // Use a StatefulWidget dialog so its controllers are owned by the dialog's
+    // State and disposed only after the pop animation fully completes — never
+    // while the animation is still running. This prevents the "controller used
+    // after dispose" crash that occurs when AuthLoading rebuilds the tree
+    // during the dialog's close animation.
+    final email = await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('verification.forgot_password'.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('verification.forgot_password_msg'.tr()),
-            AppSpacing.v16,
-            AppTextField(
-              controller: emailCtrl,
-              hintText: 'auth.email_address'.tr(),
-              keyboardType: TextInputType.emailAddress,
-              prefixIcon: const Icon(Icons.email_outlined),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final email = emailCtrl.text.trim();
-              if (email.isEmpty) return;
-              Navigator.pop(context);
-
-              final cubit = context.read<AuthCubit>();
-              final result = await cubit.forgotPassword(email);
-              if (context.mounted) {
-                result.fold(
-                  (failure) => AppSnackBar.show(
-                    context,
-                    failure.message,
-                    type: SnackBarType.error,
-                  ),
-                  (data) => _showResetTokenDialog(data, email),
-                );
-              }
-            },
-            child: Text('verification.send'.tr()),
-          ),
-        ],
-      ),
+      builder: (_) => const _ForgotPasswordDialog(),
     );
-    emailCtrl.dispose();
+
+    if (email == null || !mounted) return;
+
+    // showDialog has fully resolved — dialog is 100% gone from the tree.
+    // Safe to call cubit and trigger state changes.
+    final cubit = context.read<AuthCubit>();
+    final result = await cubit.forgotPassword(email);
+    if (!mounted) return;
+    result.fold(
+      (failure) => AppSnackBar.show(
+        context,
+        failure.message,
+        type: SnackBarType.error,
+      ),
+      (data) => _showResetTokenDialog(data, email),
+    );
   }
 
   Future<void> _showResetTokenDialog(
@@ -157,8 +133,6 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
     final token = data['token'] as String? ?? '';
     final cubit = context.read<AuthCubit>();
 
-    // The dialog keeps itself open on backend errors, so it only pops with
-    // a password once the reset actually succeeded.
     final newPassword = await showDialog<String>(
       context: context,
       builder: (_) => ResetPasswordDialog(
@@ -167,8 +141,7 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
         onSubmit: (password) => cubit.resetPassword(token, password),
       ),
     );
-    if (newPassword == null) return;
-    if (!mounted) return;
+    if (newPassword == null || !mounted) return;
 
     AppSnackBar.show(
       context,
@@ -178,60 +151,20 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
   }
 
   Future<void> _onSocialLogin(String provider) async {
-    final emailCtrl = TextEditingController();
-    final nameCtrl = TextEditingController();
-
-    await showDialog<void>(
+    // Same pattern: StatefulWidget dialog owns its controllers.
+    // Cubit is called only after showDialog resolves (dialog fully gone).
+    final result = await showDialog<({String email, String? firstName, String? lastName})>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(
-          'auth.social_sign_in'.tr(namedArgs: {'provider': provider}),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppTextField(
-              controller: emailCtrl,
-              hintText: 'auth.email_address'.tr(),
-              keyboardType: TextInputType.emailAddress,
-              prefixIcon: const Icon(Icons.email_outlined),
-            ),
-            AppSpacing.v12,
-            AppTextField(
-              controller: nameCtrl,
-              hintText: 'auth.full_name_optional'.tr(),
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () {
-              final email = emailCtrl.text.trim();
-              if (email.isEmpty) return;
-              Navigator.pop(context);
-
-              final names = nameCtrl.text.trim().split(' ');
-              context.read<AuthCubit>().socialLogin(
-                provider: provider,
-                email: email,
-                firstName: names.isNotEmpty ? names.first : null,
-                lastName: names.length > 1 ? names.sublist(1).join(' ') : null,
-              );
-            },
-            child: Text(
-              'auth.social_sign_in'.tr(namedArgs: {'provider': provider}),
-            ),
-          ),
-        ],
-      ),
+      builder: (_) => _SocialLoginDialog(provider: provider),
     );
-    emailCtrl.dispose();
-    nameCtrl.dispose();
+
+    if (result == null || !mounted) return;
+    context.read<AuthCubit>().socialLogin(
+      provider: provider,
+      email: result.email,
+      firstName: result.firstName,
+      lastName: result.lastName,
+    );
   }
 
   @override
@@ -254,8 +187,6 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
                   (route) => false,
                 );
               case AuthEmailNotVerified():
-                // Navigate to the verification screen and auto-trigger a
-                // fresh token so the user doesn't have to tap Resend.
                 Navigator.pushNamed(
                   context,
                   AppRoutes.verifyEmail,
@@ -280,6 +211,142 @@ class _LoginScreenContentState extends State<_LoginScreenContent> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Private dialog widgets — each owns its own TextEditingControllers.
+//
+// Flutter calls State.dispose() AFTER the pop animation fully completes,
+// so the controllers are guaranteed alive during the entire close animation.
+// This eliminates the race between the animation rebuild and controller
+// disposal that caused the "controller used after dispose" assertion.
+// ---------------------------------------------------------------------------
+
+class _ForgotPasswordDialog extends StatefulWidget {
+  const _ForgotPasswordDialog();
+
+  @override
+  State<_ForgotPasswordDialog> createState() => _ForgotPasswordDialogState();
+}
+
+class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
+  final _emailCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('verification.forgot_password'.tr()),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('verification.forgot_password_msg'.tr()),
+            AppSpacing.v16,
+            AppTextField(
+              controller: _emailCtrl,
+              hintText: 'auth.email_address'.tr(),
+              keyboardType: TextInputType.emailAddress,
+              prefixIcon: const Icon(Icons.email_outlined),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('cancel'.tr()),
+        ),
+        FilledButton(
+          onPressed: () {
+            final email = _emailCtrl.text.trim();
+            if (email.isEmpty) return;
+            Navigator.pop(context, email);
+          },
+          child: Text('verification.send'.tr()),
+        ),
+      ],
+    );
+  }
+}
+
+class _SocialLoginDialog extends StatefulWidget {
+  final String provider;
+
+  const _SocialLoginDialog({required this.provider});
+
+  @override
+  State<_SocialLoginDialog> createState() => _SocialLoginDialogState();
+}
+
+class _SocialLoginDialogState extends State<_SocialLoginDialog> {
+  final _emailCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _nameCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        'auth.social_sign_in'.tr(namedArgs: {'provider': widget.provider}),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppTextField(
+              controller: _emailCtrl,
+              hintText: 'auth.email_address'.tr(),
+              keyboardType: TextInputType.emailAddress,
+              prefixIcon: const Icon(Icons.email_outlined),
+            ),
+            AppSpacing.v12,
+            AppTextField(
+              controller: _nameCtrl,
+              hintText: 'auth.full_name_optional'.tr(),
+              prefixIcon: const Icon(Icons.person_outline),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('cancel'.tr()),
+        ),
+        FilledButton(
+          onPressed: () {
+            final email = _emailCtrl.text.trim();
+            if (email.isEmpty) return;
+            final names = _nameCtrl.text.trim().split(' ');
+            Navigator.pop(
+              context,
+              (
+                email: email,
+                firstName: names.isNotEmpty ? names.first : null,
+                lastName:
+                    names.length > 1 ? names.sublist(1).join(' ') : null,
+              ),
+            );
+          },
+          child: Text(
+            'auth.social_sign_in'.tr(namedArgs: {'provider': widget.provider}),
+          ),
+        ),
+      ],
     );
   }
 }

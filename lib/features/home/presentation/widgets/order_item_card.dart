@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
-import 'action_button.dart';
+import '../../../../core/widgets/action_button.dart';
 
 class OrderItemCard extends StatelessWidget {
   final String imagePath;

@@ -433,5 +433,10 @@
     "tap_to_set_phone": "Tap to set a wallet phone number",
     "apple_pay": "Apple Pay",
     "apple_pay_subtitle": "Pay using Apple Pay"
+  },
+  "permissions": {
+    "gallery_title": "Gallery Access Required",
+    "gallery_message": "Please enable photo library access in Settings to set your profile picture.",
+    "open_settings": "Open Settings"
   }
 }

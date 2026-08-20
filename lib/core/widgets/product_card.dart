@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import 'action_button.dart';
 
 class ProductCard extends StatelessWidget {
   final String imageUrl;
@@ -95,9 +96,10 @@ class ProductCard extends StatelessWidget {
                           onPressed: onViewMore,
                           child: Text('menu_screen.view_more'.tr()),
                         ),
-                        IconButton.filledTonal(
+                        ActionButton(
+                          icon: Icons.add_shopping_cart,
+                          isPrimary: true,
                           onPressed: onQuickAdd,
-                          icon: const Icon(Icons.add_shopping_cart, size: 16),
                         ),
                       ],
                     ),

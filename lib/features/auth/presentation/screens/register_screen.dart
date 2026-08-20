@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/helpers/gallery_permission_helper.dart';
+
 import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/app_snack_bar.dart'
@@ -138,6 +140,9 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
   }
 
   Future<void> _pickImage() async {
+    final granted = await GalleryPermissionHelper.requestAndCheck(context);
+    if (!granted || !mounted) return;
+
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null && mounted) {

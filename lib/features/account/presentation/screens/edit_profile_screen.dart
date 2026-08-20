@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/helpers/gallery_permission_helper.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_insets.dart';
@@ -133,6 +134,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickAndUploadAvatar(BuildContext context) async {
+    final granted = await GalleryPermissionHelper.requestAndCheck(context);
+    if (!granted || !context.mounted) return;
+
     final picked = await _picker.pickImage(source: ImageSource.gallery);
     if (picked != null && context.mounted) {
       context.read<ProfileCubit>().uploadAvatar(picked.path);

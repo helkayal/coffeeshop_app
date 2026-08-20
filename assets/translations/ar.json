@@ -433,5 +433,10 @@
     "tap_to_set_phone": "اضغط لتعيين رقم محفظة الهاتف",
     "apple_pay": "Apple Pay",
     "apple_pay_subtitle": "الدفع باستخدام Apple Pay"
+  },
+  "permissions": {
+    "gallery_title": "مطلوب الإذن للوصول إلى المعرض",
+    "gallery_message": "يرجى تفعيل الإذن للوصول إلى مكتبة الصور من الإعدادات لتعيين صورتك الشخصية.",
+    "open_settings": "فتح الإعدادات"
   }
 }
