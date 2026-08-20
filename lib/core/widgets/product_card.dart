@@ -55,9 +55,10 @@ class ProductCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: AppInsets.a16,
+                padding: AppInsets.a12,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
@@ -65,12 +66,17 @@ class ProductCard extends StatelessWidget {
                           child: Text(
                             name,
                             style: text.headlineMedium?.copyWith(
-                              fontSize: 18,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
                               color: colors.onSurface,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                           onPressed: onFavoriteToggle,
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -82,17 +88,24 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(
-                      description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: text.bodySmall,
+                    AppSpacing.v4,
+                    Expanded(
+                      child: Text(
+                        description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.bodySmall,
+                      ),
                     ),
-                    AppSpacing.v12,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: const Size(50, 30),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           onPressed: onViewMore,
                           child: Text('menu_screen.view_more'.tr()),
                         ),

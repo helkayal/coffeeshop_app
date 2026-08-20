@@ -171,11 +171,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     )
                   else
                     ...cards.map((card) {
-                      final isDefault = card.isDefault || selected == card.id;
+                      // Selection is driven only by the user's defaultMethod
+                      // so wallet, apple pay, and cards form one radio group.
                       return SavedCardTile(
                         mask: '•••• ${card.lastFour}',
                         expiry: '${card.expiryMonth}/${card.expiryYear}',
-                        isDefault: isDefault,
+                        isDefault: selected == card.id,
                         onTap: () => _selectMethod(card.id),
                         onDelete: () => context
                             .read<PaymentMethodsCubit>()

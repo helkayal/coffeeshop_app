@@ -89,16 +89,21 @@ class FeaturedItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _FeatureImage(
-            imagePath: imagePath,
-            color: cs.surfaceContainerHighest,
+          Expanded(
+            flex: 3,
+            child: _FeatureImage(
+              imagePath: imagePath,
+              color: cs.surfaceContainerHighest,
+            ),
           ),
           Expanded(
+            flex: 1,
             child: Padding(
               padding: AppInsets.h10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  AppSpacing.v4,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -106,7 +111,7 @@ class FeaturedItemCard extends StatelessWidget {
                         child: Text(
                           name,
                           style: tt.displaySmall?.copyWith(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: cs.onSurface,
                           ),
@@ -132,21 +137,22 @@ class FeaturedItemCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  AppSpacing.v4,
-                  Text(
-                    description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: tt.bodySmall?.copyWith(height: 1.625),
+                  AppSpacing.v2,
+                  Expanded(
+                    child: Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: tt.bodySmall?.copyWith(height: 1.3),
+                    ),
                   ),
-                  const Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         price,
                         style: tt.bodyLarge?.copyWith(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: cs.primary,
                         ),
@@ -183,25 +189,27 @@ class _FeatureImage extends StatelessWidget {
       borderRadius: BorderRadius.all(
         Radius.circular(AppDesignConstants.borderRadius2xl),
       ),
-      child: Padding(
-        padding: AppInsets.v6,
-        child: Center(
-          child: isNetwork
-              ? Image.network(
-                  imagePath,
-                  height: MediaQuery.of(context).size.height * .25,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => _fallbackAsset(),
-                )
-              : (imagePath.isNotEmpty)
-              ? Image.asset(
-                  imagePath,
-                  height: MediaQuery.of(context).size.height * .25,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => _fallbackAsset(),
-                )
-              : _fallbackAsset(),
-        ),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: color,
+        child: isNetwork
+            ? Image.network(
+                imagePath,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => _fallbackAsset(),
+              )
+            : (imagePath.isNotEmpty)
+            ? Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => _fallbackAsset(),
+              )
+            : _fallbackAsset(),
       ),
     );
   }
@@ -209,7 +217,8 @@ class _FeatureImage extends StatelessWidget {
   Widget _fallbackAsset() {
     return Image.asset(
       'assets/images/cardamom_cose_latte.png',
-      height: 180,
+      width: double.infinity,
+      height: double.infinity,
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => Container(color: color),
     );

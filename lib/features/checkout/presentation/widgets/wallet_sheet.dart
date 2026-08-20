@@ -12,11 +12,16 @@ class WalletSheet extends StatefulWidget {
   const WalletSheet({super.key});
 
   static Future<bool> show(BuildContext context) async {
+    final paymentPreferencesCubit = context.read<PaymentPreferencesCubit>();
+
     final result = await showModalBottomSheet<bool>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => const WalletSheet(),
+      builder: (_) => BlocProvider.value(
+        value: paymentPreferencesCubit,
+        child: const WalletSheet(),
+      ),
     );
     return result ?? false;
   }

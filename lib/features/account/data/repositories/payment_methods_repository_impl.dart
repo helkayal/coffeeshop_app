@@ -13,7 +13,21 @@ class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
   @override
   Future<Result<List<PaymentMethod>>> getPaymentMethods() async {
     try {
-      return Success(await _dataSource.getPaymentMethods());
+      final models = await _dataSource.getPaymentMethods();
+      return Success(
+        models
+            .map(
+              (m) => PaymentMethod(
+                id: m.id,
+                lastFour: m.lastFour,
+                expiryMonth: m.expiryMonth,
+                expiryYear: m.expiryYear,
+                brand: m.brand,
+                isDefault: m.isDefault,
+              ),
+            )
+            .toList(),
+      );
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {

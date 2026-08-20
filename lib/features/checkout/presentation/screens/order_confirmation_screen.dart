@@ -48,12 +48,15 @@ class OrderConfirmationScreen extends StatelessWidget {
                 border: Border.all(color: cs.outlineVariant.withAlpha(128)),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'checkout.receipt'.tr(),
-                    style: tt.headlineMedium?.copyWith(
-                      fontSize: 20,
-                      color: cs.onSurface,
+                  Center(
+                    child: Text(
+                      'checkout.receipt'.tr(),
+                      style: tt.headlineMedium?.copyWith(
+                        fontSize: 20,
+                        color: cs.onSurface,
+                      ),
                     ),
                   ),
                   AppSpacing.v20,
@@ -63,7 +66,9 @@ class OrderConfirmationScreen extends StatelessWidget {
                     tt,
                     cs,
                     'checkout.date'.tr(),
-                    DateFormat.yMd(context.locale.toString()).format(DateTime.now()),
+                    DateFormat.yMd(
+                      context.locale.toString(),
+                    ).format(DateTime.now()),
                   ),
                   AppSpacing.v12,
                   Divider(color: cs.outlineVariant.withAlpha(128)),

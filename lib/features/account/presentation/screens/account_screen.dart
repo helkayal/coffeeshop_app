@@ -9,6 +9,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/adaptive_content.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -51,9 +52,10 @@ class AccountScreen extends StatelessWidget {
             ? '${ApiConstants.apiBaseUrl.replaceAll('/api/v1', '')}$avatarUrl${cacheBuster > 0 ? '?t=$cacheBuster' : ''}'
             : null;
 
-        return SingleChildScrollView(
-          padding: AppInsets.screen,
-          child: Column(
+        return AdaptiveContent(
+          child: SingleChildScrollView(
+            padding: AppInsets.screen,
+            child: Column(
             children: [
               GestureDetector(
                 onTap: () => cubit.pushSecondary(const EditProfileRoute()),
@@ -164,9 +166,10 @@ class AccountScreen extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
   }
 
   Widget _placeholderAvatar(ColorScheme cs, String? gender) {

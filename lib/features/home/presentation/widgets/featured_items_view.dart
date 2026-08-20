@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_breakpoints.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../promotions/domain/entities/home_slider_data.dart';
@@ -126,8 +127,10 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final cardHeight = screenHeight * 0.4;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final cardHeight = context.isTablet
+        ? (screenHeight * 0.5).clamp(420.0, 560.0)
+        : (screenHeight * 0.4).clamp(280.0, 360.0);
 
     return SizedBox(
       height: cardHeight,

@@ -7,8 +7,10 @@ import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/entities/connection_status.dart';
 import '../../../../core/routes/shell_router.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../../core/theme/app_breakpoints.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
+import '../../../../core/widgets/app_nav_rail.dart';
 import '../../../../core/widgets/connection_error_view.dart';
 import '../../../../features/checkout/presentation/cubit/cart_cubit.dart';
 import '../../../../features/checkout/presentation/cubit/cart_state.dart';
@@ -64,9 +66,21 @@ class MainShell extends StatelessWidget {
         },
         child: BlocBuilder<ShellCubit, ShellState>(
           builder: (context, shellState) {
+            final isTablet = context.isTablet;
+            final navIndex =
+                shellState.hasSecondary ? -1 : shellState.tabIndex;
+
             return Stack(
               children: [
                 Scaffold(
+                  // Phone: bottom nav bar. Tablet: replaced by side rail.
+                  bottomNavigationBar: isTablet
+                      ? null
+                      : AppBottomNavBar(
+                          currentIndex: navIndex,
+                          onTap: (i) =>
+                              context.read<ShellCubit>().selectTab(i),
+                        ),
                   body: SafeArea(
                     child: Column(
                       children: [
@@ -123,32 +137,43 @@ class MainShell extends StatelessWidget {
                           ],
                         ),
                         Expanded(
-                          child: Stack(
+                          child: Row(
                             children: [
-                              IndexedStack(
-                                index: shellState.tabIndex,
-                                children: _tabScreens,
-                              ),
-                              if (shellState.currentSecondary case final route?)
-                                Material(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  child: ShellRouter.build(route),
+                              // Tablet: side navigation rail.
+                              if (isTablet)
+                                AppNavRail(
+                                  currentIndex: navIndex,
+                                  onTap: (i) => context
+                                      .read<ShellCubit>()
+                                      .selectTab(i),
                                 ),
+                              // Content area: full-width on phone, remaining on tablet.
+                              Expanded(
+                                child: Stack(
+                                  children: [
+                                    IndexedStack(
+                                      index: shellState.tabIndex,
+                                      children: _tabScreens,
+                                    ),
+                                    if (shellState.currentSecondary
+                                        case final route?)
+                                      Material(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        child: ShellRouter.build(route),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  bottomNavigationBar: AppBottomNavBar(
-                    currentIndex: shellState.hasSecondary
-                        ? -1
-                        : shellState.tabIndex,
-                    onTap: (index) =>
-                        context.read<ShellCubit>().selectTab(index),
-                  ),
                 ),
-                // Full-screen offline overlay — covers Scaffold AND bottom nav.
+                // Full-screen offline overlay — covers Scaffold AND nav.
                 BlocBuilder<ConnectivityCubit, ConnectivityState>(
                   builder: (context, connState) {
                     if (connState is! ConnectivityOffline) {

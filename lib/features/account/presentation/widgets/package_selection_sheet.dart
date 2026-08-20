@@ -26,11 +26,26 @@ class PackageSelectionSheet extends StatefulWidget {
     BuildContext context, {
     double? requiredAmount,
   }) async {
+    final walletCubit = context.read<WalletCubit>();
+    final paymentMethodsCubit = context.read<PaymentMethodsCubit>();
+    final paymentPreferencesCubit = context.read<PaymentPreferencesCubit>();
+    final profileCubit = context.read<ProfileCubit>();
+    final shellCubit = context.read<ShellCubit>();
+
     return showModalBottomSheet<dynamic>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => PackageSelectionSheet(requiredAmount: requiredAmount),
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: walletCubit),
+          BlocProvider.value(value: paymentMethodsCubit),
+          BlocProvider.value(value: paymentPreferencesCubit),
+          BlocProvider.value(value: profileCubit),
+          BlocProvider.value(value: shellCubit),
+        ],
+        child: PackageSelectionSheet(requiredAmount: requiredAmount),
+      ),
     );
   }
 

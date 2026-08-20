@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/helpers/gallery_permission_helper.dart';
-
 import '../../../../core/helpers/password_validator.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_breakpoints.dart';
+import '../../../../core/widgets/adaptive_content.dart';
 import '../../../../core/widgets/app_snack_bar.dart'
     show AppSnackBar, SnackBarType;
 import '../cubit/auth_cubit.dart';
@@ -294,29 +295,32 @@ class _RegisterScreenContentState extends State<_RegisterScreenContent> {
               );
             }
           },
-          builder: (context, state) => RegisterForm(
-            isLoading: state is AuthLoading,
-            onRegisterPressed: _onRegisterPressed,
-            genderNotifier: _genderNotifier,
-            stateNotifier: _stateNotifier,
-            cityNotifier: _cityNotifier,
-            firstNameController: _firstNameController,
-            lastNameController: _lastNameController,
-            emailController: _emailController,
-            dateOfBirthController: _dateOfBirthController,
-            passwordController: _passwordController,
-            confirmPasswordController: _confirmPasswordController,
-            onPickDateOfBirth: _pickDateOfBirth,
-            onPickImage: _pickImage,
-            selectedImagePath: _selectedImagePath,
-            firstNameError: _firstNameError,
-            lastNameError: _lastNameError,
-            emailError: _emailError,
-            stateError: _stateError,
-            cityError: _cityError,
-            dateOfBirthError: _dateOfBirthError,
-            passwordError: _passwordError,
-            confirmPasswordError: _confirmPasswordError,
+          builder: (context, state) => AdaptiveContent(
+            maxWidth: AppBreakpoints.formMaxWidth,
+            child: RegisterForm(
+              isLoading: state is AuthLoading,
+              onRegisterPressed: _onRegisterPressed,
+              genderNotifier: _genderNotifier,
+              stateNotifier: _stateNotifier,
+              cityNotifier: _cityNotifier,
+              firstNameController: _firstNameController,
+              lastNameController: _lastNameController,
+              emailController: _emailController,
+              dateOfBirthController: _dateOfBirthController,
+              passwordController: _passwordController,
+              confirmPasswordController: _confirmPasswordController,
+              onPickDateOfBirth: _pickDateOfBirth,
+              onPickImage: _pickImage,
+              selectedImagePath: _selectedImagePath,
+              firstNameError: _firstNameError,
+              lastNameError: _lastNameError,
+              emailError: _emailError,
+              stateError: _stateError,
+              cityError: _cityError,
+              dateOfBirthError: _dateOfBirthError,
+              passwordError: _passwordError,
+              confirmPasswordError: _confirmPasswordError,
+            ),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/adaptive_content.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../customization/presentation/cubit/customization_cubit.dart';
@@ -23,43 +24,45 @@ class FavoritesScreen extends StatelessWidget {
 
     return BlocBuilder<FavoritesCubit, FavoritesState>(
       builder: (context, state) {
-        return SingleChildScrollView(
-          padding: AppInsets.screen,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'favorites_screen.your_favorites'.tr(),
-                style: tt.headlineMedium?.copyWith(fontSize: 30),
-              ),
-              AppSpacing.v32,
-              switch (state) {
-                FavoritesLoading() => const Center(
-                  child: CircularProgressIndicator(),
+        return AdaptiveContent(
+          child: SingleChildScrollView(
+            padding: AppInsets.screen,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'favorites_screen.your_favorites'.tr(),
+                  style: tt.headlineMedium?.copyWith(fontSize: 30),
                 ),
-                FavoritesError(:final message) => Center(
-                  child: Text(
-                    message,
-                    style: tt.bodyMedium?.copyWith(color: cs.error),
+                AppSpacing.v32,
+                switch (state) {
+                  FavoritesLoading() => const Center(
+                    child: CircularProgressIndicator(),
                   ),
-                ),
-                FavoritesLoaded(:final products) when products.isEmpty =>
-                  const EmptyState(message: 'favorites_screen.no_favorites'),
-                FavoritesLoaded(:final products) => Column(
-                  children: [
-                    for (final product in products) ...[
-                      FavoriteItemCard(
-                        product: product,
-                        onQuickAdd: () =>
-                            _quickAddFromFavorites(context, product),
-                      ),
-                      AppSpacing.v16,
+                  FavoritesError(:final message) => Center(
+                    child: Text(
+                      message,
+                      style: tt.bodyMedium?.copyWith(color: cs.error),
+                    ),
+                  ),
+                  FavoritesLoaded(:final products) when products.isEmpty =>
+                    const EmptyState(message: 'favorites_screen.no_favorites'),
+                  FavoritesLoaded(:final products) => Column(
+                    children: [
+                      for (final product in products) ...[
+                        FavoriteItemCard(
+                          product: product,
+                          onQuickAdd: () =>
+                              _quickAddFromFavorites(context, product),
+                        ),
+                        AppSpacing.v16,
+                      ],
                     ],
-                  ],
-                ),
-                _ => const SizedBox.shrink(),
-              },
-            ],
+                  ),
+                  _ => const SizedBox.shrink(),
+                },
+              ],
+            ),
           ),
         );
       },

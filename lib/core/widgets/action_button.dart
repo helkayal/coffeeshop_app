@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_breakpoints.dart';
+
 class ActionButton extends StatelessWidget {
   final IconData icon;
   final bool isPrimary;
@@ -15,11 +17,14 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final isTablet = context.isTablet;
+    final size = isTablet ? 44.0 : 28.0;
+    final iconSize = isTablet ? 22.0 : 16.0;
 
     if (isPrimary) {
       return Container(
-        width: 40,
-        height: 40,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: cs.primary,
           shape: BoxShape.circle,
@@ -33,7 +38,7 @@ class ActionButton extends StatelessWidget {
         ),
         child: IconButton(
           padding: EdgeInsets.zero,
-          iconSize: 20,
+          iconSize: iconSize,
           onPressed: onPressed,
           icon: Icon(icon, color: cs.onPrimary),
         ),
@@ -41,15 +46,15 @@ class ActionButton extends StatelessWidget {
     }
 
     return Container(
-      width: 40,
-      height: 40,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: cs.outlineVariant.withAlpha(153)),
       ),
       child: IconButton(
         padding: EdgeInsets.zero,
-        iconSize: 20,
+        iconSize: iconSize,
         onPressed: onPressed,
         icon: Icon(icon, color: cs.onSurfaceVariant),
       ),

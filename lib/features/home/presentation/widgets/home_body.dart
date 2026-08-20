@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/adaptive_content.dart';
 import '../../../checkout/domain/entities/cart_item.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../menu/presentation/cubit/menu_cubit.dart';
@@ -21,49 +22,51 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.only(top: AppSpacing.s6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: AppInsets.h16,
-            child: HomeProfileSection(),
-          ),
-          AppSpacing.v16,
-          const FeaturedItemsView(),
-          AppSpacing.v16,
-          Padding(
-            padding: AppInsets.h16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder<OrdersCubit, OrdersState>(
-                  builder: (_, state) {
-                    if (state case OrdersLoaded(
-                      latestOrder: final order?,
-                    ) when order.items.isNotEmpty) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SectionHeader(
-                            title: 'home_screen.your_last_order'.tr(),
-                          ),
-                          AppSpacing.v6,
-                          _LastOrderCard(),
-                          AppSpacing.v16,
-                        ],
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-                const ExploreMenuButton(),
-                AppSpacing.v40,
-              ],
+    return AdaptiveContent(
+      child: SingleChildScrollView(
+        padding: const EdgeInsetsDirectional.only(top: AppSpacing.s6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: AppInsets.h16,
+              child: HomeProfileSection(),
             ),
-          ),
-        ],
+            AppSpacing.v16,
+            const FeaturedItemsView(),
+            AppSpacing.v16,
+            Padding(
+              padding: AppInsets.h16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder<OrdersCubit, OrdersState>(
+                    builder: (_, state) {
+                      if (state case OrdersLoaded(
+                        latestOrder: final order?,
+                      ) when order.items.isNotEmpty) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SectionHeader(
+                              title: 'home_screen.your_last_order'.tr(),
+                            ),
+                            AppSpacing.v6,
+                            _LastOrderCard(),
+                            AppSpacing.v16,
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  const ExploreMenuButton(),
+                  AppSpacing.v40,
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

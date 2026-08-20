@@ -6,6 +6,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/adaptive_content.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 import '../widgets/error_view.dart';
@@ -39,7 +40,10 @@ class OnboardingScreen extends StatelessWidget {
                 if (state is OnboardingLoading) return const LoadingView();
                 if (state is OnboardingError) return ErrorView(state.message);
                 if (state is OnboardingLoaded) {
-                  return _buildContent(context, state);
+                  return AdaptiveContent(
+                    maxWidth: 600,
+                    child: _buildContent(context, state),
+                  );
                 }
                 return const SizedBox.shrink();
               },

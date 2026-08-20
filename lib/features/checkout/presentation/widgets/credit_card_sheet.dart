@@ -14,11 +14,20 @@ class CreditCardSheet extends StatefulWidget {
   const CreditCardSheet({super.key});
 
   static Future<bool> show(BuildContext context) async {
+    final paymentMethodsCubit = context.read<PaymentMethodsCubit>();
+    final paymentPreferencesCubit = context.read<PaymentPreferencesCubit>();
+
     final result = await showModalBottomSheet<bool>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => const CreditCardSheet(),
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: paymentMethodsCubit),
+          BlocProvider.value(value: paymentPreferencesCubit),
+        ],
+        child: const CreditCardSheet(),
+      ),
     );
     return result ?? false;
   }

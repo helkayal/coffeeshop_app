@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_breakpoints.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/category.dart';
@@ -52,18 +53,56 @@ class _MenuScreenState extends State<MenuScreen> {
     List<Category> categories,
     String? selectedId,
   ) {
+    final isTablet = context.isTablet;
+
+    final header = <Widget>[
+      const MenuHeader(),
+      AppSpacing.v24,
+      CategoryChips(
+        categories: categories,
+        selectedId: selectedId,
+        onSelected: (id) => context.read<MenuCubit>().selectCategory(id),
+      ),
+      AppSpacing.v24,
+    ];
+
+    if (isTablet) {
+      // 2-column grid on tablet — more efficient use of horizontal space.
+      return CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: AppInsets.screenTop16Bottom0,
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(header),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.s16,
+              right: AppSpacing.s16,
+              bottom: AppSpacing.s96,
+            ),
+            sliver: SliverGrid.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: AppSpacing.s16,
+                mainAxisSpacing: AppSpacing.s16,
+                mainAxisExtent: 195,
+              ),
+              itemCount: products.length,
+              itemBuilder: (_, i) => ProductListItem(product: products[i]),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Single-column list on phone — unchanged.
     return SingleChildScrollView(
       padding: AppInsets.screenTop16Bottom0,
       child: Column(
         children: [
-          const MenuHeader(),
-          AppSpacing.v24,
-          CategoryChips(
-            categories: categories,
-            selectedId: selectedId,
-            onSelected: (id) => context.read<MenuCubit>().selectCategory(id),
-          ),
-          AppSpacing.v24,
+          ...header,
           for (final p in products)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.s16),

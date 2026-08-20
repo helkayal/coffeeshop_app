@@ -48,6 +48,31 @@ class CoffeeShopApp extends StatelessWidget {
             // It proactively refreshes the session and routes accordingly.
             initialRoute: AppRoutes.splash,
             onGenerateRoute: AppRoutes.onGenerateRoute,
+            builder: (context, child) {
+              final width = MediaQuery.sizeOf(context).width;
+              final double scaleFactor;
+              final double iconSize;
+              if (width >= 840) {
+                scaleFactor = 1.35;
+                iconSize = 30.0;
+              } else if (width >= 600) {
+                scaleFactor = 1.30;
+                iconSize = 28.0;
+              } else {
+                scaleFactor = 1.0;
+                iconSize = 24.0;
+              }
+
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: TextScaler.linear(scaleFactor),
+                ),
+                child: IconTheme(
+                  data: IconTheme.of(context).copyWith(size: iconSize),
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              );
+            },
           );
         },
       ),

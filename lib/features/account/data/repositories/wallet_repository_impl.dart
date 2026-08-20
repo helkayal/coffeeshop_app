@@ -48,7 +48,19 @@ class WalletRepositoryImpl implements WalletRepository {
   @override
   Future<Result<List<WalletPackage>>> getPackages() async {
     try {
-      return Success(await _dataSource.getPackages());
+      final models = await _dataSource.getPackages();
+      return Success(
+        models
+            .map(
+              (p) => WalletPackage(
+                id: p.id,
+                name: p.name,
+                amount: p.amount,
+                loyaltyPoints: p.loyaltyPoints,
+              ),
+            )
+            .toList(),
+      );
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
