@@ -18,7 +18,7 @@ class CustomizationRepositoryImpl implements CustomizationRepository {
         data == null ? null : SavedCustomizationModel.fromStorage(data),
       );
     } catch (_) {
-      return const Error(CacheFailure('customization_load_failed'));
+      return const Error(CacheFailure('errors.customization_load_failed'));
     }
   }
 
@@ -32,7 +32,7 @@ class CustomizationRepositoryImpl implements CustomizationRepository {
       await _storage.saveFavoriteSelections(productId, model.toStorage());
       return const Success(null);
     } catch (_) {
-      return const Error(CacheFailure('customization_save_failed'));
+      return const Error(CacheFailure('errors.customization_save_failed'));
     }
   }
 
@@ -42,7 +42,7 @@ class CustomizationRepositoryImpl implements CustomizationRepository {
       await _storage.clearFavoriteSelections(productId);
       return const Success(null);
     } catch (_) {
-      return const Error(CacheFailure('customization_clear_failed'));
+      return const Error(CacheFailure('errors.customization_clear_failed'));
     }
   }
 }

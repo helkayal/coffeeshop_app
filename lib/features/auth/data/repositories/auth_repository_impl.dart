@@ -44,11 +44,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Success(user);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Invalid email or password'));
+      return Error(ServerFailure(e.message ?? 'errors.invalid_credentials'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (e) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -101,11 +101,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Success(response.user);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Registration failed'));
+      return Error(ServerFailure(e.message ?? 'errors.registration_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (e) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -116,7 +116,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _localStorage.clearCachedUser();
       return const Success(null);
     } catch (e) {
-      return const Error(CacheFailure('Failed to clear session'));
+      return const Error(CacheFailure('errors.clear_session_failed'));
     }
   }
 
@@ -137,9 +137,11 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await _remoteDataSource.forgotPassword(email);
       return Success(result);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to send reset email'));
+      return Error(ServerFailure(e.message ?? 'errors.send_reset_email_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -149,9 +151,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remoteDataSource.resetPassword(token, newPassword);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to reset password'));
+      return Error(ServerFailure(e.message ?? 'errors.reset_password_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -175,9 +179,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await _localStorage.cacheUser(user.toJson());
       return Success(user);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Social login failed'));
+      return Error(ServerFailure(e.message ?? 'errors.social_login_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -188,7 +194,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<User>> refreshSession() async {
     final storedRefresh = await _credentials.readRefreshToken();
     if (storedRefresh == null) {
-      return const Error(ServerFailure('No refresh token'));
+      return const Error(ServerFailure('errors.session_expired'));
     }
     try {
       final response = await _remoteDataSource.refreshToken(storedRefresh);
@@ -200,13 +206,13 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       await _credentials.clear();
       await _localStorage.clearCachedUser();
-      return Error(ServerFailure(e.message ?? 'Session expired'));
+      return Error(ServerFailure(e.message ?? 'errors.session_expired'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
       await _credentials.clear();
       await _localStorage.clearCachedUser();
-      return const Error(ServerFailure('Session expired'));
+      return const Error(ServerFailure('errors.session_expired'));
     }
   }
 
@@ -216,9 +222,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remoteDataSource.verifyEmail(token);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Verification failed'));
+      return Error(ServerFailure(e.message ?? 'errors.verification_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -228,9 +236,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remoteDataSource.resendVerification(email);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to resend verification'));
+      return Error(ServerFailure(e.message ?? 'errors.resend_verification_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -240,7 +250,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _localStorage.setPendingAvatarPath(path);
       return const Success(null);
     } catch (_) {
-      return const Error(CacheFailure('avatar_save_failed'));
+      return const Error(CacheFailure('errors.avatar_save_failed'));
     }
   }
 }

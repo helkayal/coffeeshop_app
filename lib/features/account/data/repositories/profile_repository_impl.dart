@@ -16,11 +16,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       return Success(await _dataSource.getProfile());
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load profile'));
+      return Error(ServerFailure(e.message ?? 'errors.profile_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -29,11 +29,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       return Success(await _dataSource.updateProfile(profile));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to update profile'));
+      return Error(ServerFailure(e.message ?? 'errors.profile_update_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -42,11 +42,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       return Success(await _dataSource.getLoyaltyPoints());
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load loyalty points'));
+      return Error(ServerFailure(e.message ?? 'errors.loyalty_points_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -54,10 +54,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Result<List<LoyaltyHistoryEntry>>> getLoyaltyHistory() async {
     try {
       return Success(await _dataSource.getLoyaltyHistory());
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'errors.loyalty_history_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load loyalty history'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -66,11 +68,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       return Success(await _dataSource.uploadAvatar(filePath));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to upload avatar'));
+      return Error(ServerFailure(e.message ?? 'errors.avatar_upload_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -80,11 +82,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       await _dataSource.changeEmail(newEmail, password);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to change email'));
+      return Error(ServerFailure(e.message ?? 'errors.email_change_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
-    } catch (e) {
-      return Error(ServerFailure(e.toString()));
+    } catch (_) {
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

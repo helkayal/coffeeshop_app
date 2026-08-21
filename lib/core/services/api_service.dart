@@ -120,33 +120,59 @@ class ApiService {
           error.type == DioExceptionType.sendTimeout ||
           error.type == DioExceptionType.badResponse &&
               error.response == null) {
-        throw const ConnectionException('connection_unavailable');
+        throw const ConnectionException('errors.connection_unavailable');
       }
       if (error.response case final response?) {
         if ((response.statusCode ?? 0) >= 500) {
-          throw const ServerException('server_unavailable');
+          throw const ServerException('errors.server_unavailable');
         }
         return _unwrap(response);
       }
-      throw const ConnectionException('network_error');
+      throw const ConnectionException('errors.network_error');
     }
   }
+
+  /// Backend error codes that map to localized keys when no readable
+  /// `message` accompanies them.
+  static const _knownServerCodes = {
+    'VALIDATION_FAILED': 'errors.validation_failed',
+    'NOT_FOUND': 'errors.not_found',
+    'TOKEN_EXPIRED': 'errors.session_expired',
+    'FORBIDDEN': 'errors.forbidden',
+  };
 
   dynamic _unwrap(Response<dynamic> response) {
     final body = response.data;
     if (body is Map<String, dynamic>) {
       if (body['success'] == false) {
-        final code = body['error_code'];
         throw ServerException(
-          code is String && code.isNotEmpty ? code : 'request_failed',
+          _resolveServerMessage(
+            code: body['error_code'],
+            message: body['message'],
+          ),
         );
       }
       if (body.containsKey('data')) return body['data'];
     }
     if ((response.statusCode ?? 0) >= 500) {
-      throw const ServerException('server_unavailable');
+      throw const ServerException('errors.server_unavailable');
     }
     return body;
+  }
+
+  /// Resolves a backend error response to a displayable message.
+  ///
+  /// The backend's `message` field is human-readable English (Django
+  /// validator output) and takes priority — it displays unchanged because
+  /// `.tr()` returns non-key text as-is. Known codes fall back to localized
+  /// keys, unknown codes pass through so callers can branch on them.
+  String _resolveServerMessage({required dynamic code, required dynamic message}) {
+    if (message is String && message.isNotEmpty) return message;
+    final codeStr = code is String && code.isNotEmpty ? code : null;
+    final knownKey = codeStr != null ? _knownServerCodes[codeStr] : null;
+    if (knownKey != null) return knownKey;
+    if (codeStr != null) return codeStr;
+    return 'errors.request_failed';
   }
 
   Future<dynamic> get(

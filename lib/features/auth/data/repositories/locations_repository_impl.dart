@@ -24,9 +24,9 @@ class LocationsRepositoryImpl implements LocationsRepository {
     } on ConnectionException catch (error) {
       return Error(ConnectionFailure(error.message));
     } on ServerException catch (error) {
-      return Error(ServerFailure(error.message ?? 'locations_load_failed'));
+      return Error(ServerFailure(error.message ?? 'errors.locations_load_failed'));
     } catch (_) {
-      return const Error(ServerFailure('locations_load_failed'));
+      return const Error(ServerFailure('errors.locations_load_failed'));
     }
   }
 }

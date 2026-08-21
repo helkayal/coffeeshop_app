@@ -13,13 +13,14 @@ class OrdersRepositoryImpl implements OrdersRepository {
   @override
   Future<Result<List<Order>>> getOrders() async {
     try {
-      return Success(await _dataSource.getOrders());
+      final orders = await _dataSource.getOrders();
+      return Success(List<Order>.from(orders));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load orders'));
+      return Error(ServerFailure(e.message ?? 'errors.orders_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -28,11 +29,11 @@ class OrdersRepositoryImpl implements OrdersRepository {
     try {
       return Success(await _dataSource.getOrderById(id));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Order not found'));
+      return Error(ServerFailure(e.message ?? 'errors.order_not_found'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

@@ -18,7 +18,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load wallet balance'));
+      return const Error(ServerFailure('errors.wallet_balance_failed'));
     }
   }
 
@@ -29,7 +29,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load transactions'));
+      return const Error(ServerFailure('errors.wallet_transactions_failed'));
     }
   }
 
@@ -41,7 +41,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to update wallet phone'));
+      return const Error(ServerFailure('errors.wallet_phone_failed'));
     }
   }
 
@@ -64,7 +64,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load packages'));
+      return const Error(ServerFailure('errors.wallet_packages_failed'));
     }
   }
 
@@ -73,11 +73,11 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       return Success(await _dataSource.buyPackage(packageId));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Purchase failed'));
+      return Error(ServerFailure(e.message ?? 'errors.purchase_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Purchase failed. Please try again.'));
+      return const Error(ServerFailure('errors.wallet_purchase_failed'));
     }
   }
 }

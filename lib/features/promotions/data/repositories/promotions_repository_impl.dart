@@ -16,11 +16,11 @@ class PromotionsRepositoryImpl implements PromotionsRepository {
       final model = await _remoteDataSource.getHomeSlider();
       return Success(model);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load promotions'));
+      return Error(ServerFailure(e.message ?? 'errors.promotions_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (e) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

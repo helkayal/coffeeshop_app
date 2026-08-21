@@ -18,9 +18,9 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final questions = await remoteDataSource.getQuestions();
       return Success(questions);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Server Error'));
+      return Error(ServerFailure(e.message ?? 'errors.server_unavailable'));
     } catch (e) {
-      return const Error(ServerFailure('Unexpected Error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -35,11 +35,11 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       await localDataSource.setFirstRunCompleted();
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Server Error'));
+      return Error(ServerFailure(e.message ?? 'errors.server_unavailable'));
     } on CacheException catch (e) {
-      return Error(CacheFailure(e.message ?? 'Cache Error'));
+      return Error(CacheFailure(e.message ?? 'errors.cache_error'));
     } catch (e) {
-      return const Error(ServerFailure('Unexpected Error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

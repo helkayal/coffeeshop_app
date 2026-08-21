@@ -19,7 +19,7 @@ class PaymentPreferencesRepositoryImpl implements PaymentPreferencesRepository {
         ),
       );
     } catch (_) {
-      return const Error(CacheFailure('payment_preferences_load_failed'));
+      return const Error(CacheFailure('errors.payment_preferences_load_failed'));
     }
   }
 
@@ -29,7 +29,7 @@ class PaymentPreferencesRepositoryImpl implements PaymentPreferencesRepository {
       await _storage.setDefaultPaymentMethod(method);
       return const Success(null);
     } catch (_) {
-      return const Error(CacheFailure('payment_method_save_failed'));
+      return const Error(CacheFailure('errors.payment_method_save_failed'));
     }
   }
 
@@ -39,7 +39,7 @@ class PaymentPreferencesRepositoryImpl implements PaymentPreferencesRepository {
       await _storage.setWalletPhone(phone);
       return const Success(null);
     } catch (_) {
-      return const Error(CacheFailure('wallet_phone_save_failed'));
+      return const Error(CacheFailure('errors.wallet_phone_save_failed'));
     }
   }
 }

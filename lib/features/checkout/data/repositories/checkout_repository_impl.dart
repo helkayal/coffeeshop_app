@@ -30,9 +30,9 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
     } on ConnectionException catch (error) {
       return Error(ConnectionFailure(error.message));
     } on ServerException catch (error) {
-      return Error(ServerFailure(error.message ?? 'order_creation_failed'));
+      return Error(ServerFailure(error.message ?? 'errors.order_creation_failed'));
     } catch (_) {
-      return const Error(ServerFailure('order_creation_failed'));
+      return const Error(ServerFailure('errors.order_creation_failed'));
     }
   }
 
@@ -44,9 +44,9 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
     } on ConnectionException catch (error) {
       return Error(ConnectionFailure(error.message));
     } on ServerException catch (error) {
-      return Error(ServerFailure(error.message ?? 'payment_failed'));
+      return Error(ServerFailure(error.message ?? 'errors.payment_failed'));
     } catch (_) {
-      return const Error(ServerFailure('payment_failed'));
+      return const Error(ServerFailure('errors.payment_failed'));
     }
   }
 }

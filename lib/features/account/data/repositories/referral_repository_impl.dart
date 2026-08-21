@@ -15,10 +15,12 @@ class ReferralRepositoryImpl implements ReferralRepository {
   getReferral() async {
     try {
       return Success(await _dataSource.getReferral());
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'errors.referral_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load referral data'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -28,11 +30,11 @@ class ReferralRepositoryImpl implements ReferralRepository {
       await _dataSource.applyReferral(code);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to apply referral code'));
+      return Error(ServerFailure(e.message ?? 'errors.referral_apply_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('referral_apply_failed'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

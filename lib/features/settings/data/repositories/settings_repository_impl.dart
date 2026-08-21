@@ -1,4 +1,5 @@
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/helpers/result.dart';
 import '../../../../core/security/credential_storage.dart';
@@ -20,8 +21,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final local = _local.getSettings();
       await _syncFromApi();
       return Success(local);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'errors.settings_load_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(CacheFailure('settings_load_failed'));
+      return const Error(CacheFailure('errors.settings_load_failed'));
     }
   }
 
@@ -49,8 +54,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
         );
       }
       return const Success(null);
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'errors.settings_save_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(CacheFailure('settings_save_failed'));
+      return const Error(CacheFailure('errors.settings_save_failed'));
     }
   }
 }

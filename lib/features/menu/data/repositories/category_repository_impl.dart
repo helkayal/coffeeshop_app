@@ -15,13 +15,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Result<List<Category>>> getCategories() async {
     try {
       final models = await _remoteDataSource.getCategories();
-      return Success(models);
+      return Success(List<Category>.from(models));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load categories'));
+      return Error(ServerFailure(e.message ?? 'errors.categories_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

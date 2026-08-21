@@ -31,7 +31,7 @@ class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to load payment methods'));
+      return const Error(ServerFailure('errors.payment_methods_load_failed'));
     }
   }
 
@@ -51,11 +51,11 @@ class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
       );
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to add card'));
+      return Error(ServerFailure(e.message ?? 'errors.card_add_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to add card'));
+      return const Error(ServerFailure('errors.card_add_failed'));
     }
   }
 
@@ -67,7 +67,7 @@ class PaymentMethodsRepositoryImpl implements PaymentMethodsRepository {
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Failed to delete card'));
+      return const Error(ServerFailure('errors.card_delete_failed'));
     }
   }
 }

@@ -15,11 +15,11 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     try {
       return Success(await _dataSource.getFavorites());
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load favorites'));
+      return Error(ServerFailure(e.message ?? 'errors.favorites_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -27,8 +27,12 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   Future<Result<bool>> isFavorite(String productId) async {
     try {
       return Success(await _dataSource.isFavorite(productId));
+    } on ServerException catch (e) {
+      return Error(ServerFailure(e.message ?? 'errors.favorites_load_failed'));
+    } on ConnectionException catch (e) {
+      return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Success(false);
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -38,11 +42,11 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       await _dataSource.addFavorite(productId);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to add favorite'));
+      return Error(ServerFailure(e.message ?? 'errors.favorites_add_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -52,11 +56,11 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       await _dataSource.removeFavorite(productId);
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to remove favorite'));
+      return Error(ServerFailure(e.message ?? 'errors.favorites_remove_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('An unexpected error occurred'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }

@@ -16,11 +16,11 @@ class CartRepositoryImpl implements CartRepository {
     try {
       return Success(await _remote.getCart());
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to load cart'));
+      return Error(ServerFailure(e.message ?? 'errors.cart_load_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error loading cart'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -29,11 +29,11 @@ class CartRepositoryImpl implements CartRepository {
     try {
       return Success(await _remote.addItem(item));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to add item'));
+      return Error(ServerFailure(e.message ?? 'errors.cart_add_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -45,11 +45,11 @@ class CartRepositoryImpl implements CartRepository {
       }
       return Success(await _remote.updateItem(itemId, quantity));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to update item'));
+      return Error(ServerFailure(e.message ?? 'errors.cart_update_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -58,11 +58,11 @@ class CartRepositoryImpl implements CartRepository {
     try {
       return Success(await _remote.removeItem(itemId));
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to remove item'));
+      return Error(ServerFailure(e.message ?? 'errors.cart_remove_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 
@@ -72,11 +72,11 @@ class CartRepositoryImpl implements CartRepository {
       await _remote.clearCart();
       return const Success(null);
     } on ServerException catch (e) {
-      return Error(ServerFailure(e.message ?? 'Failed to clear cart'));
+      return Error(ServerFailure(e.message ?? 'errors.cart_clear_failed'));
     } on ConnectionException catch (e) {
       return Error(ConnectionFailure(e.message));
     } catch (_) {
-      return const Error(ServerFailure('Unexpected error'));
+      return const Error(ServerFailure('errors.unexpected_error'));
     }
   }
 }
