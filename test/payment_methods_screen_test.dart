@@ -12,6 +12,7 @@ import 'package:coffeeshop_app/features/account/domain/entities/wallet_transacti
 import 'package:coffeeshop_app/features/account/domain/repositories/payment_methods_repository.dart';
 import 'package:coffeeshop_app/features/account/domain/repositories/payment_preferences_repository.dart';
 import 'package:coffeeshop_app/features/account/domain/repositories/wallet_repository.dart';
+import 'package:coffeeshop_app/features/account/domain/usecases/decide_purchase_method.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/payment_methods_usecases.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/payment_preferences_usecases.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/wallet_usecases.dart';
@@ -62,6 +63,7 @@ void main() {
       setDefaultMethod: SetDefaultPaymentMethodUseCase(preferencesRepository),
       setWalletPhone: SetWalletPhoneUseCase(preferencesRepository),
       updateWalletPhone: UpdateWalletPhoneUseCase(_UnusedWalletRepository()),
+      decidePurchaseMethod: DecidePurchaseMethodUseCase(),
     )..load();
     final connectivityCubit = ConnectivityCubit(_FakeNetworkInfoService());
 

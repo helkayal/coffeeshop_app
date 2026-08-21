@@ -14,6 +14,7 @@ import 'package:coffeeshop_app/features/account/domain/repositories/payment_meth
 import 'package:coffeeshop_app/features/account/domain/repositories/payment_preferences_repository.dart';
 import 'package:coffeeshop_app/features/account/domain/repositories/profile_repository.dart';
 import 'package:coffeeshop_app/features/account/domain/repositories/wallet_repository.dart';
+import 'package:coffeeshop_app/features/account/domain/usecases/decide_purchase_method.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/payment_methods_usecases.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/payment_preferences_usecases.dart';
 import 'package:coffeeshop_app/features/account/domain/usecases/profile_usecases.dart';
@@ -72,6 +73,7 @@ void main() {
         _UnusedPaymentPreferencesRepository(),
       ),
       updateWalletPhone: UpdateWalletPhoneUseCase(walletRepository),
+      decidePurchaseMethod: DecidePurchaseMethodUseCase(),
     );
     final profileCubit = ProfileCubit(
       getProfile: GetProfileUseCase(_UnusedProfileRepository()),
