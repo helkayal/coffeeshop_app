@@ -16,7 +16,7 @@ dependencies:
   hive_flutter: ^1.1.0
   easy_localization: ^3.0.8
   equatable: ^2.0.8
-  google_fonts: ^8.1.0
+  # google_fonts removed — fonts bundled locally in assets/fonts/
   get_it: ^9.2.1
   dio: ^5.9.2
   flutter_secure_storage: ^10.3.1
@@ -55,3 +55,20 @@ flutter:
     - assets/translations/
     - assets/images/
     - assets/common_passwords.txt
+    - assets/fonts/
+
+  fonts:
+    - family: EBGaramond
+      fonts:
+        - asset: assets/fonts/EBGaramond-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/EBGaramond-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/EBGaramond-Bold.ttf
+          weight: 700
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-SemiBold.ttf
+          weight: 600

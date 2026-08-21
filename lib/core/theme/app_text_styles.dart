@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import 'app_colors.dart';
 
 class AppTextStyles {
-  static TextStyle h1({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.ebGaramond(
+  static TextStyle h1({Color color = AppColors.lightOnBackground}) => TextStyle(
+        fontFamily: 'EBGaramond',
         fontSize: 32,
         fontWeight: FontWeight.bold,
         color: color,
         height: 1.2,
       );
 
-  static TextStyle h2({Color color = AppColors.primary}) =>
-      GoogleFonts.ebGaramond(
+  static TextStyle h2({Color color = AppColors.primary}) => TextStyle(
+        fontFamily: 'EBGaramond',
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: color,
         height: 1.2,
       );
 
-  static TextStyle h3({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.ebGaramond(
+  static TextStyle h3({Color color = AppColors.lightOnBackground}) => TextStyle(
+        fontFamily: 'EBGaramond',
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: color,
@@ -30,28 +28,32 @@ class AppTextStyles {
 
   // Body - Manrope
   static TextStyle bodyLarge({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 16,
         fontWeight: FontWeight.w400,
         color: color,
       );
 
   static TextStyle bodyMedium({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: color,
       );
 
   static TextStyle bodySmall({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 12,
         fontWeight: FontWeight.w400,
         color: color,
       );
 
   static TextStyle labelLarge({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: color,
@@ -59,14 +61,16 @@ class AppTextStyles {
       );
 
   static TextStyle button({Color color = AppColors.lightOnPrimary}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: color,
       );
 
   static TextStyle headlineMd({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.ebGaramond(
+      TextStyle(
+        fontFamily: 'EBGaramond',
         fontSize: 28,
         fontWeight: FontWeight.w400,
         color: color,
@@ -74,7 +78,8 @@ class AppTextStyles {
       );
 
   static TextStyle labelCaps({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 10,
         fontWeight: FontWeight.w600,
         color: color,
@@ -83,7 +88,8 @@ class AppTextStyles {
       );
 
   static TextStyle caption({Color color = AppColors.lightOnBackground}) =>
-      GoogleFonts.manrope(
+      TextStyle(
+        fontFamily: 'Manrope',
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: color,
