@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class BottomActionBar extends StatelessWidget {
   final String total;
@@ -38,18 +39,12 @@ class BottomActionBar extends StatelessWidget {
             children: [
               Text(
                 'customization.total_estimate'.tr(),
-                style: tt.labelLarge?.copyWith(
-                  fontSize: 10,
-                  color: cs.onSurfaceVariant,
-                  letterSpacing: 2,
-                ),
+                style: AppTextStyles.labelMicro(color: cs.onSurfaceVariant)
+                    .copyWith(letterSpacing: 2, height: 1.0),
               ),
               Text(
                 total,
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 30,
-                  color: cs.onSurface,
-                ),
+                style: AppTextStyles.headline(color: cs.onSurface),
               ),
             ],
           ),

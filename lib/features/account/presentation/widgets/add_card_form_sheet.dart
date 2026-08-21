@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/helpers/card_validator.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class AddCardFormSheet extends StatefulWidget {
@@ -36,31 +38,23 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
   String? _error;
 
   String? _validate() {
-    final number = widget.last4Ctrl.text.trim().replaceAll(RegExp(r'\s+'), '');
-    if (number.length != 16 || int.tryParse(number) == null) {
-      return 'credit_card.invalid_number';
-    }
+    final numberError = CardValidator.validateNumber(widget.last4Ctrl.text);
+    if (numberError != null) return numberError;
 
-    final name = widget.nameCtrl.text.trim();
-    if (name.isEmpty) {
-      return 'credit_card.name_required';
-    }
+    final nameError = CardValidator.validateName(widget.nameCtrl.text);
+    if (nameError != null) return nameError;
 
     final month = int.tryParse(widget.monthCtrl.text.trim());
     if (month == null || month < 1 || month > 12) {
       return 'credit_card.invalid_month';
     }
 
-    var year = int.tryParse(widget.yearCtrl.text.trim());
+    final year = int.tryParse(widget.yearCtrl.text.trim());
     if (year == null) {
       return 'credit_card.year_required';
     }
-    if (year < 100) year += 2000;
 
-    final now = DateTime.now();
-    final expiryDate = DateTime(year, month + 1, 0);
-    final currentMonthEnd = DateTime(now.year, now.month + 1, 0);
-    if (expiryDate.isBefore(currentMonthEnd)) {
+    if (CardValidator.isExpired(month, year)) {
       return 'credit_card.expired';
     }
 
@@ -79,14 +73,7 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
     var year = int.parse(widget.yearCtrl.text.trim());
     if (year < 100) year += 2000;
 
-    String brand = 'Visa';
-    if (number.startsWith('5') || number.startsWith('2')) {
-      brand = 'Mastercard';
-    } else if (number.startsWith('3')) {
-      brand = 'Amex';
-    } else if (number.startsWith('6')) {
-      brand = 'Discover';
-    }
+    final brand = CardValidator.detectBrand(number);
 
     widget.onSave(
       last4,
@@ -122,7 +109,8 @@ class _AddCardFormSheetState extends State<AddCardFormSheet> {
           AppSpacing.v24,
           Text(
             'credit_card.add_new_card'.tr(),
-            style: tt.headlineMedium?.copyWith(fontSize: 20),
+            style: AppTextStyles.subtitle(color: cs.onSurface)
+                .copyWith(height: 1.3),
           ),
           AppSpacing.v16,
           AppTextField(

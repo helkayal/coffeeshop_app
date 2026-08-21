@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../account/presentation/cubit/profile_cubit.dart';
 import '../../../account/presentation/cubit/profile_state.dart';
 
@@ -98,23 +99,21 @@ class _NameSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'home_screen.welcome'.tr(),
-            style: tt.bodySmall?.copyWith(fontSize: 12),
+            style: AppTextStyles.bodySmall(color: cs.onSurfaceVariant),
           ),
           AppSpacing.v2,
           Text(
             name,
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.subtitleSm(
+              weight: FontWeight.w700,
               color: cs.onSurface,
-            ),
+            ).copyWith(height: 1.3),
           ),
         ],
       ),
@@ -129,20 +128,20 @@ class _PointsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           points,
-          style: tt.bodyLarge?.copyWith(
-            fontWeight: FontWeight.w700,
+          style: AppTextStyles.bodyLarge(
+            weight: FontWeight.w700,
             color: cs.primary,
           ),
         ),
         Text(
           'home_screen.points'.tr(),
-          style: tt.labelLarge?.copyWith(letterSpacing: 2),
+          style: AppTextStyles.labelCaps(color: cs.onSurfaceVariant)
+              .copyWith(letterSpacing: 2),
         ),
       ],
     );

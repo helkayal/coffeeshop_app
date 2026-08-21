@@ -24,6 +24,7 @@ class PaymentMethodsCubit extends Cubit<PaymentMethodsState> {
   Future<void> loadPaymentMethods() async {
     emit(const PaymentMethodsLoading());
     final result = await _getMethods();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(PaymentMethodsError(failure.message));
@@ -47,6 +48,7 @@ class PaymentMethodsCubit extends Cubit<PaymentMethodsState> {
       cvv: cvv,
       name: name,
     );
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(PaymentMethodsError(failure.message));
@@ -59,6 +61,7 @@ class PaymentMethodsCubit extends Cubit<PaymentMethodsState> {
       emit(PaymentMethodsActionInProgress(current.cards));
     }
     final result = await _deleteCard(cardId);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(PaymentMethodsError(failure.message));

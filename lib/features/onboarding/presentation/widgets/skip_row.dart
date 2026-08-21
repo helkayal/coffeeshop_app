@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_insets.dart';
+import '../../../../../core/theme/app_text_styles.dart';
 
 class SkipRow extends StatelessWidget {
   final VoidCallback onSkip;
@@ -24,8 +25,8 @@ class SkipRow extends StatelessWidget {
             onTap: onSkip,
             child: Text(
               'onboarding.skip_action'.tr(),
-              style: textStyle?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: AppTextStyles.bodyLarge(
+                weight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),

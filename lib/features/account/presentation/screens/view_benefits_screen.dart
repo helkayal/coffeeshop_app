@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -17,7 +18,6 @@ class ViewBenefitsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
@@ -40,11 +40,11 @@ class ViewBenefitsScreen extends StatelessWidget {
                   showViewBenefits: false,
                 ),
                 AppSpacing.v32,
-                _sectionTitle(tt, 'benefits.rewards'.tr()),
+                _sectionTitle(cs, 'benefits.rewards'.tr()),
                 AppSpacing.v16,
                 BenefitsAllTiers(currentIndex: tier.index),
                 AppSpacing.v32,
-                _sectionTitle(tt, 'benefits.how_to_earn'.tr()),
+                _sectionTitle(cs, 'benefits.how_to_earn'.tr()),
                 AppSpacing.v16,
                 const BenefitsEarnPoints(),
               ],
@@ -55,13 +55,13 @@ class ViewBenefitsScreen extends StatelessWidget {
     );
   }
 
-  Widget _sectionTitle(TextTheme tt, String text) {
+  Widget _sectionTitle(ColorScheme cs, String text) {
     return Text(
       text,
-      style: tt.headlineMedium?.copyWith(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-      ),
+      style: AppTextStyles.subtitle(
+        weight: FontWeight.w700,
+        color: cs.onSurface,
+      ).copyWith(height: 1.3),
     );
   }
 }

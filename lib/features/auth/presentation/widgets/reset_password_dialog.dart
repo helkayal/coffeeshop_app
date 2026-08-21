@@ -150,7 +150,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
           if (_submitError case final submitError?) ...[
             AppSpacing.v12,
             Text(
-              submitError,
+              submitError.tr(),
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: colorScheme.error),

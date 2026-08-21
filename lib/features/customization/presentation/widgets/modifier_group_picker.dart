@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 import 'modifier_icon.dart';
@@ -40,7 +41,6 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final groupIcon = modifierGroupIcon(widget.group.name);
 
     return Padding(
@@ -54,20 +54,15 @@ class _ModifierGroupPickerState extends State<ModifierGroupPicker> {
               AppSpacing.h8,
               Text(
                 widget.group.name,
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 18,
-                  color: cs.onSurface,
-                ),
+                style: AppTextStyles.subtitleSm(color: cs.onSurface)
+                    .copyWith(height: 1.3),
               ),
               if (widget.group.required) ...[
                 AppSpacing.h8,
                 Text(
                   'customization.required'.tr(),
-                  style: tt.labelLarge?.copyWith(
-                    fontSize: 10,
-                    color: cs.primary,
-                    letterSpacing: 2,
-                  ),
+                  style: AppTextStyles.labelMicro(color: cs.primary)
+                      .copyWith(letterSpacing: 2, height: 1.0),
                 ),
               ],
             ],
@@ -109,7 +104,6 @@ class _OptionCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final icon = modifierOptionIcon(option.name);
 
     return GestureDetector(
@@ -139,9 +133,9 @@ class _OptionCircle extends StatelessWidget {
           AppSpacing.v6,
           Text(
             option.name,
-            style: tt.bodySmall?.copyWith(
+            style: AppTextStyles.bodySmall(
+              weight: isSelected ? FontWeight.w600 : FontWeight.w400,
               color: isSelected ? cs.primary : cs.onSurfaceVariant,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
           Text(
@@ -152,10 +146,7 @@ class _OptionCircle extends StatelessWidget {
                       'amount': '+${option.priceModifier.toStringAsFixed(2)}',
                     },
                   ),
-            style: tt.bodySmall?.copyWith(
-              fontSize: 11,
-              color: cs.onSurfaceVariant,
-            ),
+            style: AppTextStyles.labelXs(color: cs.onSurfaceVariant),
           ),
         ],
       ),

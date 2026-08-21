@@ -50,6 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> savePendingAvatar(String path) async {
     final result = await _savePendingAvatarUseCase(path);
+    if (isClosed) return;
     result.fold((failure) => emit(AuthError(failure.message)), (_) {});
   }
 

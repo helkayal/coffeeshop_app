@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/action_button.dart';
 
 class OrderItemCard extends StatelessWidget {
@@ -85,9 +86,8 @@ class OrderItemCard extends StatelessWidget {
         children: [
           Text(
             name,
-            style: tt.displaySmall?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+            style: AppTextStyles.subtitleSm(
+              weight: FontWeight.w600,
               color: cs.onSurface,
             ),
             overflow: TextOverflow.ellipsis,
@@ -101,8 +101,8 @@ class OrderItemCard extends StatelessWidget {
           AppSpacing.v8,
           Text(
             price,
-            style: tt.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.bodyLarge(
+              weight: FontWeight.w700,
               color: cs.primary,
             ),
           ),

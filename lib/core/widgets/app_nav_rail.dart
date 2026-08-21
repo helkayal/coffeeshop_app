@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 
 /// A side [NavigationRail] for tablet layouts, styled to match
 /// [AppBottomNavBar] (glassmorphism surface, primary-tinted active state).
@@ -42,15 +43,12 @@ class AppNavRail extends StatelessWidget {
             indicatorColor: cs.primary.withAlpha(26),
             selectedIconTheme: IconThemeData(color: cs.primary, size: 28),
             unselectedIconTheme: IconThemeData(color: cs.onSurfaceVariant, size: 28),
-            selectedLabelTextStyle: TextStyle(
+            selectedLabelTextStyle: AppTextStyles.captionSm(
+              weight: FontWeight.w600,
               color: cs.primary,
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
             ),
-            unselectedLabelTextStyle: TextStyle(
-              color: cs.onSurfaceVariant,
-              fontSize: 13,
-            ),
+            unselectedLabelTextStyle:
+                AppTextStyles.captionSm(color: cs.onSurfaceVariant),
             labelType: NavigationRailLabelType.all,
             minWidth: 88,
             groupAlignment: 0,

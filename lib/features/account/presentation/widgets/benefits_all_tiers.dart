@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../config/app_config.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class BenefitsAllTiers extends StatelessWidget {
   final int currentIndex;
@@ -16,22 +17,22 @@ class BenefitsAllTiers extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     final tiers = [
-      _TierInfo('loyalty.blue'.tr(), AppConfig.tier1Color, [
+      _TierInfo('loyalty.blue'.tr(), AppColors.tier1Color, [
         'benefits.discount'.tr(),
         'benefits.birthday'.tr(),
       ]),
-      _TierInfo('loyalty.silver'.tr(), AppConfig.tier2Color, [
+      _TierInfo('loyalty.silver'.tr(), AppColors.tier2Color, [
         'benefits.discount'.tr(),
         'benefits.birthday'.tr(),
         'benefits.priority'.tr(),
       ]),
-      _TierInfo('loyalty.gold'.tr(), AppConfig.tier3Color, [
+      _TierInfo('loyalty.gold'.tr(), AppColors.tier3Color, [
         'benefits.discount'.tr(),
         'benefits.birthday'.tr(),
         'benefits.priority'.tr(),
         'benefits.free_drink'.tr(),
       ]),
-      _TierInfo('loyalty.platinum'.tr(), AppConfig.tier4Color, [
+      _TierInfo('loyalty.platinum'.tr(), AppColors.tier4Color, [
         'benefits.discount'.tr(),
         'benefits.birthday'.tr(),
         'benefits.priority'.tr(),
@@ -74,8 +75,8 @@ class BenefitsAllTiers extends StatelessWidget {
                   AppSpacing.h12,
                   Text(
                     t.name,
-                    style: tt.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    style: AppTextStyles.bodyLarge(
+                      weight: FontWeight.w700,
                       color: cs.onSurface,
                     ),
                   ),
@@ -89,9 +90,9 @@ class BenefitsAllTiers extends StatelessWidget {
                       ),
                       child: Text(
                         'benefits.current'.tr(),
-                        style: tt.bodySmall?.copyWith(
+                        style: AppTextStyles.bodySmall(
+                          weight: FontWeight.w600,
                           color: t.color,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),

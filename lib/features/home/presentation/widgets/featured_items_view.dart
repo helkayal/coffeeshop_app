@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_breakpoints.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../promotions/domain/entities/home_slider_data.dart';
 import '../../../promotions/presentation/cubit/promotions_cubit.dart';
 import '../../../promotions/presentation/cubit/promotions_state.dart';
@@ -142,9 +143,9 @@ class _FeaturedItemsViewState extends State<FeaturedItemsView> {
             case PromotionsError(:final message):
               return Center(
                 child: Text(
-                  message,
+                  message.tr(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: AppTextStyles.bodyMedium(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),

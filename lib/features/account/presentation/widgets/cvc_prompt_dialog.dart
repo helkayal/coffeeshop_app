@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
 class CvcPromptDialog extends StatefulWidget {
@@ -42,7 +43,10 @@ class _CvcPromptDialogState extends State<CvcPromptDialog> {
     return AlertDialog(
       title: Text(
         'wallet.confirm_credit_card'.tr(args: [widget.last4]),
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        style: AppTextStyles.subtitleSm(
+          weight: FontWeight.w700,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,

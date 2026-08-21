@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import '../widgets/cart_item_card.dart';
@@ -39,7 +40,7 @@ class _CartScreenState extends State<CartScreen> {
             CartLoading() => const Center(child: CircularProgressIndicator()),
             CartError(:final message) => Center(
               child: Text(
-                message,
+                message.tr(),
                 style: tt.bodyMedium?.copyWith(color: cs.error),
               ),
             ),
@@ -93,10 +94,10 @@ class _CartScreenState extends State<CartScreen> {
         children: [
           Text(
             'checkout.your_bag'.tr(),
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 36,
+            style: AppTextStyles.display(
+              weight: FontWeight.w400,
               color: cs.onSurface,
-            ),
+            ).copyWith(height: 1.3),
           ),
           AppSpacing.v8,
           Text('checkout.review_selection'.tr(), style: tt.bodySmall),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 class CoffeeBeanIcon extends StatelessWidget {
   final double size;
   final Color? color;
@@ -38,7 +40,7 @@ class _CoffeeBeanPainter extends CustomPainter {
     canvas.drawRRect(rrect, paint);
 
     final linePaint = Paint()
-      ..color = Colors.white
+      ..color = AppColors.lightOnPrimary
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.08
       ..strokeCap = StrokeCap.round;

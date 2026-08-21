@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../cubit/orders_cubit.dart';
 import '../cubit/orders_state.dart';
@@ -41,7 +42,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   padding: AppInsets.b24t8,
                   child: Text(
                     'orders_screen.your_orders'.tr(),
-                    style: tt.headlineMedium?.copyWith(fontSize: 24),
+                    style: AppTextStyles.headlineSm(color: cs.onSurface)
+                        .copyWith(height: 1.3),
                   ),
                 ),
                 switch (state) {
@@ -53,7 +55,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ),
                   OrdersError(:final message) => Center(
                     child: Text(
-                      message,
+                      message.tr(),
                       style: tt.bodyMedium?.copyWith(color: cs.error),
                     ),
                   ),

@@ -18,6 +18,7 @@ import '../../features/account/domain/repositories/payment_preferences_repositor
 import '../../features/account/domain/repositories/profile_repository.dart';
 import '../../features/account/domain/repositories/referral_repository.dart';
 import '../../features/account/domain/repositories/wallet_repository.dart';
+import '../../features/account/domain/usecases/decide_purchase_method.dart';
 import '../../features/account/domain/usecases/payment_methods_usecases.dart';
 import '../../features/account/domain/usecases/payment_preferences_usecases.dart';
 import '../../features/account/domain/usecases/profile_usecases.dart';
@@ -55,6 +56,7 @@ import '../../features/checkout/data/repositories/cart_repository_impl.dart';
 import '../../features/checkout/data/repositories/checkout_repository_impl.dart';
 import '../../features/checkout/domain/repositories/cart_repository.dart';
 import '../../features/checkout/domain/repositories/checkout_repository.dart';
+import '../../features/checkout/domain/usecases/build_quick_add_item.dart';
 import '../../features/checkout/domain/usecases/cart_usecases.dart';
 import '../../features/checkout/domain/usecases/place_order.dart';
 import '../../features/checkout/presentation/cubit/cart_cubit.dart';
@@ -300,12 +302,14 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetPaymentPreferencesUseCase(sl()));
   sl.registerLazySingleton(() => SetDefaultPaymentMethodUseCase(sl()));
   sl.registerLazySingleton(() => SetWalletPhoneUseCase(sl()));
+  sl.registerLazySingleton(() => DecidePurchaseMethodUseCase());
   sl.registerFactory(
     () => PaymentPreferencesCubit(
       getPreferences: sl(),
       setDefaultMethod: sl(),
       setWalletPhone: sl(),
       updateWalletPhone: sl(),
+      decidePurchaseMethod: sl(),
     ),
   );
 
@@ -348,6 +352,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => RemoveCartItemUseCase(sl()));
   sl.registerLazySingleton(() => ClearCartUseCase(sl()));
   sl.registerLazySingleton(() => PlaceOrderUseCase(sl(), sl()));
+  sl.registerLazySingleton(() => BuildQuickAddItemUseCase());
   sl.registerFactory(
     () => CartCubit(
       getCart: sl(),
@@ -356,6 +361,7 @@ Future<void> setupServiceLocator() async {
       removeItem: sl(),
       clearCart: sl(),
       placeOrder: sl(),
+      buildQuickAddItem: sl(),
       onConnectionFailure: (f) => sl<ConnectivityCubit>().markOffline(
         ConnectionStatus.serverUnreachable,
       ),

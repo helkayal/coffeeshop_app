@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../menu/domain/entities/product.dart';
 import '../../../menu/presentation/cubit/menu_cubit.dart';
 import '../../../menu/presentation/cubit/menu_state.dart';
@@ -80,10 +81,8 @@ class CartItemCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item.name,
-                      style: tt.headlineMedium?.copyWith(
-                        fontSize: 24,
-                        color: cs.onSurface,
-                      ),
+                      style: AppTextStyles.headlineSm(color: cs.onSurface)
+                          .copyWith(height: 1.3),
                     ),
                   ),
                   IconButton(
@@ -105,10 +104,9 @@ class CartItemCard extends StatelessWidget {
                 'common.price'.tr(
                   namedArgs: {'amount': item.unitPrice.toStringAsFixed(2)},
                 ),
-                style: tt.bodyLarge?.copyWith(
-                  fontSize: 18,
+                style: AppTextStyles.bodyLg(
+                  weight: FontWeight.w500,
                   color: cs.primary,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
               AppSpacing.v12,

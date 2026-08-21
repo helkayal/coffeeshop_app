@@ -38,7 +38,7 @@ class PlaceOrderUseCase {
     String paymentMethod = 'wallet',
   }) async {
     if (cart.isEmpty) {
-      return const Error(PlaceOrderFailure('empty_cart'));
+      return const Error(PlaceOrderFailure('errors.empty_cart'));
     }
 
     final items = cart.items

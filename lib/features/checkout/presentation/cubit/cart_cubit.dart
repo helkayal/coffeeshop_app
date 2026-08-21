@@ -1,8 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../menu/domain/entities/product.dart';
+import '../../../orders/domain/entities/order_item.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/cart_item.dart';
+import '../../domain/usecases/build_quick_add_item.dart';
 import '../../domain/usecases/cart_usecases.dart';
 import '../../domain/usecases/place_order.dart';
 import 'cart_state.dart';
@@ -14,6 +17,7 @@ class CartCubit extends Cubit<CartState> {
   final RemoveCartItemUseCase _removeItem;
   final ClearCartUseCase _clearCart;
   final PlaceOrderUseCase _placeOrder;
+  final BuildQuickAddItemUseCase _buildQuickAdd;
   final void Function(ConnectionFailure)? onConnectionFailure;
 
   CartCubit({
@@ -23,6 +27,7 @@ class CartCubit extends Cubit<CartState> {
     required RemoveCartItemUseCase removeItem,
     required ClearCartUseCase clearCart,
     required PlaceOrderUseCase placeOrder,
+    required BuildQuickAddItemUseCase buildQuickAddItem,
     this.onConnectionFailure,
   }) : _getCart = getCart,
        _addToCart = addToCart,
@@ -30,11 +35,38 @@ class CartCubit extends Cubit<CartState> {
        _removeItem = removeItem,
        _clearCart = clearCart,
        _placeOrder = placeOrder,
+       _buildQuickAdd = buildQuickAddItem,
        super(const CartInitial());
+
+  /// Builds a quick-add cart item: last-order selections when reordering,
+  /// default options otherwise, plus newly selected extras.
+  CartItem buildQuickAddItem(
+    Product product, {
+    List<OrderItem> lastOrderItems = const [],
+    Set<String> selectedExtraIds = const {},
+  }) => _buildQuickAdd(
+    product,
+    lastOrderItems: lastOrderItems,
+    selectedExtraIds: selectedExtraIds,
+  );
+
+  /// Live unit price for the quick-add sheet (base price + selected extras).
+  double quickAddPrice(Product product, {Set<String> selectedExtraIds = const {}}) =>
+      _buildQuickAdd.unitPriceFor(product, selectedExtraIds: selectedExtraIds);
+
+  /// Rebuilds a cart item from a previous order line, preserving the
+  /// ordered price and quantity.
+  CartItem reorderOrderItem(Product product, OrderItem item, {String? productName}) =>
+      _buildQuickAdd.fromOrderItem(product, item, productName: productName);
+
+  /// Rebuilds a cart item from an order line without product context.
+  CartItem reorderOrderItemRaw(OrderItem item, {required String orderId}) =>
+      _buildQuickAdd.fromOrderItemRaw(item, orderId: orderId);
 
   Future<void> loadCart() async {
     emit(const CartLoading());
     final result = await _getCart();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -62,6 +94,7 @@ class CartCubit extends Cubit<CartState> {
     }
 
     final result = await _addToCart(item);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -74,6 +107,7 @@ class CartCubit extends Cubit<CartState> {
     final item = current.items.firstWhere((i) => i.id == itemId);
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity + 1);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -86,6 +120,7 @@ class CartCubit extends Cubit<CartState> {
     final item = current.items.firstWhere((i) => i.id == itemId);
     emit(CartActionInProgress(current));
     final result = await _updateItem(itemId, item.quantity - 1);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -96,6 +131,7 @@ class CartCubit extends Cubit<CartState> {
     final current = _currentCart;
     if (current != null) emit(CartActionInProgress(current));
     final result = await _removeItem(itemId);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -106,6 +142,7 @@ class CartCubit extends Cubit<CartState> {
     final current = _currentCart;
     if (current != null) emit(CartActionInProgress(current));
     final result = await _clearCart();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(CartError(failure.message));
@@ -119,6 +156,7 @@ class CartCubit extends Cubit<CartState> {
     final total = current.subtotal;
     emit(CartActionInProgress(current));
     final result = await _placeOrder(current, paymentMethod: paymentMethod);
+    if (isClosed) return;
     result.fold(
       (failure) {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);

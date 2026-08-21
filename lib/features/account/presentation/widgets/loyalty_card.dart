@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import 'coffee_bean_icon.dart';
 import 'loyalty_card_image.dart';
@@ -17,7 +18,6 @@ class LoyaltyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final tier = LoyaltyTier.fromPoints(points);
     final tierName = 'loyalty.${tier.name}'.tr();
     final targetText = tier.pointsToNext != null
@@ -31,7 +31,7 @@ class LoyaltyCard extends StatelessWidget {
       children: [
         LoyaltyCardImage(tier: tier, tierName: tierName),
         AppSpacing.v24,
-        _buildPointsRow(context, cs, tt, targetText),
+        _buildPointsRow(context, cs, targetText),
         AppSpacing.v14,
         LoyaltyProgressBar(
           progress: tier.progress,
@@ -44,7 +44,6 @@ class LoyaltyCard extends StatelessWidget {
   Widget _buildPointsRow(
     BuildContext context,
     ColorScheme cs,
-    TextTheme tt,
     String targetText,
   ) {
     return Row(
@@ -54,9 +53,8 @@ class LoyaltyCard extends StatelessWidget {
           children: [
             Text(
               points.toStringAsFixed(2),
-              style: tt.headlineMedium?.copyWith(
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
+              style: AppTextStyles.headlineMd(
+                weight: FontWeight.w900,
                 color: cs.onSurface,
               ),
             ),
@@ -72,10 +70,9 @@ class LoyaltyCard extends StatelessWidget {
             children: [
               Text(
                 targetText,
-                style: tt.bodyMedium?.copyWith(
+                style: AppTextStyles.captionSm(
+                  weight: FontWeight.w600,
                   color: cs.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
                 ),
               ),
               AppSpacing.h2,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class SettingsRow extends StatelessWidget {
   final IconData icon;
@@ -43,9 +44,9 @@ class SettingsRow extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: tt.bodyMedium?.copyWith(
+                    style: AppTextStyles.bodyMedium(
+                      weight: FontWeight.w500,
                       color: cs.onSurface,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   AppSpacing.v2,

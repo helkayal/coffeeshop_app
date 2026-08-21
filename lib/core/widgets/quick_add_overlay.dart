@@ -9,8 +9,10 @@ import '../../features/menu/domain/entities/product.dart';
 import '../../features/orders/domain/entities/order_item.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../features/orders/presentation/cubit/orders_state.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 import 'quick_add_option_card.dart';
 import 'saved_order_card.dart';
 
@@ -60,18 +62,17 @@ class QuickAddOverlay extends StatefulWidget {
     List<OrderItem> lastItems = [];
     final ordersState = context.read<OrdersCubit>().state;
     if (ordersState case OrdersLoaded(latestOrder: final order?)) {
-      lastItems = order.items.where((i) => i.menuItemId == product.id).toList();
+      lastItems = order.items
+          .where((item) => item.menuItemId == product.id)
+          .toList();
     }
 
-    // Check if there are extras/addons.
-    final hasExtras = product.optionGroups.any((g) {
-      final n = g.name.toLowerCase();
-      return n.contains('extra') || n.contains('add-on');
-    });
-
     // If no last order and no extras, add directly without popup.
+    final hasExtras = product.optionGroups.any((group) => group.isMulti);
     if (lastItems.isEmpty && !hasExtras) {
-      _addToCartDirectly(context, product);
+      context
+          .read<CartCubit>()
+          .addItem(context.read<CartCubit>().buildQuickAddItem(product));
       return;
     }
 
@@ -99,7 +100,7 @@ class QuickAddOverlay extends StatefulWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withAlpha(153),
+      barrierColor: AppColors.barrier,
       isScrollControlled: true,
       builder: (_) => QuickAddOverlay(
         productName: productName,
@@ -111,35 +112,6 @@ class QuickAddOverlay extends StatefulWidget {
         onAddToCart: (item) => cartCubit.addItem(item),
       ),
     );
-  }
-
-  static void _addToCartDirectly(BuildContext context, Product product) {
-    final cartCubit = context.read<CartCubit>();
-    // Build variant from the first (default) option of each single-select group.
-    final variantParts = <String>[];
-    final defaultIds = <String>[];
-    double upcharge = 0;
-    for (final group in product.optionGroups) {
-      final n = group.name.toLowerCase();
-      final isMulti = n.contains('extra') || n.contains('add-on');
-      if (!isMulti && group.values.isNotEmpty) {
-        final defaultOpt = group.values.first;
-        variantParts.add(defaultOpt.name);
-        defaultIds.add(defaultOpt.id);
-        upcharge += defaultOpt.priceModifier;
-      }
-    }
-    final item = CartItem(
-      id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
-      productId: product.id,
-      name: product.name,
-      imagePath: product.imagePath ?? '',
-      variant: variantParts.join(' • '),
-      unitPrice: product.basePrice + upcharge,
-      quantity: 1,
-      modifierIds: defaultIds,
-    );
-    cartCubit.addItem(item);
   }
 
   @override
@@ -156,79 +128,22 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
 
   List<OptionValue> get _extraOptions {
     final product = widget.product;
-    if (product == null) return [];
-    final result = <OptionValue>[];
-    for (final group in product.optionGroups) {
-      final n = group.name.toLowerCase();
-      if (n.contains('extra') || n.contains('add-on')) {
-        result.addAll(group.values);
-      }
-    }
-    return result;
-  }
-
-  double get _selectedUpcharge {
-    double total = 0;
-    for (final opt in _extraOptions) {
-      if (_selectedOptionIds.contains(opt.id)) {
-        total += opt.priceModifier;
-      }
-    }
-    return total;
+    if (product == null) return const [];
+    return product.optionGroups
+        .where((group) => group.isMulti)
+        .expand((group) => group.values)
+        .toList();
   }
 
   void _addToCart() {
     final product = widget.product;
     if (product == null) return;
 
-    final variantParts = <String>[];
-    final modifierIds = <String>[];
-    final lastItems = _lastOrderItems;
-    if (lastItems != null) {
-      for (final item in lastItems) {
-        for (final sel in item.selections) {
-          final name = sel['modifier_name'] as String? ?? '';
-          if (name.isNotEmpty) variantParts.add(name);
-          final id = sel['modifier_id'] as String?;
-          if (id != null) modifierIds.add(id);
-        }
-      }
-    } else {
-      // No last order — use default options from non-extra groups.
-      for (final group in product.optionGroups) {
-        final n = group.name.toLowerCase();
-        if (!n.contains('extra') &&
-            !n.contains('add-on') &&
-            group.values.isNotEmpty) {
-          final defaultOpt = group.values.first;
-          variantParts.add(defaultOpt.name);
-          modifierIds.add(defaultOpt.id);
-        }
-      }
-    }
-    for (final optId in _selectedOptionIds) {
-      for (final opt in _extraOptions) {
-        if (opt.id == optId) variantParts.add(opt.name);
-      }
-    }
-
-    modifierIds.addAll(_selectedOptionIds);
-
-    final variant = variantParts.isNotEmpty
-        ? variantParts.join(' • ')
-        : product.name;
-
-    final item = CartItem(
-      id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
-      productId: product.id,
-      name: product.name,
-      imagePath: product.imagePath ?? '',
-      variant: variant,
-      unitPrice: product.basePrice + _selectedUpcharge,
-      quantity: 1,
-      modifierIds: modifierIds,
+    final item = context.read<CartCubit>().buildQuickAddItem(
+      product,
+      lastOrderItems: _lastOrderItems ?? const [],
+      selectedExtraIds: _selectedOptionIds,
     );
-
     widget.onAddToCart(item);
     Navigator.pop(context);
   }
@@ -239,6 +154,7 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
     final tt = Theme.of(context).textTheme;
     final lastItems = _lastOrderItems;
     final extras = _extraOptions;
+    final product = widget.product;
 
     return Container(
       decoration: BoxDecoration(
@@ -270,19 +186,17 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Last Order section
-                  if (lastItems != null) ...[
+                  if (lastItems != null && product != null) ...[
                     Text(
                       'quick_add.last_order'.tr(),
-                      style: tt.headlineMedium?.copyWith(
-                        fontSize: 20,
-                        color: cs.onSurface,
-                      ),
+                      style: AppTextStyles.subtitle(color: cs.onSurface)
+                          .copyWith(height: 1.3),
                     ),
                     AppSpacing.v12,
                     ...lastItems.map(
                       (item) => SavedOrderCard(
                         item: item,
-                        product: widget.product,
+                        product: product,
                         productName: widget.productName,
                         productImage: widget.productImage,
                         onAddToCart: widget.onAddToCart,
@@ -294,10 +208,8 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                   if (extras.isNotEmpty) ...[
                     Text(
                       'quick_add.quick_add'.tr(),
-                      style: tt.headlineMedium?.copyWith(
-                        fontSize: 20,
-                        color: cs.onSurface,
-                      ),
+                      style: AppTextStyles.subtitle(color: cs.onSurface)
+                          .copyWith(height: 1.3),
                     ),
                     AppSpacing.v12,
                     ...extras.map(
@@ -318,10 +230,16 @@ class _QuickAddOverlayState extends State<QuickAddOverlay> {
                           namedArgs: {
                             'price': 'common.price'.tr(
                               namedArgs: {
-                                'amount':
-                                    ((widget.product?.basePrice ?? 0) +
-                                            _selectedUpcharge)
-                                        .toStringAsFixed(2),
+                                'amount': product == null
+                                    ? '0.00'
+                                    : context
+                                          .read<CartCubit>()
+                                          .quickAddPrice(
+                                            product,
+                                            selectedExtraIds:
+                                                _selectedOptionIds,
+                                          )
+                                          .toStringAsFixed(2),
                               },
                             ),
                           },

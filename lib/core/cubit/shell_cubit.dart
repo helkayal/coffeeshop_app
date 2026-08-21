@@ -100,6 +100,7 @@ class ShellCubit extends Cubit<ShellState> {
       if (!allow) return;
     }
     onWillPopSecondary = null;
+    if (isClosed) return;
     emit(state.copyWith(tabIndex: index, secondaryStack: const []));
   }
 
@@ -122,6 +123,7 @@ class ShellCubit extends Cubit<ShellState> {
       if (!allow) return;
     }
     onWillPopSecondary = null;
+    if (isClosed) return;
     final stack = [...state.secondaryStack]..removeLast();
     emit(state.copyWith(secondaryStack: stack));
   }

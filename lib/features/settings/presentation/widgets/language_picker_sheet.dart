@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../cubit/settings_cubit.dart';
 
 void showLanguagePicker(
@@ -23,7 +24,8 @@ void showLanguagePicker(
           children: [
             Text(
               'settings.language'.tr(),
-              style: tt.headlineMedium?.copyWith(fontSize: 20),
+              style: AppTextStyles.subtitle(color: cs.onSurface)
+                  .copyWith(height: 1.3),
             ),
             AppSpacing.v24,
             _langTile(

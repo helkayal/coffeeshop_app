@@ -14,6 +14,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   Future<void> fetchQuestions() async {
     emit(OnboardingLoading());
     final result = await _getOnboardingQuestions();
+    if (isClosed) return;
 
     result.fold(
       (failure) => emit(OnboardingError(failure.message)),
@@ -35,6 +36,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     if (isLastStep) {
       // O-1: propagate failure instead of silently marking isCompleted = true.
       final result = await _completeOnboarding(answers: newAnswers);
+      if (isClosed) return;
       result.fold(
         (failure) => emit(OnboardingError(failure.message)),
         (_) =>
@@ -65,6 +67,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
     // O-1: propagate failure instead of silently completing.
     final result = await _completeOnboarding(answers: currentState.answers);
+    if (isClosed) return;
     result.fold(
       (failure) => emit(OnboardingError(failure.message)),
       (_) => emit(currentState.copyWith(isCompleted: true)),

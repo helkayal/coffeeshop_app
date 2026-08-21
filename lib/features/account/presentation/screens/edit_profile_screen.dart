@@ -6,9 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/helpers/gallery_permission_helper.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -29,7 +29,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
@@ -73,7 +72,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onEditTap: () => _pickAndUploadAvatar(context),
                 ),
                 AppSpacing.v48,
-                _sectionHeader(cs, tt, 'profile_screen.account'.tr()),
+                _sectionHeader(cs, 'profile_screen.account'.tr()),
                 AppSpacing.v16,
                 ProfileField(
                   label: 'profile_screen.full_name'.tr(),
@@ -144,19 +143,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _signOut(BuildContext context) {
-    sl<AuthCubit>().logout();
+    context.read<AuthCubit>().logout();
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
 
-  Widget _sectionHeader(ColorScheme cs, TextTheme tt, String text) {
+  Widget _sectionHeader(ColorScheme cs, String text) {
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Text(
         text,
-        style: tt.labelLarge?.copyWith(
-          color: cs.primary,
-          fontSize: 10,
+        style: AppTextStyles.labelMicro(color: cs.primary).copyWith(
           letterSpacing: 2,
+          height: 1.0,
         ),
       ),
     );

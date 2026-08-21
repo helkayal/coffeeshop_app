@@ -16,6 +16,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> loadSettings() async {
     final result = await _getSettings();
+    if (isClosed) return;
     result.fold(
       (failure) => emit(SettingsError(failure.message)),
       (settings) => emit(SettingsLoaded(settings)),

@@ -6,14 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../checkout/domain/entities/cart_item.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
 import '../../../favorites/presentation/cubit/favorites_cubit.dart';
 import '../../../favorites/presentation/cubit/favorites_state.dart';
 import '../../../menu/domain/entities/option_group.dart';
-import '../../../menu/domain/entities/option_value.dart';
 import '../../../menu/domain/entities/product.dart';
-import '../../domain/entities/saved_customization.dart';
 import '../cubit/customization_cubit.dart';
 import '../cubit/customization_state.dart';
 import '../widgets/bottom_action_bar.dart';
@@ -36,11 +34,6 @@ class CustomizationScreen extends StatefulWidget {
 }
 
 class _CustomizationScreenState extends State<CustomizationScreen> {
-  final Map<String, OptionValue> _picked = {};
-  final Map<String, List<OptionValue>> _toggled = {};
-  final Map<String, String> _savedPickedIds = {};
-  final Map<String, List<String>> _savedToggledIds = {};
-  double _total = 0;
   late final ShellCubit _shellCubit;
 
   Product? get _product => widget.product;
@@ -49,61 +42,13 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
   void initState() {
     super.initState();
     _shellCubit = context.read<ShellCubit>();
-    _total = _product?.basePrice ?? 0;
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
-    final p = _product;
-    if (p == null) return;
-    final cubit = context.read<CustomizationCubit>();
-    await cubit.load(p.id);
-    if (!mounted) return;
-    final state = cubit.state;
-    final saved = state is CustomizationLoaded ? state.customization : null;
-
-    for (final group in p.optionGroups) {
-      if (_isMulti(group)) {
-        final savedIds = saved?.toggledOptionIds[group.id];
-        if (savedIds != null) {
-          final selected = <OptionValue>[];
-          for (final v in group.values) {
-            if (savedIds.contains(v.id)) {
-              selected.add(v);
-              _total += v.priceModifier;
-            }
-          }
-          _toggled[group.id] = selected;
-        }
-      } else {
-        final savedId = saved?.pickedOptionIds[group.id];
-        OptionValue? opt;
-        if (savedId != null) {
-          opt = group.values.cast<OptionValue?>().firstWhere(
-            (v) => v?.id == savedId,
-            orElse: () => null,
-          );
-        }
-        opt ??= (group.values.isNotEmpty ? group.values.first : null);
-        if (opt != null) {
-          _picked[group.id] = opt;
-          _total += opt.priceModifier;
-        }
-      }
+    final product = _product;
+    if (product != null) {
+      context.read<CustomizationCubit>().startBuilder(product);
     }
-
-    for (final e in _picked.entries) {
-      _savedPickedIds[e.key] = e.value.id;
-    }
-    for (final e in _toggled.entries) {
-      final ids = e.value.map((v) => v.id).toList()..sort();
-      _savedToggledIds[e.key] = ids;
-    }
-
     if (widget.fromFavorites) {
       _shellCubit.onWillPopSecondary = _handleWillPop;
     }
-    setState(() {});
   }
 
   @override
@@ -115,29 +60,20 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
   }
 
   Future<bool> _handleWillPop() async {
-    if (widget.fromFavorites && _hasCustomizationChanged()) {
+    final state = context.read<CustomizationCubit>().state;
+    if (widget.fromFavorites &&
+        state is CustomizationBuilder &&
+        state.hasChanged) {
       final update = await _showUpdateFavoriteDialog();
       if (update == null) return false;
       if (update == true) {
-        await _saveFavoriteSelections();
+        final product = _product;
+        if (product != null && mounted) {
+          await context.read<CustomizationCubit>().saveSelections(product.id);
+        }
       }
     }
     return true;
-  }
-
-  bool _hasCustomizationChanged() {
-    for (final e in _picked.entries) {
-      if (_savedPickedIds[e.key] != e.value.id) return true;
-    }
-    for (final e in _toggled.entries) {
-      final currentIds = e.value.map((v) => v.id).toList()..sort();
-      final savedIds = _savedToggledIds[e.key] ?? [];
-      if (currentIds.length != savedIds.length) return true;
-      for (int i = 0; i < currentIds.length; i++) {
-        if (currentIds[i] != savedIds[i]) return true;
-      }
-    }
-    return false;
   }
 
   Future<bool?> _showUpdateFavoriteDialog() {
@@ -160,158 +96,67 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     );
   }
 
-  Future<void> _saveFavoriteSelections() async {
-    final product = _product;
-    if (product == null) return;
-    final picked = <String, String>{};
-    for (final e in _picked.entries) {
-      picked[e.key] = e.value.id;
-      _savedPickedIds[e.key] = e.value.id;
-    }
-    final toggled = <String, List<String>>{};
-    for (final e in _toggled.entries) {
-      final ids = e.value.map((v) => v.id).toList();
-      toggled[e.key] = ids;
-      _savedToggledIds[e.key] = List.from(ids)..sort();
-    }
-    await context.read<CustomizationCubit>().save(
-      product.id,
-      SavedCustomization(pickedOptionIds: picked, toggledOptionIds: toggled),
-    );
-  }
-
-  bool _isMulti(OptionGroup group) {
-    final name = group.name.toLowerCase();
-    return name.contains('extra') || name.contains('add-on');
-  }
-
-  bool _isSlider(OptionGroup group) {
-    final name = group.name.toLowerCase();
-    return name.contains('temperature') ||
-        name.contains('sweet') ||
-        name.contains('size');
-  }
-
-  List<OptionGroup> _sortedGroups(List<OptionGroup> groups) {
-    final multi = <OptionGroup>[];
-    final rest = <OptionGroup>[];
-    for (final g in groups) {
-      (_isMulti(g) ? multi : rest).add(g);
-    }
-    return [...rest, ...multi];
-  }
-
-  void _onSingleChanged(OptionGroup group, OptionValue value) {
-    final old = _picked[group.id];
-    setState(() {
-      if (old != null) _total -= old.priceModifier;
-      _picked[group.id] = value;
-      _total += value.priceModifier;
-    });
-  }
-
-  void _onMultiChanged(OptionGroup group, List<OptionValue> values) {
-    final old = _toggled[group.id] ?? [];
-    setState(() {
-      for (final v in old) {
-        _total -= v.priceModifier;
-      }
-      for (final v in values) {
-        _total += v.priceModifier;
-      }
-      _toggled[group.id] = values;
-    });
-  }
-
-  Future<void> _addToCart() async {
+  Future<void> _addToCart(CustomizationBuilder state) async {
     final product = _product;
     if (product == null) return;
 
-    if (widget.fromFavorites && _hasCustomizationChanged()) {
+    if (widget.fromFavorites && state.hasChanged) {
       final update = await _showUpdateFavoriteDialog();
       if (update == null) return;
-      if (update == true) await _saveFavoriteSelections();
+      if (update == true && mounted) {
+        await context.read<CustomizationCubit>().saveSelections(product.id);
+      }
     }
 
     if (!mounted) return;
-    final cartCubit = context.read<CartCubit>();
-
-    final parts = <String>[];
-    for (final g in _sortedGroups(product.optionGroups)) {
-      if (_isMulti(g)) {
-        for (final v in _toggled[g.id] ?? []) {
-          parts.add(v.name);
-        }
-      } else {
-        final picked = _picked[g.id];
-        if (picked != null) parts.add(picked.name);
-      }
-    }
-
-    final modifierIds = <String>[
-      ..._picked.values.map((v) => v.id),
-      ..._toggled.values.expand((list) => list.map((v) => v.id)),
-    ];
-
-    final item = CartItem(
-      id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
-      productId: product.id,
-      name: product.name,
-      imagePath: product.imagePath ?? '',
-      variant: parts.join(' • '),
-      unitPrice: _total,
-      quantity: 1,
-      modifierIds: modifierIds,
-    );
-
-    cartCubit.addItem(item);
+    context.read<CartCubit>().addItem(state.buildCartItem());
     if (context.mounted) {
       _shellCubit.onWillPopSecondary = null;
       _shellCubit.popSecondary();
     }
   }
 
-  Future<void> _toggleFavorite() async {
+  Future<void> _toggleFavorite(CustomizationBuilder state) async {
     final product = _product;
     if (product == null) return;
-    final cubit = context.read<FavoritesCubit>();
+    final favoritesCubit = context.read<FavoritesCubit>();
     final customizationCubit = context.read<CustomizationCubit>();
 
-    final favState = cubit.state;
+    final favState = favoritesCubit.state;
     final isFav =
         favState is FavoritesLoaded && favState.isFavorite(product.id);
 
     if (isFav) {
-      if (_hasCustomizationChanged()) {
+      if (state.hasChanged) {
         final update = await _showUpdateFavoriteDialog();
         if (update == true) {
-          await _saveFavoriteSelections();
+          await customizationCubit.saveSelections(product.id);
         } else {
-          cubit.toggle(product.id);
+          favoritesCubit.toggle(product.id);
           await customizationCubit.clear(product.id);
         }
       } else {
-        cubit.toggle(product.id);
+        favoritesCubit.toggle(product.id);
         await customizationCubit.clear(product.id);
       }
     } else {
-      cubit.toggle(product.id);
-      await _saveFavoriteSelections();
+      favoritesCubit.toggle(product.id);
+      await customizationCubit.saveSelections(product.id);
     }
   }
 
-  int _initialIndex(OptionGroup group) {
-    final picked = _picked[group.id];
+  int _singleIndex(CustomizationBuilder state, OptionGroup group) {
+    final picked = state.picked[group.id];
     if (picked == null) return 0;
     return group.values.indexOf(picked).clamp(0, group.values.length - 1);
   }
 
-  Set<int> _initialToggleIndices(OptionGroup group) {
-    final selected = _toggled[group.id] ?? [];
+  Set<int> _multiIndices(CustomizationBuilder state, OptionGroup group) {
+    final selected = state.toggled[group.id] ?? const [];
     final indices = <int>{};
-    for (final v in selected) {
-      final i = group.values.indexOf(v);
-      if (i >= 0) indices.add(i);
+    for (final value in selected) {
+      final index = group.values.indexOf(value);
+      if (index >= 0) indices.add(index);
     }
     return indices;
   }
@@ -319,7 +164,6 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final product = _product;
 
     if (product == null) {
@@ -329,6 +173,32 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
       );
     }
 
+    return BlocBuilder<CustomizationCubit, CustomizationState>(
+      builder: (context, state) => switch (state) {
+        CustomizationBuilder() => _buildContent(cs, state),
+        CustomizationError(:final failureCode) => Scaffold(
+          backgroundColor: cs.surface,
+          body: Center(
+            child: Text(
+              failureCode.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: cs.error,
+              ),
+            ),
+          ),
+        ),
+        _ => Scaffold(
+          backgroundColor: cs.surface,
+          body: const Center(child: CircularProgressIndicator()),
+        ),
+      },
+    );
+  }
+
+  Widget _buildContent(ColorScheme cs, CustomizationBuilder state) {
+    final cubit = context.read<CustomizationCubit>();
+    final product = state.product;
+
     return Scaffold(
       backgroundColor: cs.surface,
       body: Stack(
@@ -337,26 +207,26 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
             padding: AppInsets.b120,
             child: Column(
               children: [
-                _buildHero(cs, tt, product),
-                ..._sortedGroups(product.optionGroups).map((group) {
-                  if (_isMulti(group)) {
+                _buildHero(cs, product),
+                ...state.sortedGroups.map((group) {
+                  if (group.isMulti) {
                     return ModifierGroupToggles(
                       group: group,
-                      initialSelected: _initialToggleIndices(group),
-                      onChanged: (v) => _onMultiChanged(group, v),
+                      initialSelected: _multiIndices(state, group),
+                      onChanged: (v) => cubit.selectMulti(group, v),
                     );
                   }
-                  if (_isSlider(group)) {
+                  if (group.isSlider) {
                     return SliderSection(
                       group: group,
-                      initialIndex: _initialIndex(group),
-                      onChanged: (v) => _onSingleChanged(group, v),
+                      initialIndex: _singleIndex(state, group),
+                      onChanged: (v) => cubit.selectSingle(group, v),
                     );
                   }
                   return ModifierGroupPicker(
                     group: group,
-                    initialIndex: _initialIndex(group),
-                    onChanged: (v) => _onSingleChanged(group, v),
+                    initialIndex: _singleIndex(state, group),
+                    onChanged: (v) => cubit.selectSingle(group, v),
                   );
                 }),
               ],
@@ -373,11 +243,11 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
                     favState.isFavorite(product.id);
                 return BottomActionBar(
                   total: 'common.price'.tr(
-                    namedArgs: {'amount': _total.toStringAsFixed(2)},
+                    namedArgs: {'amount': state.total.toStringAsFixed(2)},
                   ),
                   isFavorite: isFav,
-                  onFavorite: _toggleFavorite,
-                  onComplete: _addToCart,
+                  onFavorite: () => _toggleFavorite(state),
+                  onComplete: () => _addToCart(state),
                 );
               },
             ),
@@ -387,7 +257,7 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
     );
   }
 
-  Widget _buildHero(ColorScheme cs, TextTheme tt, Product product) {
+  Widget _buildHero(ColorScheme cs, Product product) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.30,
       child: Stack(
@@ -420,15 +290,17 @@ class _CustomizationScreenState extends State<CustomizationScreen> {
               children: [
                 Text(
                   product.name,
-                  style: tt.headlineMedium?.copyWith(
-                    fontSize: 36,
+                  style: AppTextStyles.display(
+                    weight: FontWeight.w400,
                     color: cs.onSurface,
-                  ),
+                  ).copyWith(height: 1.3),
                 ),
                 AppSpacing.v4,
                 Text(
                   product.description,
-                  style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

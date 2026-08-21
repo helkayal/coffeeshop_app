@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_text_styles.dart';
+
 class LoyaltyTierLabels extends StatelessWidget {
   final int selectedTierIndex;
 
@@ -9,7 +11,6 @@ class LoyaltyTierLabels extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return Row(
       children: [
@@ -17,16 +18,14 @@ class LoyaltyTierLabels extends StatelessWidget {
           'loyalty.blue'.tr(),
           selectedTierIndex == 0,
           cs,
-          tt,
           align: TextAlign.start,
         ),
-        _cell('loyalty.silver'.tr(), selectedTierIndex == 1, cs, tt),
-        _cell('loyalty.gold'.tr(), selectedTierIndex == 2, cs, tt),
+        _cell('loyalty.silver'.tr(), selectedTierIndex == 1, cs),
+        _cell('loyalty.gold'.tr(), selectedTierIndex == 2, cs),
         _cell(
           'loyalty.platinum'.tr(),
           selectedTierIndex == 3,
           cs,
-          tt,
           align: TextAlign.end,
         ),
       ],
@@ -36,17 +35,15 @@ class LoyaltyTierLabels extends StatelessWidget {
   Widget _cell(
     String text,
     bool isActive,
-    ColorScheme cs,
-    TextTheme tt, {
+    ColorScheme cs, {
     TextAlign align = TextAlign.center,
   }) {
     return Expanded(
       child: Text(
         text,
         textAlign: align,
-        style: tt.bodyMedium?.copyWith(
-          fontSize: 14,
-          fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+        style: AppTextStyles.bodyMedium(
+          weight: isActive ? FontWeight.w700 : FontWeight.w500,
           color: isActive ? cs.primary : cs.onSurfaceVariant,
         ),
       ),

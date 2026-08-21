@@ -23,6 +23,7 @@ class MenuCubit extends Cubit<MenuState> {
     emit(const MenuLoading());
 
     final result = await _getMenu();
+    if (isClosed) return;
 
     result.fold(
       (failure) {
@@ -45,6 +46,7 @@ class MenuCubit extends Cubit<MenuState> {
     if (current is! MenuLoaded) return;
 
     final result = await _getProducts(categoryId: categoryId);
+    if (isClosed) return;
 
     result.fold(
       (failure) {

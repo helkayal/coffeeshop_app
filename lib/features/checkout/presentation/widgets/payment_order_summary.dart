@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/cart_item.dart';
 
 class PaymentOrderSummary extends StatelessWidget {
@@ -32,10 +33,8 @@ class PaymentOrderSummary extends StatelessWidget {
         children: [
           Text(
             'checkout.order_summary'.tr(),
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 24,
-              color: cs.onSurface,
-            ),
+            style: AppTextStyles.headlineSm(color: cs.onSurface)
+                .copyWith(height: 1.3),
           ),
           AppSpacing.v16,
           ...items.map(
@@ -65,10 +64,8 @@ class PaymentOrderSummary extends StatelessWidget {
                 'common.price'.tr(
                   namedArgs: {'amount': total.toStringAsFixed(2)},
                 ),
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 24,
-                  color: cs.primary,
-                ),
+                style: AppTextStyles.headlineSm(color: cs.primary)
+                    .copyWith(height: 1.3),
               ),
             ],
           ),
@@ -128,7 +125,8 @@ class _OrderLine extends StatelessWidget {
         ),
         Text(
           price,
-          style: tt.headlineMedium?.copyWith(fontSize: 18, color: cs.onSurface),
+          style: AppTextStyles.subtitleSm(color: cs.onSurface)
+              .copyWith(height: 1.3),
         ),
       ],
     );

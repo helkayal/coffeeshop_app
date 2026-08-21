@@ -17,6 +17,7 @@ class LocationsCubit extends Cubit<LocationsState> {
   Future<void> loadStates() async {
     emit(const LocationsLoading());
     final result = await _getStates();
+    if (isClosed) return;
     result.fold(
       (failure) => emit(LocationsError(failure.message)),
       (states) => emit(LocationsLoaded(states: states)),
@@ -31,6 +32,7 @@ class LocationsCubit extends Cubit<LocationsState> {
     };
     emit(LocationsLoading(states: states));
     final result = await _getCities(state);
+    if (isClosed) return;
     result.fold(
       (failure) => emit(LocationsError(failure.message)),
       (cities) => emit(LocationsLoaded(states: states, cities: cities)),

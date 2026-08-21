@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_design_constants.dart';
 import '../../../../../core/theme/app_insets.dart';
 import '../../../../../core/theme/app_spacing.dart';
+import '../../../../../core/theme/app_text_styles.dart';
 
 class OptionTile extends StatelessWidget {
   final String text;
@@ -20,7 +21,6 @@ class OptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: onTap,
@@ -46,11 +46,11 @@ class OptionTile extends StatelessWidget {
               child: Text(
                 text.tr(),
                 textAlign: TextAlign.center,
-                style: textTheme.bodyLarge?.copyWith(
+                style: AppTextStyles.bodyLarge(
                   color: isSelected
                       ? colorScheme.primary
                       : colorScheme.onSurface,
-                  fontWeight: isSelected ? FontWeight.w600 : null,
+                  weight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
             ),

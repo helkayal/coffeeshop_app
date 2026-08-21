@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 
@@ -49,10 +50,8 @@ class _SliderSectionState extends State<SliderSection> {
           children: [
             Text(
               widget.group.name,
-              style: tt.headlineMedium?.copyWith(
-                fontSize: 18,
-                color: cs.onSurface,
-              ),
+              style: AppTextStyles.subtitleSm(color: cs.onSurface)
+                  .copyWith(height: 1.3),
             ),
             const Spacer(),
             Text(
@@ -71,10 +70,8 @@ class _SliderSectionState extends State<SliderSection> {
         children: [
           Text(
             widget.group.name,
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 18,
-              color: cs.onSurface,
-            ),
+            style: AppTextStyles.subtitleSm(color: cs.onSurface)
+                .copyWith(height: 1.3),
           ),
           AppSpacing.v16,
           SliderTheme(
@@ -119,19 +116,19 @@ class _SliderSectionState extends State<SliderSection> {
                     children: [
                       Text(
                         values[i].name,
-                        style: tt.labelLarge?.copyWith(
-                          color: selected ? cs.primary : cs.onSurfaceVariant,
-                          fontWeight: selected
+                        style: AppTextStyles.labelMicro(
+                          weight: selected
                               ? FontWeight.w600
                               : FontWeight.w400,
-                        ),
+                          color: selected ? cs.primary : cs.onSurfaceVariant,
+                        ).copyWith(letterSpacing: 1.2, height: 1.0),
                       ),
                       AppSpacing.v2,
                       Text(
                         priceText,
-                        style: tt.bodySmall?.copyWith(
+                        style: AppTextStyles.labelMicro(
+                          weight: FontWeight.w400,
                           color: selected ? cs.primary : cs.onSurfaceVariant,
-                          fontSize: 10,
                         ),
                       ),
                     ],

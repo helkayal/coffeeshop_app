@@ -1,16 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/checkout/domain/entities/cart_item.dart';
+import '../../features/checkout/presentation/cubit/cart_cubit.dart';
 import '../../features/menu/domain/entities/product.dart';
 import '../../features/orders/domain/entities/order_item.dart';
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 
 class SavedOrderCard extends StatelessWidget {
   final OrderItem item;
-  final Product? product;
+  final Product product;
   final String productName;
   final String productImage;
   final void Function(CartItem cartItem) onAddToCart;
@@ -18,7 +21,7 @@ class SavedOrderCard extends StatelessWidget {
   const SavedOrderCard({
     super.key,
     required this.item,
-    this.product,
+    required this.product,
     required this.productName,
     required this.productImage,
     required this.onAddToCart,
@@ -61,10 +64,7 @@ class SavedOrderCard extends StatelessWidget {
               children: [
                 Text(
                   item.name,
-                  style: tt.headlineMedium?.copyWith(
-                    fontSize: 16,
-                    color: cs.primary,
-                  ),
+                  style: AppTextStyles.headlineXs(color: cs.primary),
                 ),
                 if (item.selections.isNotEmpty)
                   Text(
@@ -101,28 +101,14 @@ class SavedOrderCard extends StatelessWidget {
               padding: EdgeInsets.zero,
               iconSize: 20,
               onPressed: () {
-                final variantParts = item.selections
-                    .map((s) => s['modifier_name'] as String? ?? '')
-                    .where((s) => s.isNotEmpty)
-                    .toList();
-                final ids = item.selections
-                    .map((s) => s['modifier_id'] as String? ?? '')
-                    .where((s) => s.isNotEmpty)
-                    .toList();
-                final variant = variantParts.isNotEmpty
-                    ? variantParts.join(' • ')
-                    : productName;
-                final cartItem = CartItem(
-                  id: '${product?.id ?? ''}_${DateTime.now().millisecondsSinceEpoch}',
-                  productId: product?.id ?? '',
-                  name: productName,
-                  imagePath: productImage,
-                  variant: variant,
-                  unitPrice: item.price,
-                  quantity: item.quantity,
-                  modifierIds: ids,
+                final cartCubit = context.read<CartCubit>();
+                onAddToCart(
+                  cartCubit.reorderOrderItem(
+                    product,
+                    item,
+                    productName: productName,
+                  ),
                 );
-                onAddToCart(cartItem);
                 Navigator.pop(context);
               },
               icon: Icon(Icons.replay, color: cs.onPrimary),

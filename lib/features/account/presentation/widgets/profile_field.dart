@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class ProfileField extends StatelessWidget {
   final String label;
@@ -35,10 +36,8 @@ class ProfileField extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: tt.labelLarge?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontSize: 10,
-                  ),
+                  style: AppTextStyles.labelMicro(color: cs.onSurfaceVariant)
+                      .copyWith(letterSpacing: 1.2, height: 1.0),
                 ),
                 AppSpacing.v4,
                 Text(

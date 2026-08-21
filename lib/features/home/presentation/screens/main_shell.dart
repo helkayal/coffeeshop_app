@@ -8,6 +8,7 @@ import '../../../../core/entities/connection_status.dart';
 import '../../../../core/routes/shell_router.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_breakpoints.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_app_bar.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_nav_rail.dart';
@@ -110,6 +111,7 @@ class MainShell extends StatelessWidget {
                             if (!shellState.hasSecondary)
                               BlocBuilder<CartCubit, CartState>(
                                 builder: (_, cartState) {
+                                  final cs = Theme.of(context).colorScheme;
                                   final count = switch (cartState) {
                                     CartLoaded(:final cart) => cart.itemCount,
                                     CartActionInProgress(:final cart) =>
@@ -125,7 +127,8 @@ class MainShell extends StatelessWidget {
                                       isLabelVisible: count > 0,
                                       label: Text(
                                         '$count',
-                                        style: const TextStyle(fontSize: 10),
+                                        style:
+                                            AppTextStyles.labelCaps(color: cs.onError),
                                       ),
                                       child: const Icon(
                                         Icons.shopping_cart_outlined,

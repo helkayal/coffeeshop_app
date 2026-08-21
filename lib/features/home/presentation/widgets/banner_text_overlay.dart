@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class BannerTextOverlay extends StatelessWidget {
   final String? subtitle;
@@ -11,7 +13,7 @@ class BannerTextOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tt = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,17 +21,16 @@ class BannerTextOverlay extends StatelessWidget {
       children: [
         Text(
           subtitle ?? 'home_screen.limited_release'.tr(),
-          style: tt.labelSmall?.copyWith(letterSpacing: 2, fontSize: 10),
+          style: AppTextStyles.labelCaps(color: cs.primary)
+              .copyWith(letterSpacing: 2),
         ),
         AppSpacing.v4,
         Text(
           title ?? 'home_screen.autumn_blend'.tr(),
-          style: tt.displaySmall?.copyWith(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            height: 1.2,
-          ),
+          style: AppTextStyles.headlineSm(
+            weight: FontWeight.w700,
+            color: AppColors.lightOnPrimary,
+          ).copyWith(height: 1.2),
         ),
       ],
     );

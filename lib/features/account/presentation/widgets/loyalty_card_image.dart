@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/cubit/shell_cubit.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/loyalty_tier.dart';
 import '../extensions/loyalty_tier_style.dart';
 
@@ -24,8 +26,6 @@ class LoyaltyCardImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tt = Theme.of(context).textTheme;
-
     return AspectRatio(
       aspectRatio: 1.62,
       child: Container(
@@ -41,7 +41,7 @@ class LoyaltyCardImage extends StatelessWidget {
           ),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x1A000000),
+              color: AppColors.cardScrim,
               blurRadius: 16,
               offset: Offset(0, 6),
             ),
@@ -54,20 +54,18 @@ class LoyaltyCardImage extends StatelessWidget {
             children: [
               Text(
                 tierName,
-                style: tt.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                style: AppTextStyles.bodyXl(
+                  weight: FontWeight.bold,
+                  color: AppColors.lightOnPrimary,
                 ),
               ),
               if (pointsText case final text?) ...[
                 AppSpacing.v4,
                 Text(
                   text,
-                  style: tt.bodyMedium?.copyWith(
-                    color: Colors.white.withAlpha(204),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                  style: AppTextStyles.bodyLarge(
+                    weight: FontWeight.w600,
+                    color: AppColors.artworkOverlay,
                   ),
                 ),
               ],
@@ -82,17 +80,16 @@ class LoyaltyCardImage extends StatelessWidget {
                     children: [
                       Text(
                         'loyalty.view_benefits'.tr(),
-                        style: tt.bodyMedium?.copyWith(
-                          color: Colors.white.withAlpha(204),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                        style: AppTextStyles.bodyMedium(
+                          weight: FontWeight.w600,
+                          color: AppColors.artworkOverlay,
                         ),
                       ),
                       AppSpacing.h2,
                       Icon(
                         Icons.chevron_right,
                         size: 14,
-                        color: Colors.white.withAlpha(204),
+                        color: AppColors.artworkOverlay,
                       ),
                     ],
                   ),

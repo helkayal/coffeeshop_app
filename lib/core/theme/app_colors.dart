@@ -53,6 +53,30 @@ class AppColors {
   static const Color error = Color(0xFFC0392B);
   static const Color onError = Color(0xFFFFFFFF);
 
+  // Snackbar success palette
+  static const Color successBackground = Color(0xE6245C3B);
+  static const Color successForeground = Color(0xFFE8F5E9);
+  static const Color successAccent = Color(0xFF4CAF50);
+
+  // Promo banner artwork
+  static const Color promoGradientStart = Color(0xFF8B4513);
+  static const Color promoGradientEnd = Color(0xFFD4A574);
+  static const Color promoScrim = Color(0xCC000000);
+
+  // Loyalty card artwork
+  static const Color cardScrim = Color(0x1A000000);
+  static const Color artworkOverlay = Color(0xCCFFFFFF);
+  static const Color cupShadow = Color(0x26000000);
+
+  // Overlays
+  static const Color barrier = Color(0x99000000);
+
+  // Loyalty tiers
+  static const Color tier1Color = Color(0xFF0000FF);
+  static const Color tier2Color = Color(0xFF696E74);
+  static const Color tier3Color = Color(0xFFFF891C);
+  static const Color tier4Color = Color(0xFF707BE3);
+
   // Shadow
   static const Color lightShadow = Color(0x0A3A302A);
   static const Color darkShadow = Color(0x33000000);

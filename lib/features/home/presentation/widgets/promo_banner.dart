@@ -1,9 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import 'banner_text_overlay.dart';
 
 class PromoBanner extends StatelessWidget {
@@ -27,12 +29,11 @@ class PromoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return Stack(
       children: [
         _buildImage(cs),
-        _buildBadge(cs, tt),
+        _buildBadge(cs),
         _buildGradient(),
         _buildTextContent(),
       ],
@@ -81,14 +82,14 @@ class PromoBanner extends StatelessWidget {
           gradient: LinearGradient(
             begin: AlignmentDirectional.topStart,
             end: AlignmentDirectional.bottomEnd,
-            colors: [Color(0xFF8B4513), Color(0xFFD4A574)],
+            colors: [AppColors.promoGradientStart, AppColors.promoGradientEnd],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildBadge(ColorScheme cs, TextTheme tt) {
+  Widget _buildBadge(ColorScheme cs) {
     final badgeText = discountPercentage != null && discountPercentage! > 0
         ? 'home_screen.percent_off'.tr(
             namedArgs: {'percent': discountPercentage.toString()},
@@ -108,9 +109,8 @@ class PromoBanner extends StatelessWidget {
           ),
           child: Text(
             badgeText,
-            style: tt.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
+            style: AppTextStyles.bodyLg(
+              weight: FontWeight.w800,
               color: cs.onPrimary,
             ),
           ),
@@ -127,7 +127,7 @@ class PromoBanner extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.transparent, Color(0xCC000000)],
+            colors: [Colors.transparent, AppColors.promoScrim],
           ),
         ),
       ),

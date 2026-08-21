@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_design_constants.dart';
 import '../../../../core/theme/app_insets.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class ExploreMenuButton extends StatelessWidget {
   const ExploreMenuButton({super.key});
@@ -12,7 +13,6 @@ class ExploreMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity,
@@ -31,9 +31,8 @@ class ExploreMenuButton extends StatelessWidget {
           children: [
             Text(
               'home_screen.explore_menu'.tr(),
-              style: tt.displaySmall?.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+              style: AppTextStyles.h3(
+                weight: FontWeight.w700,
                 color: cs.onPrimary,
               ),
             ),

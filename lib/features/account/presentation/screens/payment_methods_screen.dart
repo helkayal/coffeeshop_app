@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/connectivity_cubit.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
 import '../../../../core/widgets/saved_card_tile.dart';
 import '../../../../features/checkout/presentation/widgets/payment_option.dart';
@@ -122,10 +123,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 children: [
                   Text(
                     'payment_methods.title'.tr(),
-                    style: tt.headlineMedium?.copyWith(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTextStyles.headlineSm(
+                      weight: FontWeight.w800,
+                      color: cs.onSurface,
+                    ).copyWith(height: 1.3),
                   ),
                   AppSpacing.v24,
                   PaymentOption(
@@ -151,10 +152,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     children: [
                       Text(
                         'payment_methods.saved_cards'.tr(),
-                        style: tt.headlineMedium?.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTextStyles.subtitleSm(
+                          weight: FontWeight.w700,
+                          color: cs.onSurface,
+                        ).copyWith(height: 1.3),
                       ),
                       TextButton.icon(
                         onPressed: _showAddCardSheet,

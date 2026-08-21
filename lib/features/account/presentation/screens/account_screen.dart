@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/adaptive_content.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
@@ -95,11 +95,10 @@ class AccountScreen extends StatelessWidget {
                           children: [
                             Text(
                               name,
-                              style: tt.headlineMedium?.copyWith(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
+                              style: AppTextStyles.subtitle(
+                                weight: FontWeight.w700,
                                 color: cs.onSurface,
-                              ),
+                              ).copyWith(height: 1.3),
                             ),
                             AppSpacing.v2,
                             Text(
@@ -145,7 +144,7 @@ class AccountScreen extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    sl<AuthCubit>().logout();
+                    context.read<AuthCubit>().logout();
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       AppRoutes.login,

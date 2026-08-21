@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_design_constants.dart';
+import '../../../../core/theme/app_design_constants.dart';
 
 class SocialButton extends StatelessWidget {
   final IconData icon;

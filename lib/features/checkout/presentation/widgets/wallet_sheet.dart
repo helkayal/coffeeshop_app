@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../account/presentation/cubit/payment_preferences_cubit.dart';
 import '../../../account/presentation/cubit/payment_preferences_state.dart';
@@ -64,7 +65,6 @@ class _WalletSheetState extends State<WalletSheet> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -86,10 +86,8 @@ class _WalletSheetState extends State<WalletSheet> {
           AppSpacing.v24,
           Text(
             'wallet.phone_for_wallet'.tr(),
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 24,
-              color: cs.onSurface,
-            ),
+            style: AppTextStyles.headlineSm(color: cs.onSurface)
+                .copyWith(height: 1.3),
           ),
           AppSpacing.v24,
           AppTextField(

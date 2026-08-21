@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/wallet_package.dart';
 
 class WalletPackageTile extends StatelessWidget {
@@ -20,7 +21,6 @@ class WalletPackageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: onTap,
@@ -50,10 +50,10 @@ class WalletPackageTile extends StatelessWidget {
                 children: [
                   Text(
                     package.name,
-                    style: tt.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    style: AppTextStyles.bodyLarge(
+                      weight: FontWeight.w700,
                       color: cs.onSurface,
-                    ),
+                    ).copyWith(height: 1.5, letterSpacing: 0.15),
                   ),
                   AppSpacing.v4,
                   Row(
@@ -70,19 +70,16 @@ class WalletPackageTile extends StatelessWidget {
                               'points': package.loyaltyPoints.toString(),
                             },
                           ),
-                          style: tt.labelSmall?.copyWith(
+                          style: AppTextStyles.labelCaps(
+                            weight: FontWeight.w800,
                             color: cs.onPrimaryContainer,
-                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
                       AppSpacing.h8,
                       Text(
                         'wallet.loyalty_bonus'.tr(),
-                        style: tt.bodySmall?.copyWith(
-                          color: cs.secondary,
-                          fontSize: 11,
-                        ),
+                        style: AppTextStyles.labelXs(color: cs.secondary),
                       ),
                     ],
                   ),
@@ -93,8 +90,8 @@ class WalletPackageTile extends StatelessWidget {
               'common.price'.tr(
                 namedArgs: {'amount': package.amount.toStringAsFixed(0)},
               ),
-              style: tt.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
+              style: AppTextStyles.title(
+                weight: FontWeight.w800,
                 color: cs.primary,
               ),
             ),

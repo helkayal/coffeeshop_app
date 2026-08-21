@@ -12,4 +12,19 @@ class OptionGroup {
     required this.values,
     this.required = false,
   });
+
+  /// Multi-select groups collect "extra"/"add-on" options (checkboxes).
+  bool get isMulti {
+    final nameLower = name.toLowerCase();
+    return nameLower.contains('extra') || nameLower.contains('add-on');
+  }
+
+  /// Slider-style groups are rendered as a step-through picker
+  /// (temperature, sweetness, size).
+  bool get isSlider {
+    final nameLower = name.toLowerCase();
+    return nameLower.contains('temperature') ||
+        nameLower.contains('sweet') ||
+        nameLower.contains('size');
+  }
 }

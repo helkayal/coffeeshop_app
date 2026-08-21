@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 
 class ConnectionErrorView extends StatelessWidget {
   final String message;
@@ -39,7 +40,7 @@ class ConnectionErrorView extends StatelessWidget {
             ),
             AppSpacing.v24,
             Text(
-              message,
+              message.tr(),
               textAlign: TextAlign.center,
               style: tt.bodyLarge?.copyWith(color: cs.onSurface, height: 1.5),
             ),
@@ -58,10 +59,10 @@ class ConnectionErrorView extends StatelessWidget {
                 icon: const Icon(Icons.refresh, size: 20),
                 label: Text(
                   'splash_screen.try_again'.tr(),
-                  style: tt.labelLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTextStyles.labelMicro(
+                    weight: FontWeight.w700,
+                    color: AppColors.lightOnPrimary,
+                  ).copyWith(letterSpacing: 1.2, height: 1.0),
                 ),
               ),
             ),

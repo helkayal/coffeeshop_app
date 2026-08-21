@@ -39,6 +39,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     final profileResult = await _getProfile();
     final pointsResult = await _getLoyaltyPoints();
+    if (isClosed) return;
 
     profileResult.fold(
       (failure) {
@@ -80,6 +81,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
 
     final result = await _updateProfile(updatedProfile);
+    if (isClosed) return;
     result.fold(
       (failure) {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
@@ -100,6 +102,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (current is! ProfileLoaded) return;
 
     final result = await _uploadAvatar(filePath);
+    if (isClosed) return;
     result.fold(
       (_) {
         /* Non-fatal — user can retry */
@@ -123,6 +126,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> changeEmail(String newEmail, String password) async {
     final result = await _changeEmail(newEmail, password);
+    if (isClosed) return;
     result.fold(
       (failure) => emit(ProfileError(failure.message)),
       (_) => loadProfile(),
@@ -135,6 +139,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         : 0;
 
     final result = await _getLoyaltyPoints();
+    if (isClosed) return;
     result.fold((_) => loadProfile(cacheBuster: currentBuster), (points) {
       if (state is ProfileLoaded) {
         final current = state as ProfileLoaded;

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class LoginLink extends StatelessWidget {
   const LoginLink({super.key});
@@ -26,9 +27,9 @@ class LoginLink extends StatelessWidget {
           children: [
             TextSpan(
               text: 'auth.login'.tr(),
-              style: textTheme.bodyMedium?.copyWith(
+              style: AppTextStyles.bodyMedium(
+                weight: FontWeight.bold,
                 color: colorScheme.primary,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ],

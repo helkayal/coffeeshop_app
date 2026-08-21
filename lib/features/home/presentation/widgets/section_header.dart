@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_text_styles.dart';
+
 class SectionHeader extends StatelessWidget {
   final String title;
 
@@ -9,13 +11,11 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final tt = theme.textTheme;
 
     return Text(
       title,
-      style: tt.displaySmall?.copyWith(
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
+      style: AppTextStyles.headlineSm(
+        weight: FontWeight.w700,
         color: cs.onSurface,
       ),
     );

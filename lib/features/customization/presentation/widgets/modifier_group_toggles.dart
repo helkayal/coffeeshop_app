@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../menu/domain/entities/option_group.dart';
 import '../../../menu/domain/entities/option_value.dart';
 import 'modifier_icon.dart';
@@ -29,7 +30,6 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final groupIcon = modifierGroupIcon(widget.group.name);
 
     return Padding(
@@ -43,10 +43,8 @@ class _ModifierGroupTogglesState extends State<ModifierGroupToggles> {
               AppSpacing.h8,
               Text(
                 widget.group.name,
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 18,
-                  color: cs.onSurface,
-                ),
+                style: AppTextStyles.subtitleSm(color: cs.onSurface)
+                    .copyWith(height: 1.3),
               ),
             ],
           ),

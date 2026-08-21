@@ -52,7 +52,12 @@ final class PackagePurchased extends WalletState {
 
 final class PackagesError extends WalletState {
   final String message;
-  const PackagesError(this.message);
+
+  /// The packages that were on screen when the error occurred, when known —
+  /// lets the sheet keep rendering the list alongside the error.
+  final List<WalletPackage>? packages;
+
+  const PackagesError(this.message, {this.packages});
 }
 
 final class WalletPhoneUpdated extends WalletState {

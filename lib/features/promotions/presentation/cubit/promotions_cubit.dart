@@ -15,6 +15,7 @@ class PromotionsCubit extends Cubit<PromotionsState> {
   Future<void> loadPromotions() async {
     emit(const PromotionsLoading());
     final result = await _getHomeSliderUseCase();
+    if (isClosed) return;
     switch (result) {
       case Success(:final data):
         emit(PromotionsLoaded(data));

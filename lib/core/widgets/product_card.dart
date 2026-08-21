@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 import 'action_button.dart';
 
 class ProductCard extends StatelessWidget {
@@ -65,9 +66,8 @@ class ProductCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             name,
-                            style: text.headlineMedium?.copyWith(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
+                            style: AppTextStyles.titleSm(
+                              weight: FontWeight.w700,
                               color: colors.onSurface,
                             ),
                             maxLines: 1,

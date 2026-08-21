@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import 'loyalty_deer_painter.dart';
 
 class LoyaltyCupIndicator extends StatelessWidget {
@@ -21,7 +22,7 @@ class LoyaltyCupIndicator extends StatelessWidget {
               borderRadius: BorderRadius.circular(1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(38),
+                  color: AppColors.cupShadow,
                   blurRadius: 1,
                   offset: const Offset(0, 1),
                 ),
@@ -43,7 +44,7 @@ class LoyaltyCupIndicator extends StatelessWidget {
                 width: 10,
                 height: 10,
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.lightOnPrimary,
                   shape: BoxShape.circle,
                 ),
                 child: CustomPaint(painter: LoyaltyDeerPainter(color)),

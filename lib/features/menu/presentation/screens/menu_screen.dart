@@ -1,9 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_breakpoints.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../cubit/menu_cubit.dart';
@@ -35,7 +37,7 @@ class _MenuScreenState extends State<MenuScreen> {
       builder: (context, state) => switch (state) {
         MenuLoading() => const Center(child: CircularProgressIndicator()),
         MenuError(message: final msg) => Center(
-          child: Text(msg, style: TextStyle(color: cs.onSurface)),
+          child: Text(msg.tr(), style: AppTextStyles.bodyMedium(color: cs.onSurface)),
         ),
         MenuLoaded(
           products: final products,

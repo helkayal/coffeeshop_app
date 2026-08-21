@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class MenuHeader extends StatelessWidget {
   const MenuHeader({super.key});
@@ -14,10 +16,9 @@ class MenuHeader extends StatelessWidget {
       children: [
         Text(
           'menu_screen.our_menu'.tr(),
-          style: const TextStyle(
-            fontFamily: 'EB Garamond',
-            fontSize: 36,
-            color: Color(0xFFECE0D6),
+          style: AppTextStyles.display(
+            color: AppColors.darkOnBackground,
+            weight: FontWeight.w400,
           ),
         ),
         AppSpacing.v16,

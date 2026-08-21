@@ -11,6 +11,7 @@ class LoyaltyHistoryCubit extends Cubit<LoyaltyHistoryState> {
   Future<void> load() async {
     emit(const LoyaltyHistoryLoading());
     final result = await _getHistory();
+    if (isClosed) return;
     result.fold(
       (failure) => emit(LoyaltyHistoryError(failure.message)),
       (entries) => emit(LoyaltyHistoryLoaded(entries)),

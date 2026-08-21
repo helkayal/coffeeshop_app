@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class RegisterLink extends StatelessWidget {
   const RegisterLink({super.key});
@@ -24,9 +25,9 @@ class RegisterLink extends StatelessWidget {
           child: Text(
             'auth.create_one'.tr(),
             softWrap: false,
-            style: textTheme.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMedium(
+              weight: FontWeight.bold,
               color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
             ),
           ),
         ),

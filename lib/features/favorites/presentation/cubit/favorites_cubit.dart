@@ -20,6 +20,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   Future<void> loadFavorites() async {
     emit(const FavoritesLoading());
     final result = await _getFavorites();
+    if (isClosed) return;
     result.fold(
       (failure) {
         if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
@@ -36,6 +37,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   Future<void> toggle(String productId) async {
     final result = await _toggle(productId);
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(FavoritesError(failure.message));

@@ -1,20 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
 import '../theme/app_design_constants.dart';
 import '../theme/app_insets.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 
 enum SnackBarType { error, success, info }
 
 class AppSnackBar {
   /// Shows a themed snackbar matching the app's coffee-shop aesthetic.
+  ///
+  /// [message] is translated internally: pass localization keys, or already
+  /// translated text (`.tr()` returns non-key text unchanged).
   static void show(
     BuildContext context,
     String message, {
     SnackBarType type = SnackBarType.error,
   }) {
     final colors = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final (
       Color background,
@@ -29,9 +34,9 @@ class AppSnackBar {
         Icons.error_outline,
       ),
       SnackBarType.success => (
-        const Color(0xE6245C3B),
-        const Color(0xFFE8F5E9),
-        const Color(0xFF4CAF50),
+        AppColors.successBackground,
+        AppColors.successForeground,
+        AppColors.successAccent,
         Icons.check_circle_outline,
       ),
       SnackBarType.info => (
@@ -60,10 +65,10 @@ class AppSnackBar {
               AppSpacing.h14,
               Expanded(
                 child: Text(
-                  message,
-                  style: textTheme.bodyMedium?.copyWith(
+                  message.tr(),
+                  style: AppTextStyles.bodyMedium(
+                    weight: FontWeight.w500,
                     color: foreground,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

@@ -80,7 +80,7 @@ class BuildSavedCartItemUseCase {
     }
 
     if (product.id.isEmpty) {
-      return const Error(CacheFailure('invalid_product'));
+      return const Error(CacheFailure('errors.invalid_product'));
     }
     return Success(
       CartItem(

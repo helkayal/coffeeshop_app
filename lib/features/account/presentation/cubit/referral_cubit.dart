@@ -20,6 +20,7 @@ class ReferralCubit extends Cubit<ReferralState> {
   Future<void> loadReferral() async {
     emit(const ReferralLoading());
     final result = await _getReferral();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(ReferralError(failure.message));
@@ -32,6 +33,7 @@ class ReferralCubit extends Cubit<ReferralState> {
       emit(current.copyWith(isApplying: true));
     }
     final result = await _applyReferral(code);
+    if (isClosed) return;
     result.fold((failure) => emit(ReferralApplyError(failure.message)), (_) {
       emit(const ReferralApplySuccess());
       loadReferral();

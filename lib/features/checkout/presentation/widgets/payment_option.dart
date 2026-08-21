@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class PaymentOption extends StatelessWidget {
   final IconData icon;
@@ -57,9 +58,11 @@ class PaymentOption extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: tt.bodyMedium?.copyWith(
+                    style: AppTextStyles.bodyMedium(
+                      weight: subtitle != null
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                       color: cs.onSurface,
-                      fontWeight: subtitle != null ? FontWeight.w600 : null,
                     ),
                   ),
                   if (subtitle case final subtitleText?
@@ -100,10 +103,9 @@ class PaymentOption extends StatelessWidget {
                 ),
                 child: Text(
                   'payment_methods.default'.tr(),
-                  style: tt.bodySmall?.copyWith(
+                  style: AppTextStyles.labelXs(
+                    weight: FontWeight.w600,
                     color: cs.primary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
                   ),
                 ),
               ),

@@ -30,6 +30,7 @@ class WalletCubit extends Cubit<WalletState> {
     emit(const WalletLoading());
     final balResult = await _getBalance();
     final txnResult = await _getTransactions();
+    if (isClosed) return;
 
     balResult.fold(
       (failure) {
@@ -46,6 +47,7 @@ class WalletCubit extends Cubit<WalletState> {
   Future<void> loadBalance() async {
     emit(const WalletLoading());
     final result = await _getBalance();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(WalletError(failure.message));
@@ -54,6 +56,7 @@ class WalletCubit extends Cubit<WalletState> {
 
   Future<void> updateWalletPhone(String phone) async {
     final result = await _updatePhone(phone);
+    if (isClosed) return;
     result.fold(
       (failure) => emit(WalletError(failure.message)),
       (_) => emit(const WalletPhoneUpdated()),
@@ -63,6 +66,7 @@ class WalletCubit extends Cubit<WalletState> {
   Future<void> loadPackages() async {
     emit(const PackagesLoading());
     final result = await _getPackages();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(PackagesError(failure.message));
@@ -75,8 +79,18 @@ class WalletCubit extends Cubit<WalletState> {
       emit(PackagesBuyInProgress(current.packages));
     }
     final result = await _buyPackage(packageId);
+    if (isClosed) return;
     result.fold(
-      (failure) => emit(PackagesError(failure.message)),
+      (failure) => emit(
+        PackagesError(
+          failure.message,
+          packages: switch (current) {
+            PackagesLoaded(:final packages) => packages,
+            PackagesBuyInProgress(:final packages) => packages,
+            _ => null,
+          },
+        ),
+      ),
       (newBalance) => emit(PackagePurchased(newBalance)),
     );
   }

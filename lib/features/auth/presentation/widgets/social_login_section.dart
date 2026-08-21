@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/social_button.dart';
+import 'social_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
   final void Function(String provider) onSocialLogin;

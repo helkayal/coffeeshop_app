@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/adaptive_content.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../checkout/presentation/cubit/cart_cubit.dart';
@@ -32,7 +33,7 @@ class FavoritesScreen extends StatelessWidget {
               children: [
                 Text(
                   'favorites_screen.your_favorites'.tr(),
-                  style: tt.headlineMedium?.copyWith(fontSize: 30),
+                  style: AppTextStyles.headline(color: cs.onSurface),
                 ),
                 AppSpacing.v32,
                 switch (state) {
@@ -41,7 +42,7 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                   FavoritesError(:final message) => Center(
                     child: Text(
-                      message,
+                      message.tr(),
                       style: tt.bodyMedium?.copyWith(color: cs.error),
                     ),
                   ),

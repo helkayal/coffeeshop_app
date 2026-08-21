@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
 
 class EmptyState extends StatelessWidget {
   final String message;
@@ -16,7 +17,6 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -38,9 +38,9 @@ class EmptyState extends StatelessWidget {
             AppSpacing.v16,
             Text(
               message.tr(),
-              style: tt.bodyLarge?.copyWith(
+              style: AppTextStyles.bodyLarge(
+                weight: FontWeight.bold,
                 color: cs.onSurfaceVariant,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ],

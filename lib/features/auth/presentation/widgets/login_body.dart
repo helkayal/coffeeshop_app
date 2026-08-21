@@ -6,7 +6,7 @@ import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/adaptive_content.dart';
 import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/auth_header.dart';
+import 'auth_header.dart';
 import 'login_form.dart';
 import 'register_link.dart';
 import 'social_login_section.dart';

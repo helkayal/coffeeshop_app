@@ -14,6 +14,7 @@ class OrdersCubit extends Cubit<OrdersState> {
   Future<void> loadOrders() async {
     emit(const OrdersLoading());
     final result = await _getOrders();
+    if (isClosed) return;
     result.fold((failure) {
       if (failure is ConnectionFailure) onConnectionFailure?.call(failure);
       emit(OrdersError(failure.message));

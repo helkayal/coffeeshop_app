@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/shell_cubit.dart';
 import '../../../../core/theme/app_insets.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class OrderSummaryCard extends StatelessWidget {
   final String subtotal;
@@ -51,10 +52,8 @@ class OrderSummaryCard extends StatelessWidget {
                     AppSpacing.h8,
                     Text(
                       'checkout.special_instructions'.tr(),
-                      style: tt.headlineMedium?.copyWith(
-                        fontSize: 20,
-                        color: cs.onSurface,
-                      ),
+                      style: AppTextStyles.subtitle(color: cs.onSurface)
+                          .copyWith(height: 1.3),
                     ),
                   ],
                 ),
@@ -76,10 +75,8 @@ class OrderSummaryCard extends StatelessWidget {
           AppSpacing.v24,
           Text(
             'checkout.summary'.tr(),
-            style: tt.headlineMedium?.copyWith(
-              fontSize: 24,
-              color: cs.onSurface,
-            ),
+            style: AppTextStyles.headlineSm(color: cs.onSurface)
+                .copyWith(height: 1.3),
           ),
           AppSpacing.v24,
           Row(
@@ -117,17 +114,12 @@ class OrderSummaryCard extends StatelessWidget {
             children: [
               Text(
                 'checkout.total'.tr(),
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 20,
-                  color: cs.onSurface,
-                ),
+                style: AppTextStyles.subtitle(color: cs.onSurface)
+                    .copyWith(height: 1.3),
               ),
               Text(
                 total,
-                style: tt.headlineMedium?.copyWith(
-                  fontSize: 30,
-                  color: cs.primary,
-                ),
+                style: AppTextStyles.headline(color: cs.primary),
               ),
             ],
           ),
