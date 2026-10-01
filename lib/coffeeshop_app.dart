@@ -64,9 +64,9 @@ class CoffeeShopApp extends StatelessWidget {
               }
 
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(scaleFactor),
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(scaleFactor)),
                 child: IconTheme(
                   data: IconTheme.of(context).copyWith(size: iconSize),
                   child: child ?? const SizedBox.shrink(),
